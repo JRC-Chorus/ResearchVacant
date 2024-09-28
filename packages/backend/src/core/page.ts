@@ -1,4 +1,4 @@
-import { registerUrlParam } from 'src/source/urlParam';
+import { registerUrlParam } from "backend/source/urlParam";
 
 /** ブラウザのタブに表示されるページタイトル */
 const pageTitle = 'JRC Chorus -練習日程調整-';

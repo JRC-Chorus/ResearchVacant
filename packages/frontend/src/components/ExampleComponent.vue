@@ -10,11 +10,15 @@
     <p>Active: {{ active ? 'yes' : 'no' }}</p>
     <p>Clicks on todos: {{ clickCount }}</p>
   </div>
+
+  <p>Get Sample Data</p>
+  <div>{{ google.script.run.getSampleData().value }}</div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { Todo, Meta } from './models';
+import { google } from 'src/schema/global';
 
 interface Props {
   title: string;

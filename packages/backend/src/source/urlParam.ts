@@ -1,5 +1,5 @@
-import { UrlParams } from 'src/schema/front';
-import { err, ok, Result } from '../core/error/base';
+import { err, ok, Result } from 'backend/core/error/base';
+import { UrlParams } from 'backend/schema/front';
 
 let params: any;
 
@@ -20,9 +20,9 @@ export function registerUrlParam(e: any): Result<void> {
  */
 export function getUrlParams(): Result<UrlParams> {
   // TODO: エラーハンドリングを追加
-  return {
+  return ok({
     // paramsのDateはUNIX時間でやってくる想定
-    startDate: new Date(params.startDate),
-    endDate: new Date(params.endDate),
-  };
+    startDate: 'startDate_sample',
+    endDate: 'startDate_sample',
+  });
 }
