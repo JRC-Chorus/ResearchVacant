@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "@projects/frontend",
   "version": "0.0.1",
   "description": "ResearchVacant's website",
   "productName": "ResearchVacant",
@@ -9,9 +9,10 @@
     "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev",
-    "build": "quasar build && xcopy /ye .\\dist\\spa ..\\dist\\"
+    "build": "quasar build && xcopy /ye .\\dist\\spa ..\\..\\dist\\"
   },
   "dependencies": {
+    "@projects/common": "*",
     "@quasar/extras": "^1.16.4",
     "pinia": "^2.0.11",
     "quasar": "^2.16.0",
