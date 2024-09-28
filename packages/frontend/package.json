@@ -1,16 +1,15 @@
 {
-  "name": "research_vacant",
+  "name": "frontend",
   "version": "0.0.1",
   "description": "ResearchVacant's website",
-  "productName": "ResearchVacant_web",
+  "productName": "ResearchVacant",
   "author": "JRC-Chorus <jrc.chorus@gmail.com>",
-  "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",
     "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev",
-    "build": "quasar build && cp -R ./dist/spa/* ../dist"
+    "build": "quasar build && xcopy /ye .\\dist\\spa ..\\dist\\"
   },
   "dependencies": {
     "@quasar/extras": "^1.16.4",
