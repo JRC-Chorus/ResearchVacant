@@ -1,11 +1,11 @@
-import { err, ok, Result } from "backend/core/error/base";
+import { err, ok, Result } from 'backend/core/error/base';
 
 /**
  * テスト用にメンバー一覧データの最初のデータを取得する
  */
 export function getSampleData(): Result<any[][]> {
   const book = SpreadsheetApp.getActiveSpreadsheet();
-  const sheet = book.getSheetByName("メンバー一覧");
+  const sheet = book.getSheetByName('メンバー一覧');
 
   if (sheet === null) {
     return err.error('NOT_FOUND_SPREADSHEET')

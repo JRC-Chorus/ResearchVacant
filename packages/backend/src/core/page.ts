@@ -1,4 +1,4 @@
-import { registerUrlParam } from "backend/source/urlParam";
+import { registerUrlParam } from 'backend/source/urlParam';
 
 /** ブラウザのタブに表示されるページタイトル */
 const pageTitle = 'JRC Chorus -練習日程調整-';
@@ -7,7 +7,7 @@ const iconUrl = 'https://cdn.quasar.dev/logo-v2/favicon/favicon.ico';
 
 export function constructHomePage(e: any) {
   registerUrlParam(e);
-  return HtmlService.createHtmlOutputFromFile("index.html")
+  return HtmlService.createHtmlOutputFromFile('index.html')
     .setTitle(pageTitle)
     .setFaviconUrl(iconUrl)
     .addMetaTag('viewport', 'width=device-width, initial-scale=1');

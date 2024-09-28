@@ -20,6 +20,7 @@ export function registerUrlParam(e: any): Result<void> {
  */
 export function getUrlParams(): Result<UrlParams> {
   // TODO: エラーハンドリングを追加
+  console.log(params);
   return ok({
     // paramsのDateはUNIX時間でやってくる想定
     startDate: 'startDate_sample',
