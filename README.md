@@ -15,12 +15,26 @@
 ## 環境構築
 1. [インストールページ](https://docs.volta.sh/guide/getting-started)の案内に従って`Volta`をインストールする
 2. 下記のモジュールを`npm install -g <module_name>`でグローバルインストールする
-     - `@google/clasp`
+   - `@google/clasp`
 3. このリポジトリを`clone`して，リポジトリをカレントディレクトリとするBashを起動する
 4. `yarn install`で必要な依存関係をインストールする
-5. Google Driveより，`.clasp.json`をダウンロードしてトップに配置する（特定キーを含むためリポジトリに含めていない）
-6. `clasp login`でJRC-Chorusのアカウントにログインする
-7. `yarn open`でアップロード済みのコードを開く
+5. `.clasp.json`をこの`README.md`と同じ階層に作成する
+   - JRC-Chorusに所属している場合：GoogleDriveに作成済みの`.clasp.json`があるため，ダウンロードして配置（特定キーを含むためリポジトリに含めていない）
+   - 一般のユーザーの場合：下記の要領に従って`.clasp.json`を作成する
+     1. 自身のGoogleDrive内に任意のSpreadSheetを作成する
+     2. 作成したSpreadSheetを開き，「拡張機能」＞「Apps Script」を選択する
+     3. 開いた画面のURLは`https://script.google.com/u/0/home/projects/【ID文字列】/edit`のようになっているはずなので，【ID文字列】部分をコピーする
+     4. 下記のように`.clasp.json`を作成する
+        ```json
+        {
+          "scriptId": "コピーした【ID文字列】",
+          "rootDir": "./dist"
+        }
+        ```
+6. `clasp login`でJRC-Chorusのアカウント（一般ユーザーはSpreadSheetを作成したアカウント）にログインする
+7. （一般ユーザーの場合：`yarn push`によってプログラムコードをSpreadSheet付属のGASにアップロード）
+8. （一般ユーザーの場合：Apps Scriptの画面にある「デプロイ」からコードをデプロイする）
+9. `yarn open`でデプロイ済みの本ソフトを開く
 
 ### 参考記事
 - [コストゼロからはじめよう！React + Vite + Google Apps ScriptでSPAを無料公開: Qiita](https://qiita.com/takatama/items/7253d89e52d816bee739)
