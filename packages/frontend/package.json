@@ -5,8 +5,6 @@
   "productName": "ResearchVacant",
   "author": "JRC-Chorus <jrc.chorus@gmail.com>",
   "scripts": {
-    "lint": "eslint --ext .js,.ts,.vue ./",
-    "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev",
     "build": "quasar build && xcopy /ye .\\dist\\spa ..\\..\\dist\\"
@@ -21,6 +19,7 @@
   },
   "devDependencies": {
     "@quasar/app-vite": "^1.9.0",
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@types/node": "^20.14.8",
     "@typescript-eslint/eslint-plugin": "^7.16.0",
     "@typescript-eslint/parser": "^7.16.0",

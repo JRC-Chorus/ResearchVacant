@@ -6,6 +6,8 @@
     "packages/*"
   ],
   "scripts": {
+    "lint": "eslint --ext .js,.ts,.vue ./",
+    "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
     "build": "rmdir dist /s /q & yarn build:frontend & yarn build:backend",
     "build:frontend": "yarn workspace @projects/frontend build",
     "build:backend": "yarn workspace @projects/backend build",
@@ -14,8 +16,7 @@
     "clasp:push": "clasp push -f",
     "clasp:deploy": "clasp deploy -i AKfycbzEZbzutLFBXC9D_mSnhJExtIcvEsSF97j_PRip0nlwXIlKZt-fDb13TW23wC0C266a",
     "dev": "yarn workspace @projects/frontend dev",
-    "open": "clasp open --webapp",
-    "lint": "yarn lint:frontend"
+    "open": "clasp open --webapp"
   },
   "volta": {
     "node": "20.17.0",
