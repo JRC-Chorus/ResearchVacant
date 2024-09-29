@@ -1,3 +1,41 @@
+<script setup lang="ts">
+import { computed, onMounted, ref } from 'vue';
+import { Meta, Todo } from './models';
+
+interface Props {
+  title: string;
+  todos?: Todo[];
+  meta: Meta;
+  active: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  todos: () => [],
+});
+
+const clickCount = ref(0);
+function increment() {
+  clickCount.value += 1;
+  return clickCount.value;
+}
+
+const todoCount = computed(() => props.todos.length);
+
+const sampleResult = ref();
+
+onMounted(() => {
+  console.log('### test ###');
+  google?.script.run
+    .withSuccessHandler((val) => test(val))
+    .withFailureHandler((err) => console.log(err))
+    .getSampleData();
+});
+function test(val: any[][]) {
+  console.log(val);
+  sampleResult.value = val;
+}
+</script>
+
 <template>
   <div>
     <p>{{ title }}</p>
@@ -12,30 +50,5 @@
   </div>
 
   <p>Get Sample Data</p>
-  <div>{{ google.script.run.getSampleData().value }}</div>
+  <div>{{ sampleResult }}</div>
 </template>
-
-<script setup lang="ts">
-import { computed, ref } from 'vue';
-import { Todo, Meta } from './models';
-import { google } from 'src/schema/global';
-
-interface Props {
-  title: string;
-  todos?: Todo[];
-  meta: Meta;
-  active: boolean;
-};
-
-const props = withDefaults(defineProps<Props>(), {
-  todos: () => []
-});
-
-const clickCount = ref(0);
-function increment() {
-  clickCount.value += 1;
-  return clickCount.value;
-}
-
-const todoCount = computed(() => props.todos.length);
-</script>

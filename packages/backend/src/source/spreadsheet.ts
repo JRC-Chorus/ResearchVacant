@@ -1,5 +1,4 @@
-import { Result } from 'src/core/error/base';
 
-export function getSessionID(): Result<UUID> {
+export function getSessionID(): UUID {
 
 }

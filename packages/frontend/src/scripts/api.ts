@@ -1,5 +1,3 @@
-import { google } from 'src/schema/global';
-
 /**
  * URLパラメーターとして渡された情報を取得する
  */

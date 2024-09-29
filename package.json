@@ -14,7 +14,7 @@
     "push": "yarn build & yarn clasp:push",
     "deploy": "yarn build & yarn clasp:push & yarn clasp:deploy",
     "clasp:push": "clasp push -f",
-    "clasp:deploy": "clasp deploy -i AKfycbzEZbzutLFBXC9D_mSnhJExtIcvEsSF97j_PRip0nlwXIlKZt-fDb13TW23wC0C266a",
+    "clasp:deploy": "clasp deploy -i AKfycbz3sPuwSQkW9nyaLXpTfZ9GzMZGaE_9CHUTEo_rjpbkz11WyTtFbMN7k-j8s_q1NpI4Eg",
     "dev": "yarn workspace @projects/frontend dev",
     "open": "clasp open --webapp"
   },

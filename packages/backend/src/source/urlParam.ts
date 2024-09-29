@@ -1,15 +1,13 @@
-import { err, ok, Result } from 'backend/core/error/base';
 import { UrlParams } from 'backend/schema/front';
 
 let params: any;
 
 /** URL引数で受け取ったパラメーターを登録 */
-export function registerUrlParam(e: any): Result<void> {
+export function registerUrlParam(e: any) {
   if ('parameter' in e) {
     params = e.parameter;
-    return ok();
   } else {
-    return err.error('INVALID_URLPRAM');
+    throw new Error('INVALID_URLPRAM');
   }
 }
 
@@ -18,12 +16,11 @@ export function registerUrlParam(e: any): Result<void> {
  *
  * 取得したパラメータが不正の場合は`undefined`を返す
  */
-export function getUrlParams(): Result<UrlParams> {
+export function getUrlParams(): UrlParams {
   // TODO: エラーハンドリングを追加
-  console.log(params);
-  return ok({
+  return {
     // paramsのDateはUNIX時間でやってくる想定
     startDate: 'startDate_sample',
     endDate: 'startDate_sample',
-  });
+  };
 }
