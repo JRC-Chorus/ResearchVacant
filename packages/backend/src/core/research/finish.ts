@@ -16,7 +16,7 @@ export function notify4Teams() {
 export function sendJudgeCandidate() {
   const candidateDates = getCandidate()
 
-  // sendMail()をラップしたsendJudgeMail(manager, candidateDates)を実行
+  // 承認もWebapp上でできるようにする（期日終了後に管理者がアクセスしたときに承認画面が開くようにする？）
 }
 
 /**
