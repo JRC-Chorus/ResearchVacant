@@ -4,7 +4,7 @@ const { GasPlugin } = require('esbuild-gas-plugin');
 build({
   entryPoints: ['./src/main.ts'],
   bundle: true,
-  minify: false,
+  minify: true,
   charset: 'utf8',
   outfile: '../../dist/Code.js',
   plugins: [GasPlugin],
