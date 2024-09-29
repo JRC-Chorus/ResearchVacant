@@ -1,11 +1,8 @@
 /**
  * フロントエンドとの通信に関連のある型定義をおく
  */
-
 import { z } from 'zod';
-
-export const RvDate = z.string().date();
-export type RvDate = z.infer<typeof RvDate>;
+import { RvDate } from './db/common';
 
 export const UrlParams = z.object({
   /** 予定調査の範囲（開始） */

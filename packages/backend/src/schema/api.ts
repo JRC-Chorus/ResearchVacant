@@ -1,4 +1,4 @@
-import { UrlParams } from './front';
+import { UrlParams } from './app';
 
 export interface FrontAPI {
   /** フロントエンドを描画 */
