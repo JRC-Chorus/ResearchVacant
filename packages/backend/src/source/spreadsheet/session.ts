@@ -106,3 +106,21 @@ export function updateSession(sessionId: SessionID, status: SessionStatus) {
     .getRange(targetRowIdx, 1, targetRowIdx, dataCount)
     .setValues([targetData]);
 }
+
+/**
+ * セッションの削除
+ */
+export function deleteSession(sessionId: SessionID) {
+  // get all session ids
+  const sheet = getSheet(SESSION_SHEET_NAME);
+  const idKeys: SessionID[] = sheet
+    .getRange(2, 1, sheet.getLastRow(), 1)
+    .getValues()
+    .flat();
+
+  // search target Data
+  const targetRowIdx = idKeys.indexOf(sessionId);
+
+  // delete Session
+  sheet.deleteRow(targetRowIdx + 2)
+}
