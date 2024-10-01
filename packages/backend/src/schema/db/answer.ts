@@ -7,7 +7,7 @@ export const AnsDate = z.object({
   // 回答された日付
   date: RvDate,
   // 回答（参加可能か）
-  isOk: z.boolean(),
+  ans: z.enum(['OK', 'Pending', 'NG']),
 });
 export type AnsDate = z.infer<typeof AnsDate>;
 
