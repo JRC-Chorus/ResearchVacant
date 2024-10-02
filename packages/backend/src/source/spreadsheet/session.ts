@@ -40,8 +40,9 @@ export function getSessions(): Session[] {
   const sheet = getSheet(SESSION_SHEET_NAME);
 
   const lastRow = sheet.getLastRow();
-  const srcData = sheet.getRange(2, 1, lastRow, 6).getValues();
+  if (lastRow < 2) { return [] }
 
+  const srcData = sheet.getRange(2, 1, lastRow, 6).getValues();
   return srcData.map((line) =>
     Session.parse({
       id: line[0],
