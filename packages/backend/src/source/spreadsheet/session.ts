@@ -1,14 +1,54 @@
 import { RvDate } from 'backend/schema/db/common';
 import { Session, SessionID, SessionStatus } from 'backend/schema/db/session';
+import { fromEntries, keys, toEntries, values } from 'backend/utils/obj/obj';
 import { getSheet } from './common';
 
 const SESSION_SHEET_NAME = 'セッション一覧';
+let cachedSessions: Session[] | undefined;
+
+// db source
+const header: Record<keyof Session, string> = {
+  id: 'セッションID',
+  status: '開始日',
+  startDate: '終了日',
+  endDate: 'ステータス',
+  researchRangeStart: '調査対象開始日',
+  researchRangeEnd: '調査対象終了日',
+};
 
 /**
  * セッションIDを発行
  */
 function genSessionID() {
   return SessionID.parse(crypto.randomUUID());
+}
+
+/**
+ * セッション一覧をSpreadSheetに書き込み
+ *
+ * 引数で書き込みたいセッションを渡し，キャッシュの更新もできるが，渡さない場合はキャッシュが書き込まれる
+ * 
+ * cf) ここではすべてのデータを毎回書き換える実装としているが，書き換えのサーバー処理より通信の方が実行時間は支配的になると考えてこのままにしている．
+ * 遅延が目立つ場合には，書き込むデータをアップデートしたいデータのみに絞る実装に変更．
+ */
+function writeSessions(sessions?: Session[]) {
+  if (!sessions) {
+    cachedSessions = sessions;
+  }
+  if (!cachedSessions) {
+    throw new Error('No writable session data');
+  }
+
+  // initialize
+  initSessionSheet(true);
+
+  // write new data
+  const headerKeys = keys(header);
+  const writeData = cachedSessions.map((s) => headerKeys.map((k) => s[k]));
+  const sheet = getSheet(SESSION_SHEET_NAME);
+  sheet
+    .getRange(2, 1, cachedSessions.length + 1, headerKeys.length)
+    .setValues(writeData);
 }
 
 /**
@@ -22,41 +62,38 @@ export function initSessionSheet(clearAllData: boolean = false) {
     sheet.clear();
   }
 
-  const header = [
-    'セッションID',
-    '開始日',
-    '終了日',
-    'ステータス',
-    '調査対象開始日',
-    '調査対象終了日',
-  ];
-  sheet.getRange(1, 1, 1, header.length).setValues([header]);
+  // write header text
+  const headerVals = values(header);
+  sheet.getRange(1, 1, 1, headerVals.length).setValues([headerVals]);
 }
 
 /**
  * セッションの一覧を取得
  */
-export function getSessions(): Session[] {
-  const sheet = getSheet(SESSION_SHEET_NAME);
+export function getSessions(loadForce: boolean = false): Session[] {
+  if (!cachedSessions || loadForce) {
+    const sheet = getSheet(SESSION_SHEET_NAME);
 
-  const lastRow = sheet.getLastRow();
-  if (lastRow < 2) { return [] }
+    const lastRow = sheet.getLastRow();
+    if (lastRow < 2) {
+      cachedSessions = [];
+    } else {
+      const srcData = sheet.getRange(2, 1, lastRow, 6).getValues();
+      cachedSessions = srcData.map((line) =>
+        Session.parse(
+          fromEntries(toEntries(header).map(([k, v], idx) => [k, line[idx]]))
+        )
+      );
+    }
+  }
 
-  const srcData = sheet.getRange(2, 1, lastRow, 6).getValues();
-  return srcData.map((line) =>
-    Session.parse({
-      id: line[0],
-      startDate: line[1],
-      endDate: line[2],
-      status: line[3],
-      researchRangeStart: line[4],
-      researchRangeEnd: line[5],
-    })
-  );
+  return cachedSessions;
 }
 
 /**
  * 新規セッションを発行
+ *
+ * 発行したセッション情報を返す
  */
 export function publishSession(
   startDate: RvDate,
@@ -75,37 +112,31 @@ export function publishSession(
   });
 
   // 書き込み
-  const sheet = getSheet(SESSION_SHEET_NAME);
-  const writeRow = sheet.getLastRow() + 1;
-  const writeData = Object.values(writeSession);
-  sheet
-    .getRange(writeRow, 1, writeRow, writeData.length)
-    .setValues([writeData]);
+  const sessions = getSessions();
+  sessions.push(writeSession);
+  writeSessions(sessions);
+
+  return writeSession;
 }
 
 /**
  * セッションのアップデート
  */
 export function updateSession(sessionId: SessionID, status: SessionStatus) {
+  const sessions = getSessions();
+
   // get all session ids
-  const sheet = getSheet(SESSION_SHEET_NAME);
-  const idKeys: SessionID[] = sheet
-    .getRange(2, 1, sheet.getLastRow(), 1)
-    .getValues()
-    .flat();
+  const idKeys: SessionID[] = sessions.map((s) => s.id);
 
   // search target Data
   const targetRowIdx = idKeys.indexOf(sessionId);
-  const dataCount = sheet.getLastColumn();
-  const targetData = sheet
-    .getRange(targetRowIdx, 1, targetRowIdx, dataCount)
-    .getValues()[0];
+  if (targetRowIdx === -1) {
+    throw new Error('Could not update unkown session');
+  }
 
-  // update status
-  targetData[3] = status;
-  sheet
-    .getRange(targetRowIdx, 1, targetRowIdx, dataCount)
-    .setValues([targetData]);
+  // update sessions
+  sessions[targetRowIdx].status = status;
+  writeSessions(sessions);
 }
 
 /**
@@ -113,15 +144,13 @@ export function updateSession(sessionId: SessionID, status: SessionStatus) {
  */
 export function deleteSession(sessionId: SessionID) {
   // get all session ids
-  const sheet = getSheet(SESSION_SHEET_NAME);
-  const idKeys: SessionID[] = sheet
-    .getRange(2, 1, sheet.getLastRow(), 1)
-    .getValues()
-    .flat();
+  const sessions = getSessions();
+  const idKeys: SessionID[] = sessions.map(s => s.id);
 
   // search target Data
   const targetRowIdx = idKeys.indexOf(sessionId);
 
   // delete Session
-  sheet.deleteRow(targetRowIdx + 2)
+  sessions.splice(targetRowIdx, 1)
+  writeSessions(sessions)
 }
