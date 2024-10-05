@@ -1,6 +1,7 @@
 /**
  * 調査を始めるための実装をする
  */
+import dayjs from 'dayjs';
 import { RvDate } from 'backend/schema/db/common';
 import { Config } from 'backend/schema/db/config';
 import { Session, SessionID } from 'backend/schema/db/session';
@@ -9,7 +10,6 @@ import {
   getSessions,
   publishSession,
 } from 'backend/source/spreadsheet/session';
-import dayjs from 'dayjs';
 
 /**
  * セッションの一覧を取得し，本日の日付に対して必要なセッションの発行を行う
