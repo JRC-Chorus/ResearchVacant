@@ -25,7 +25,7 @@ export function sessionChecker(): Session[] {
   const researchStartDate = getResearchStartDate(config, startDate);
   // 想定される開始日が存在しない場合，新規セッションの発行をする
   if (!sessions.some((s) => s.researchRangeStart === researchStartDate)) {
-    const ansEndDate = getAnsEndDate(config, startDate)
+    const ansEndDate = getAnsEndDate(config, startDate);
     publishSession(
       RvDate.parse(startDate.format()),
       getRemindDate(config, ansEndDate),
@@ -121,55 +121,61 @@ function sendMail2Members() {}
  */
 export function sendRemindMail(sessionId: SessionID) {}
 
-// in-source test suites
+/** In Source Testing */
 if (import.meta.vitest) {
-  const { test, expect } = import.meta.vitest;
-  const { getDefaults } = await import('backend/schema/defaultVals');
-  const { deepcopy } = await import('backend/utils/deepcopy');
+  const { describe, test, expect } = import.meta.vitest;
+  
+  describe('beginResearch', async () => {
+    const { getDefaults } = await import('backend/schema/defaultVals');
+    const { deepcopy } = await import('backend/utils/deepcopy');
 
-  const defaultConfig = getDefaults(Config);
-  const today = dayjs('2024/1/1');
+    const defaultConfig = getDefaults(Config);
+    const today = dayjs('2024/1/1');
 
-  // 変化版設定（調査サイクル：週次，調査対象：２週間後）
-  const changedConfig = deepcopy(defaultConfig);
-  changedConfig.researchTargetCycle = 2;
-  changedConfig.researchFrequency = 'week';
+    // 変化版設定（調査サイクル：週次，調査対象：２週間後）
+    const changedConfig = deepcopy(defaultConfig);
+    changedConfig.researchTargetCycle = 2;
+    changedConfig.researchFrequency = 'week';
 
-  // 型変換のテスト
-  test('rvDate', () => {
-    expect(RvDate.parse(today.format())).toBe('2024-01-01');
-  });
+    // 型変換のテスト
+    test('rvDate', () => {
+      expect(RvDate.parse(today.format())).toBe('2024-01-01');
+    });
 
-  // 次のセッションにおける調査対象期間の初日
-  test('getResearchStartDate', () => {
-    // 標準通りの設定
-    expect(getResearchStartDate(defaultConfig, today)).toBe('2024-02-01');
+    // 次のセッションにおける調査対象期間の初日
+    test('getResearchStartDate', () => {
+      // 標準通りの設定
+      expect(getResearchStartDate(defaultConfig, today)).toBe('2024-02-01');
 
-    // 変化版設定
-    expect(getResearchStartDate(changedConfig, today)).toBe('2024-01-14');
-  });
+      // 変化版設定
+      expect(getResearchStartDate(changedConfig, today)).toBe('2024-01-14');
+    });
 
-  // 調査対象期間の終了日
-  test('getRangeEndDate', () => {
-    // 標準通りの設定
-    const researchStartDate = getResearchStartDate(defaultConfig, today);
-    expect(getRangeEndDate(defaultConfig, researchStartDate)).toBe(
-      '2024-02-29'
-    );
+    // 調査対象期間の終了日
+    test('getRangeEndDate', () => {
+      // 標準通りの設定
+      const researchStartDate = getResearchStartDate(defaultConfig, today);
+      expect(getRangeEndDate(defaultConfig, researchStartDate)).toBe(
+        '2024-02-29'
+      );
 
-    // 変化版設定
-    const changedResearchStartDate = getResearchStartDate(changedConfig, today);
-    expect(getRangeEndDate(changedConfig, changedResearchStartDate)).toBe(
-      '2024-01-20'
-    );
-  });
+      // 変化版設定
+      const changedResearchStartDate = getResearchStartDate(
+        changedConfig,
+        today
+      );
+      expect(getRangeEndDate(changedConfig, changedResearchStartDate)).toBe(
+        '2024-01-20'
+      );
+    });
 
-  // 調査締切日（標準設定では調査開始の３日後を締め切りにする）
-  test('getAnsEndDate', () => {
-    // 標準通りの設定
-    expect(getAnsEndDate(defaultConfig, today)).toBe('2024-01-04');
+    // 調査締切日（標準設定では調査開始の３日後を締め切りにする）
+    test('getAnsEndDate', () => {
+      // 標準通りの設定
+      expect(getAnsEndDate(defaultConfig, today)).toBe('2024-01-04');
 
-    // 変化版設定
-    expect(getAnsEndDate(changedConfig, today)).toBe('2024-01-04');
+      // 変化版設定
+      expect(getAnsEndDate(changedConfig, today)).toBe('2024-01-04');
+    });
   });
 }
