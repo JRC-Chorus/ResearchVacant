@@ -8,7 +8,8 @@ const CONFIG_SHEET_NAME = '設定';
 const configShowingKey: { [key in keyof Config]: string } = {
   teamsLink: '通知したいチャンネルの Teams Webhook リンク',
   researchFrequency: `調査の頻度（${researchFrequencyEnum.join(' / ')}）`,
-  answerRange: '調査の締め切り日数',
+  answerRange: '調査に対する回答が可能な日数',
+  remindDateBeforeEndResearch: 'リマインドは調査終了の何日前に送信するか（`-1`なら送信しない）',
   researchPartyCount: '調査対象の期間における開催回数',
   outerPlacePartyCount: '開催回数のうち，外部施設の利用回数',
   approverRoles: '開催日の承認を担当するロール',
@@ -43,7 +44,7 @@ export function initConfigSheet(clearAllData: boolean = false) {
   });
 
   // TODO: 10の部分は２次元配列の最大要素数を指定
-  sheet.getRange(1, 1, 1, 10).setValues(writeData);
+  sheet.getRange(1, 1, 10, 2).setValues(writeData);
 }
 
 /**

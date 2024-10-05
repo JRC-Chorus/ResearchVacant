@@ -30,6 +30,9 @@ export const Config = z.object({
   /** 回答期間 */
   answerRange: z.number().min(1).optional().default(3),
 
+  /** リマインドの送付日 */
+  remindDateBeforeEndResearch: z.number().min(-1).optional().default(1),
+
   /** 最終開催日から最低限開けるべき日数 */
   leastRestTime: z.number().optional().default(0),
 

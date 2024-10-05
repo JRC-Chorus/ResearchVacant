@@ -9,9 +9,10 @@ let cachedSessions: Session[] | undefined;
 // db source
 const header: Record<keyof Session, string> = {
   id: 'セッションID',
-  status: '開始日',
-  startDate: '終了日',
-  endDate: 'ステータス',
+  status: 'ステータス',
+  startDate: '開始日',
+  remindDate: 'リマインド日',
+  endDate: '終了日',
   researchRangeStart: '調査対象開始日',
   researchRangeEnd: '調査対象終了日',
 };
@@ -27,7 +28,7 @@ function genSessionID() {
  * セッション一覧をSpreadSheetに書き込み
  *
  * 引数で書き込みたいセッションを渡し，キャッシュの更新もできるが，渡さない場合はキャッシュが書き込まれる
- * 
+ *
  * cf) ここではすべてのデータを毎回書き換える実装としているが，書き換えのサーバー処理より通信の方が実行時間は支配的になると考えてこのままにしている．
  * 遅延が目立つ場合には，書き込むデータをアップデートしたいデータのみに絞る実装に変更．
  */
@@ -97,6 +98,7 @@ export function getSessions(loadForce: boolean = false): Session[] {
  */
 export function publishSession(
   startDate: RvDate,
+  remindDate: RvDate | undefined,
   endDate: RvDate,
   researchRangeStart: RvDate,
   researchRangeEnd: RvDate
@@ -105,6 +107,7 @@ export function publishSession(
   const writeSession = Session.parse({
     id: genSessionID(),
     startDate: startDate,
+    remindDate: remindDate,
     endDate: endDate,
     stats: 'ready',
     researchRangeStart: researchRangeStart,
@@ -145,12 +148,12 @@ export function updateSession(sessionId: SessionID, status: SessionStatus) {
 export function deleteSession(sessionId: SessionID) {
   // get all session ids
   const sessions = getSessions();
-  const idKeys: SessionID[] = sessions.map(s => s.id);
+  const idKeys: SessionID[] = sessions.map((s) => s.id);
 
   // search target Data
   const targetRowIdx = idKeys.indexOf(sessionId);
 
   // delete Session
-  sessions.splice(targetRowIdx, 1)
-  writeSessions(sessions)
+  sessions.splice(targetRowIdx, 1);
+  writeSessions(sessions);
 }

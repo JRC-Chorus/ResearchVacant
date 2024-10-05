@@ -25,9 +25,11 @@ export function sessionChecker(): Session[] {
   const researchStartDate = getResearchStartDate(config, startDate);
   // 想定される開始日が存在しない場合，新規セッションの発行をする
   if (!sessions.some((s) => s.researchRangeStart === researchStartDate)) {
+    const ansEndDate = getAnsEndDate(config, startDate)
     publishSession(
       RvDate.parse(startDate.format()),
-      getAnsEndDate(config, startDate),
+      getRemindDate(config, ansEndDate),
+      ansEndDate,
       researchStartDate,
       getRangeEndDate(config, researchStartDate)
     );
@@ -61,6 +63,28 @@ function getResearchStartDate(config: Config, startDate: dayjs.Dayjs): RvDate {
 function getRangeEndDate(config: Config, startResearchDate: RvDate): RvDate {
   return RvDate.parse(
     dayjs(startResearchDate).endOf(config.researchFrequency).format()
+  );
+}
+
+/**
+ * リマインド日（終了日からリマンインド日数を減算）を算出する
+ */
+function getRemindDate(
+  config: Config,
+  endResearchDate: RvDate
+): RvDate | undefined {
+  // 無効なリマインド日の場合はリマインド設定をしない
+  if (
+    config.remindDateBeforeEndResearch === -1 ||
+    config.answerRange <= config.remindDateBeforeEndResearch
+  ) {
+    return;
+  }
+
+  return RvDate.parse(
+    dayjs(endResearchDate)
+      .subtract(config.remindDateBeforeEndResearch, 'day')
+      .format()
   );
 }
 
@@ -140,7 +164,7 @@ if (import.meta.vitest) {
     );
   });
 
-  // 調査締切日
+  // 調査締切日（標準設定では調査開始の３日後を締め切りにする）
   test('getAnsEndDate', () => {
     // 標準通りの設定
     expect(getAnsEndDate(defaultConfig, today)).toBe('2024-01-04');
