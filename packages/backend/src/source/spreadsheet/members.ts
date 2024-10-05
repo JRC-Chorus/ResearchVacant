@@ -2,7 +2,7 @@ import { Member, MemberID } from 'backend/schema/db/member';
 import { values } from 'backend/utils/obj/obj';
 import { getSheet } from './common';
 
-const MEMBERS_SHEET_NAME = 'セッション一覧';
+const MEMBERS_SHEET_NAME = 'メンバー一覧';
 let cachedMembers: Member[] | undefined;
 
 // db source
