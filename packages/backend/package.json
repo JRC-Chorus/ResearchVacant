@@ -12,6 +12,7 @@
     "@types/google-apps-script": "^1.0.83",
     "esbuild-gas-plugin": "^0.8.0",
     "typescript": "^5.6.2",
+    "vitest": "^2.1.2",
     "zod": "^3.23.8"
   }
 }

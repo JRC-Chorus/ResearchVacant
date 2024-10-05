@@ -95,3 +95,11 @@ function sendMail2Members() {}
  * セッションを確認し，対象者にリマインドメールを送信する
  */
 export function sendRemindMail(sessionId: SessionID) {}
+
+// in-source test suites
+if (import.meta.vitest) {
+  const { test, expect } = import.meta.vitest;
+  test('add', () => {
+    expect(1).toBe(1);
+  });
+}
