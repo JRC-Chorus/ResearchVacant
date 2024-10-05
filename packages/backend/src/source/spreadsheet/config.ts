@@ -1,6 +1,7 @@
 import { Config, researchFrequencyEnum } from 'backend/schema/db/config';
 import { keys } from 'backend/utils/obj/obj';
 import { getSheet } from './common';
+import { getDefaults } from 'backend/schema/defaultVals';
 
 const CONFIG_SHEET_NAME = '設定';
 
@@ -32,7 +33,7 @@ export function initConfigSheet(clearAllData: boolean = false) {
   }
 
   // 初期値を定義
-  const initConfig = Config.parse(undefined);
+  const initConfig = getDefaults(Config);
   const writeData = keys(configShowingKey).map((k) => {
     if (typeof initConfig[k] === 'object') {
       return [configShowingKey[k], ...initConfig[k]];
