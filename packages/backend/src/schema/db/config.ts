@@ -37,13 +37,13 @@ export const Config = z.object({
   leastRestTime: z.number().optional().default(0),
 
   /** 開催日の承認を担当するロール */
-  approverRoles: z.string().array().optional().default([]),
+  approverRoles: z.string().array().optional().default(['']),
 
   /** 必ず出席を求めるロール */
-  mustAttendRoles: z.string().array().optional().default([]),
+  mustAttendRoles: z.string().array().optional().default(['']),
 
   /** 外部会場の時には出席を求めるロール */
-  mustAttendOuterPlace: z.string().array().optional().default([]),
+  mustAttendOuterPlace: z.string().array().optional().default(['']),
 
   // 将来的にはメールの内容もconfigから受け取る？
 });
