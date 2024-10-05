@@ -23,7 +23,7 @@ export const Member = z.object({
   // メンバーの氏名の「名」
   lastName: z.string(),
   // 登録済みのEmailアドレス
-  mails: z.string().email().array().min(1),
+  mailAddress: z.string().email(),
   // 役割
   roles: Role.array(),
 });

@@ -18,7 +18,7 @@ export const Session = z.object({
   /** 調査開始日 */
   startDate: RvDate,
   /** リマインド日 */
-  remindDate: RvDate.optional(),
+  remindDate: RvDate?.optional(),
   /** 調査終了日 */
   endDate: RvDate,
   /** 調査の進捗 */

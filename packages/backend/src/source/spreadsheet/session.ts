@@ -56,7 +56,7 @@ function writeSessions(sessions?: Session[]) {
  * セッションシートの初期化に用いる
  */
 export function initSessionSheet(clearAllData: boolean = false) {
-  const sheet = getSheet(SESSION_SHEET_NAME);
+  const sheet = getSheet(SESSION_SHEET_NAME, true);
 
   // 既存のデータをすべて削除
   if (clearAllData) {

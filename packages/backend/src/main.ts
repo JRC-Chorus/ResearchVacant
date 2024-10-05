@@ -1,3 +1,4 @@
+import { migrateEnv } from './core/migrate';
 import { constructHomePage } from './core/page';
 import { researchManager } from './core/research';
 import { FrontAPI } from './schema/api';
@@ -8,6 +9,7 @@ declare const global: FrontAPI;
 
 /** APIをGASに登録 */
 global.doGet = constructHomePage;
+global.migrateEnv = migrateEnv;
 global.getParams = getUrlParams;
 global.researchManager = researchManager;
 
