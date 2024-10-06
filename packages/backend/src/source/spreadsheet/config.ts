@@ -1,6 +1,6 @@
 import { Config, researchFrequencyEnum } from 'backend/schema/db/config';
 import { getDefaults } from 'backend/schema/defaultVals';
-import { keys } from 'backend/utils/obj/obj';
+import { fromEntries, keys } from 'backend/utils/obj/obj';
 import { getSheet } from './common';
 
 const CONFIG_SHEET_NAME = '設定';
@@ -64,18 +64,20 @@ export function getConfig(): Config {
   if (!configCache) {
     const sheet = getSheet(CONFIG_SHEET_NAME);
     const configKeys = keys(configShowingKey);
-    const maxDataSize = sheet.getLastColumn();
+    const maxDataSize = sheet.getLastColumn() - 1;
     const configVals = sheet
-      .getRange(2, 2, configKeys.length, maxDataSize)
+      .getRange(1, 2, configKeys.length, maxDataSize)
       .getValues();
 
-    const readConfig = configVals.map((v, idx) => {
-      const filteredVal = v.filter((v) => v !== void 0);
-      return {
-        [configKeys[idx]]:
+    const readConfig = fromEntries(
+      configVals.map((v, idx) => {
+        const filteredVal = v.filter((v) => v !== void 0);
+        return [
+          configKeys[idx],
           filteredVal.length === 1 ? filteredVal[0] : filteredVal,
-      };
-    });
+        ];
+      })
+    );
 
     configCache = Config.parse(readConfig);
   }
