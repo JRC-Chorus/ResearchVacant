@@ -29,7 +29,7 @@ export function researchManager() {
     // if(今日の日付＞リマインド予定日＆ステータス＝'opening')
     else if (
       session.remindDate &&
-      dayjs().diff(session.remindDate, 'day') >= 0 &&
+      dayjs().diff(session.remindDate, 'day') === 0 &&
       session.status === 'opening'
     ) {
       sendRemindMail(session.id);
