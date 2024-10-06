@@ -1,11 +1,12 @@
-import { Member, MemberID } from 'backend/schema/db/member';
+import { Member, MemberID, Role } from 'backend/schema/db/member';
 import { fromEntries, keys, toEntries, values } from 'backend/utils/obj/obj';
 import { getSheet } from './common';
+import { getConfig } from './config';
 
 const MEMBERS_SHEET_NAME = 'メンバー一覧';
 let cachedMembers: Record<MemberID, Member> | undefined;
 
-// db source
+// db source（!!! rolesはデータベースの一番末列に入れる !!!）
 const header: Record<keyof Member, string> = {
   id: 'メンバーID（空欄でOK）',
   firstName: '氏名（姓）',
@@ -37,6 +38,29 @@ export function initMemberSheet(clearAllData: boolean = false) {
   sheet.getRange(1, 1, 1, headerVals.length).setValues([headerVals]);
 }
 
+function roleParser(roleName: string[]): Role | undefined {
+  const config = getConfig();
+  const returnRole: Role = {
+    manager: false,
+    mustAttend: false,
+    mustAttendByOuter: false,
+  };
+
+  roleName.forEach((rName) => {
+    if (config.approverRoles.some((r) => r === rName)) {
+      returnRole.manager = true;
+    } else if (config.mustAttendRoles.some((r) => r === rName)) {
+      returnRole.mustAttend = true;
+    } else if (config.mustAttendOuterPlaceRoles.some((r) => r === rName)) {
+      returnRole.mustAttendByOuter = true;
+    }
+  });
+
+  return values(returnRole).some((isAssign) => isAssign)
+    ? returnRole
+    : undefined;
+}
+
 /**
  * メンバー一覧を取得
  */
@@ -50,7 +74,7 @@ export function getMembers(loadForce: boolean = false) {
     } else {
       // 元データを取得
       const srcData = sheet
-        .getRange(2, 1, lastRow, keys(header).length)
+        .getRange(2, 1, lastRow - 1, sheet.getLastColumn())
         .getValues();
       // MemberID一覧が何列目にあるか
       const memberidIdx = keys(header).findIndex((k) => k === 'id');
@@ -61,9 +85,15 @@ export function getMembers(loadForce: boolean = false) {
             toEntries(header).map(([k, v], idx) => {
               // MmeberIDのみ特殊処理
               if (idx === memberidIdx) {
-                const memberId = line[idx] ?? genMemberID();
+                const memberId = line[idx] === '' ? genMemberID() : line[idx];
                 return [k, memberId];
-              } else {
+              }
+              // roles（データベースの一番最後）も特殊処理
+              else if (idx === keys(header).length - 1) {
+                return [k, roleParser(line.slice(idx))];
+              }
+              // その他はそのまま返す
+              else {
                 return [k, line[idx]];
               }
             })

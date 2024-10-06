@@ -1,8 +1,6 @@
 import { z } from 'zod';
 
 export const Role = z.object({
-  // 役割の名称
-  name: z.string(),
   // 管理者（システムが調査し，提案した開催日の承認を行う）
   manager: z.boolean(),
   // 出席必須か
@@ -25,6 +23,6 @@ export const Member = z.object({
   // 登録済みのEmailアドレス
   mailAddress: z.string().email(),
   // 役割
-  roles: Role.array(),
+  roles: Role.optional(),
 });
 export type Member = z.infer<typeof Member>;
