@@ -21,7 +21,7 @@ const header: Record<keyof Session, string> = {
  * セッションIDを発行
  */
 function genSessionID() {
-  return SessionID.parse(crypto.randomUUID());
+  return SessionID.parse(Utilities.getUuid());
 }
 
 /**

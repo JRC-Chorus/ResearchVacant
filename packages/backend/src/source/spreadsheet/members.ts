@@ -18,7 +18,7 @@ const header: Record<keyof Member, string> = {
  * メンバーIDを発行
  */
 function genMemberID() {
-  return MemberID.parse(crypto.randomUUID());
+  return MemberID.parse(Utilities.getUuid());
 }
 
 /**
