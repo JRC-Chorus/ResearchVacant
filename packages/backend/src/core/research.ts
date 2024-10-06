@@ -2,13 +2,11 @@
  * 調査全体に関する処理を記述する
  */
 import dayjs from 'dayjs';
-import { MemberStatus } from 'backend/schema/app';
-import { RvDate } from 'backend/schema/db/common';
-import { MemberID } from 'backend/schema/db/member';
-import { SessionID } from 'backend/schema/db/session';
 import { updateSession } from 'backend/source/spreadsheet/session';
-import { sendRemindMail, sessionChecker, startSession } from './research/begin';
-import { sendJudgeCandidate } from './research/finish';
+import { sessionChecker } from './research/checker';
+import { sendJudgeCandidate } from './research/decideHoldingDate';
+import { sendRemindMail } from './research/remindResearch';
+import { startSession } from './research/startResearch';
 
 /**
  * この関数を毎日実行し，ステータスに応じた処理を実行する
@@ -51,29 +49,6 @@ export function researchManager() {
       // cleanUpBackData(session.id)
     }
   });
-}
-
-/**
- * フロントエンドからのアクセスがあったときに，当該アクセスに対するレスポンスを定義
- */
-export function accessManager(
-  sessionId: SessionID,
-  memberId: MemberID
-): MemberStatus {
-  // TODO: メンバーIDとセッションのステータスを参照して適切なメンバーステータスを返す関数を実装
-  return { status: 'invalidUser' };
-}
-
-/**
- * 開催日を決定する際に呼び出す関数
- *
- * 当該セッションのステータスを'judge' -> 'closed'とする
- */
-export function decideDates(sessionId: SessionID, dates: RvDate[]) {
-  // finish.tsのうち，必要な処理を呼び出す
-
-  // ステータスを更新
-  updateSession(sessionId, 'closed');
 }
 
 /** In Source Testing */

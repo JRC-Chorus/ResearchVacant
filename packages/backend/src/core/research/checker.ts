@@ -1,21 +1,12 @@
-/**
- * 調査を始めるための実装をする
- */
 import dayjs from 'dayjs';
 import { RvDate } from 'backend/schema/db/common';
 import { Config } from 'backend/schema/db/config';
-import { Session, SessionID } from 'backend/schema/db/session';
-import {
-  getAnsweredMemberIDs,
-  initAnsRecordSheet,
-} from 'backend/source/spreadsheet/ansRecord';
+import { Session } from 'backend/schema/db/session';
 import { getConfig } from 'backend/source/spreadsheet/config';
-import { getMembers } from 'backend/source/spreadsheet/members';
 import {
   getSessions,
   publishSession,
 } from 'backend/source/spreadsheet/session';
-import { getAnswerURL } from 'backend/source/urlParam';
 import { values } from 'backend/utils/obj/obj';
 
 /**
@@ -108,57 +99,6 @@ function getAnsEndDate(config: Config, startDate: dayjs.Dayjs): RvDate {
     maxRanges[config.researchFrequency]
   );
   return RvDate.parse(startDate.add(ansRange, 'day').format());
-}
-
-/**
- * 調査開始
- */
-export function startSession(sessionId: SessionID) {
-  // 回答記録用シートの作成，ステータスの更新等，必要なデータベースの整備を行う
-  initAnsRecordSheet(sessionId);
-
-  // 案内メールの送付
-  sendAnnounceMail(sessionId);
-}
-
-/**
- * 部員全員に案内メールを送信する
- */
-function sendAnnounceMail(sessionId: SessionID) {
-  const members = values(getMembers());
-  const config = getConfig();
-
-  members.forEach((m) =>
-    GmailApp.sendEmail(
-      m.mailAddress,
-      config.announceAnswerMailSubject,
-      `${config.announceAnswerMail}\n\n
-      【回答用サイトリンク】\n
-      ${getAnswerURL(sessionId, m.id)}`
-    )
-  );
-}
-
-/**
- * セッションを確認し，対象者にリマインドメールを送信する
- */
-export function sendRemindMail(sessionId: SessionID) {
-  const members = values(getMembers());
-  const answeredMembers = getAnsweredMemberIDs(sessionId);
-  const config = getConfig();
-
-  // 未回答のメンバーのみにリマンインドを送信
-  members
-    .filter((m) => !answeredMembers.some((ansMem) => ansMem === m.id))
-    .forEach((m) =>
-      GmailApp.sendEmail(
-        m.mailAddress,
-        config.remindMailSubject,
-        `${config.remindMail}\n\n
-      【回答用サイトリンク】\n
-      ${getAnswerURL(sessionId, m.id)}`
-      )
-    );
 }
 
 /** In Source Testing */

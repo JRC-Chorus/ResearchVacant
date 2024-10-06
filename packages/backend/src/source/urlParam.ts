@@ -52,16 +52,29 @@ export function encodeAccessID(sessionId: SessionID, memberId: MemberID) {
 
 /**
  * 取得したアクセスIDを元のデータに復元する
+ * 
+ * 復元できない場合はundefinedを返す
  */
 export function decodeAccessID(accessId: AccessID) {
   const srcTxt = Utilities.newBlob(
     Utilities.base64Decode(accessId)
   ).getDataAsString();
+
+  if (!srcTxt.includes(SEP_TEXT)) {
+    return undefined
+  }
+
   const splitTxts = srcTxt.split(SEP_TEXT);
-  return {
-    sessionId: SessionID.parse(splitTxts[0]),
-    memberId: MemberID.parse(splitTxts[1]),
-  };
+  const parsedSessionId = SessionID.safeParse(splitTxts[0])
+  const parsedMemberId = MemberID.safeParse(splitTxts[1])
+  if (parsedSessionId.success && parsedMemberId.success) {
+    return {
+      sessionId: parsedSessionId.data,
+      memberId: parsedMemberId.data,
+    };
+  }
+
+  return undefined
 }
 
 /**
