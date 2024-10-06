@@ -153,7 +153,7 @@ export function sendRemindMail(sessionId: SessionID) {
     .forEach((m) =>
       GmailApp.sendEmail(
         m.mailAddress,
-        config.remindMail,
+        config.remindMailSubject,
         `${config.remindMail}\n\n
       【回答用サイトリンク】\n
       ${getAnswerURL(sessionId, m.id)}`
