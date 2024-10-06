@@ -116,7 +116,7 @@ export function publishSession(
     startDate: startDate,
     remindDate: remindDate,
     endDate: endDate,
-    stats: 'ready',
+    status: 'ready',
     researchRangeStart: researchRangeStart,
     researchRangeEnd: researchRangeEnd,
   });
