@@ -19,7 +19,7 @@ const configShowingKey: { [key in keyof Config]: string } = {
   prohibitReans: '再回答を禁止するか',
   leastRestTime: '最終開催日から最低限開けるべき日数',
   mustAttendRoles: '必ず出席を求めるロール',
-  mustAttendOuterPlace: '外部会場の時には出席を求めるロール',
+  mustAttendOuterPlaceRoles: '外部会場の時には出席を求めるロール',
   announceAnswerMail:
     '各調査の一番最初に回答を依頼するために送信するメールの文面',
   announceAnswerMailSubject: '上記依頼メールの件名',

@@ -11,10 +11,10 @@ export const researchFrequencyEnum = ['week', 'month'] as const;
  */
 export const Config = z.object({
   /** 公開したWebappのURL */
-  webappUrl: z.string().url(),
+  webappUrl: z.string(),
 
   /** 通知したいチャンネルの Teams Webhook リンク */
-  teamsLink: z.string().url().optional().default(''),
+  teamsLink: z.string().optional().default(''),
 
   /** 問い合わせ調査の頻度（数値指定の場合は「N日おき」として解釈）*/
   researchFrequency: z.enum(researchFrequencyEnum).optional().default('month'),
@@ -45,13 +45,31 @@ export const Config = z.object({
   leastRestTime: z.number().optional().default(0),
 
   /** 開催日の承認を担当するロール */
-  approverRoles: z.string().array().optional().default(['']),
+  approverRoles: z
+    .preprocess(
+      (val) => (typeof val === 'string' ? [val] : val),
+      z.string().array()
+    )
+    .optional()
+    .default([]),
 
   /** 必ず出席を求めるロール */
-  mustAttendRoles: z.string().array().optional().default(['']),
+  mustAttendRoles: z
+    .preprocess(
+      (val) => (typeof val === 'string' ? [val] : val),
+      z.string().array()
+    )
+    .optional()
+    .default([]),
 
   /** 外部会場の時には出席を求めるロール */
-  mustAttendOuterPlace: z.string().array().optional().default(['']),
+  mustAttendOuterPlaceRoles: z
+    .preprocess(
+      (val) => (typeof val === 'string' ? [val] : val),
+      z.string().array()
+    )
+    .optional()
+    .default([]),
 
   /** 回答案内時のメール */
   announceAnswerMail: z
