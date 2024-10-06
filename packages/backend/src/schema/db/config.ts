@@ -1,15 +1,15 @@
 import { z } from 'zod';
 
-export const researchFrequencyEnum = ['week', 'month'] as const
+export const researchFrequencyEnum = ['week', 'month'] as const;
 export const Config = z.object({
+  /** 公開したWebappのURL */
+  webappUrl: z.string().url(),
+
   /** 通知したいチャンネルの Teams Webhook リンク */
   teamsLink: z.string().url().optional().default(''),
 
   /** 問い合わせ調査の頻度（数値指定の場合は「N日おき」として解釈）*/
-  researchFrequency: z
-    .enum(researchFrequencyEnum)
-    .optional()
-    .default('month'),
+  researchFrequency: z.enum(researchFrequencyEnum).optional().default('month'),
 
   /** 問い合わせ期間における開催回数*/
   researchPartyCount: z.number().min(1).optional().default(1),
@@ -19,7 +19,7 @@ export const Config = z.object({
 
   /**
    * 調査対象の期間は現在から何サイクル後とするか（「１」で次サイクルを対象とする）
-   * 
+   *
    * ex) freq: 'weekly', now: 1/5 (Wed.) -> targetRange: 1/10(Mon.) ~ 1/16(Sun.)
    */
   researchTargetCycle: z.number().min(1).optional().default(1),
@@ -44,6 +44,32 @@ export const Config = z.object({
 
   /** 外部会場の時には出席を求めるロール */
   mustAttendOuterPlace: z.string().array().optional().default(['']),
+
+  /** 回答案内時のメール */
+  announceAnswerMail: z
+    .string()
+    .optional()
+    .default('下記URLより日程調査の回答をお願いいたします．'),
+
+  /** リマインドメール */
+  remindMail: z
+    .string()
+    .optional()
+    .default(
+      '先日より実施中の日程調査の締め切りが間近です．\n下記URLよりご回答をお願いいたします．'
+    ),
+
+  /** 管理者への承認依頼メール */
+  requestApproveMail: z
+    .string()
+    .optional()
+    .default('日程調査が終了しました．開催日の決定をお願いいたします．'),
+
+  /** Teamsへの通知メッセージ */
+  announceDecidedDateNotice: z
+    .string()
+    .optional()
+    .default('開催日が決定しました．当日はお気をつけてご出席ください．'),
 
   // 将来的にはメールの内容もconfigから受け取る？
 });

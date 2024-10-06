@@ -3,13 +3,13 @@
  */
 import { z } from 'zod';
 import { Answer } from './db/answer';
-import { RvDate, RvDecidedDate } from './db/common';
+import { RvDecidedDate } from './db/common';
 
+export const AccessID = z.string().base64();
+export type AccessID = z.infer<typeof AccessID>;
 export const UrlParams = z.object({
-  /** 予定調査の範囲（開始） */
-  startDate: RvDate,
-  /** 予定調査の範囲（終了） */
-  endDate: RvDate,
+  /** アクセスID */
+  aId: AccessID,
 });
 export type UrlParams = z.infer<typeof UrlParams>;
 
