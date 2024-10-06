@@ -84,7 +84,7 @@ export function getSessions(
       cachedSessions = {};
     } else {
       const srcData = sheet
-        .getRange(2, 1, lastRow, keys(header).length)
+        .getRange(2, 1, lastRow - 1, keys(header).length)
         .getValues();
       const sessions = srcData.map((line) =>
         Session.parse(

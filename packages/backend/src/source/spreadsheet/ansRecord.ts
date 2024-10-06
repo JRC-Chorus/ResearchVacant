@@ -54,7 +54,7 @@ function getAnswers(
     } else {
       // 元データを取得
       const srcData = sheet
-        .getRange(2, 1, lastRow, keys(ansHeader).length)
+        .getRange(2, 1, lastRow - 1, keys(ansHeader).length)
         .getValues();
       // 日付一覧が何列目にあるか
       const ansDatesIdx = keys(ansHeader).findIndex((k) => k === 'ansDates');
