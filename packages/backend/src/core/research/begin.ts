@@ -5,12 +5,17 @@ import dayjs from 'dayjs';
 import { RvDate } from 'backend/schema/db/common';
 import { Config } from 'backend/schema/db/config';
 import { Session, SessionID } from 'backend/schema/db/session';
-import { initAnsRecordSheet } from 'backend/source/spreadsheet/ansRecord';
+import {
+  getAnsweredMemberIDs,
+  initAnsRecordSheet,
+} from 'backend/source/spreadsheet/ansRecord';
 import { getConfig } from 'backend/source/spreadsheet/config';
+import { getMembers } from 'backend/source/spreadsheet/members';
 import {
   getSessions,
   publishSession,
 } from 'backend/source/spreadsheet/session';
+import { getAnswerURL } from 'backend/source/urlParam';
 import { values } from 'backend/utils/obj/obj';
 
 /**
@@ -113,17 +118,48 @@ export function startSession(sessionId: SessionID) {
   initAnsRecordSheet(sessionId);
 
   // 案内メールの送付
+  sendAnnounceMail(sessionId);
 }
 
 /**
  * 部員全員に案内メールを送信する
  */
-function sendMail2Members() {}
+function sendAnnounceMail(sessionId: SessionID) {
+  const members = values(getMembers());
+  const config = getConfig();
+
+  members.forEach((m) =>
+    GmailApp.sendEmail(
+      m.mailAddress,
+      config.announceAnswerMailSubject,
+      `${config.announceAnswerMail}\n\n
+      【回答用サイトリンク】\n
+      ${getAnswerURL(sessionId, m.id)}`
+    )
+  );
+}
 
 /**
  * セッションを確認し，対象者にリマインドメールを送信する
  */
-export function sendRemindMail(sessionId: SessionID) {}
+export function sendRemindMail(sessionId: SessionID) {
+  const members = values(getMembers());
+  const answeredMembers = getAnsweredMemberIDs(sessionId);
+  const config = getConfig();
+
+  // 未回答のメンバーのみにリマンインドを送信
+  members
+    .filter((m) => !answeredMembers.some((ansMem) => ansMem === m.id))
+    .forEach((m) =>
+      GmailApp.sendEmail(
+        m.mailAddress,
+        config.remindMail,
+        `${config.remindMail}\n\n
+      【回答用サイトリンク】\n
+      ${getAnswerURL(sessionId, m.id)}`
+      )
+    );
+}
 
 /** In Source Testing */
 if (import.meta.vitest) {

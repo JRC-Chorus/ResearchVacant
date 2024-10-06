@@ -1,6 +1,14 @@
 import { z } from 'zod';
 
 export const researchFrequencyEnum = ['week', 'month'] as const;
+
+/**
+ * 本システムにおける設定項目一覧
+ *
+ * ## 項目の変更方法
+ * 1. 下記の型定義を編集し，Config変数が設定項目を持てるようにする
+ * 2. backend\src\source\spreadsheet\config.ts の「configShowingKey」でエラーが発生するため，スプレッドシートに表示する説明用の文章を追加する
+ */
 export const Config = z.object({
   /** 公開したWebappのURL */
   webappUrl: z.string().url(),
@@ -50,6 +58,11 @@ export const Config = z.object({
     .string()
     .optional()
     .default('下記URLより日程調査の回答をお願いいたします．'),
+  /** 回答案内時のメールの件名 */
+  announceAnswerMailSubject: z
+    .string()
+    .optional()
+    .default('【日程調査】回答のお願い'),
 
   /** リマインドメール */
   remindMail: z
@@ -58,12 +71,22 @@ export const Config = z.object({
     .default(
       '先日より実施中の日程調査の締め切りが間近です．\n下記URLよりご回答をお願いいたします．'
     ),
+  /** リマインドメールの件名 */
+  remindMailSubject: z
+    .string()
+    .optional()
+    .default('【日程調査】回答のお願い（リマインド）'),
 
   /** 管理者への承認依頼メール */
   requestApproveMail: z
     .string()
     .optional()
     .default('日程調査が終了しました．開催日の決定をお願いいたします．'),
+  /** 承認依頼のメールの件名 */
+  requestApproveMailSubject: z
+    .string()
+    .optional()
+    .default('【日程調査】開催日の承認依頼'),
 
   /** Teamsへの通知メッセージ */
   announceDecidedDateNotice: z

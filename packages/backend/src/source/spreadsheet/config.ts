@@ -6,6 +6,7 @@ import { getSheet } from './common';
 const CONFIG_SHEET_NAME = '設定';
 
 const configShowingKey: { [key in keyof Config]: string } = {
+  webappUrl: '公開中のアプリのリンク（必須）',
   teamsLink: '通知したいチャンネルの Teams Webhook リンク',
   researchFrequency: `調査の頻度（${researchFrequencyEnum.join(' / ')}）`,
   answerRange: '調査に対する回答が可能な日数',
@@ -19,6 +20,15 @@ const configShowingKey: { [key in keyof Config]: string } = {
   leastRestTime: '最終開催日から最低限開けるべき日数',
   mustAttendRoles: '必ず出席を求めるロール',
   mustAttendOuterPlace: '外部会場の時には出席を求めるロール',
+  announceAnswerMail:
+    '各調査の一番最初に回答を依頼するために送信するメールの文面',
+  announceAnswerMailSubject: '上記依頼メールの件名',
+  remindMail: '依頼済みの調査のリマインドメールの文面',
+  remindMailSubject: '上記リマインドメールの文面',
+  requestApproveMail:
+    '管理者に調査結果を通知し，開催日承認を依頼するメールの文面',
+  requestApproveMailSubject: '上記承認メールの文面',
+  announceDecidedDateNotice: '決定した開催日をTeamsで通知する際のTeamsの文面',
 };
 
 let configCache: Config | undefined;

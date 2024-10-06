@@ -84,6 +84,13 @@ function getAnswers(
 }
 
 /**
+ * 回答済みのメンバーID一覧
+ */
+export function getAnsweredMemberIDs(sessionId: SessionID) {
+  return keys(getAnswers(sessionId));
+}
+
+/**
  * 回答結果のサマリを提示
  *
  * 回答の生データは返さない（フロントエンドにデータ処理を行わせない）
