@@ -32,9 +32,10 @@
         }
         ```
 6. `clasp login`でJRC-Chorusのアカウント（一般ユーザーはSpreadSheetを作成したアカウント）にログインする
+   - この時，一般ユーザーはGASを外部から操作できるように，[Google App Script API](https://script.google.com/home/usersettings)を有効にしておく必要がある
 7. （一般ユーザーの場合：`yarn push`によってプログラムコードをSpreadSheet付属のGASにアップロード）
 8. （一般ユーザーの場合：Apps Scriptの画面にある「デプロイ」からコードをデプロイする）
-9. （一般ユーザーの場合：`./package.json`の中の`clasp:deploy`のデプロイIDを上記デプロイ時のIDに更新する）
+9.  （一般ユーザーの場合：`./package.json`の中の`clasp:deploy`のデプロイIDを上記デプロイ時のIDに更新する）
 10. `yarn open`でデプロイ済みの本ソフトを開く
 
 ### 参考記事
