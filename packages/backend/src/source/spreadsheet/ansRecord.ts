@@ -171,7 +171,7 @@ function writeAnswers(
   );
   const sheet = getSheet(sessionId);
   sheet
-    .getRange(2, 1, writeData.length + 1, headerKeys.length)
+    .getRange(2, 1, writeData.length, headerKeys.length)
     .setValues(writeData);
 }
 

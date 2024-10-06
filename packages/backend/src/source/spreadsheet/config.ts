@@ -54,7 +54,7 @@ export function initConfigSheet(clearAllData: boolean = false) {
     }
   });
 
-  sheet.getRange(1, 1, writeData.length, 2).setValues(writeData);
+  sheet.getRange(1, 1, writeData.length, 1).setValues(writeData);
 }
 
 /**
