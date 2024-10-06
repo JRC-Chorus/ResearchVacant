@@ -46,15 +46,17 @@ const SEP_TEXT = ':';
  * ※アクセスIDにすることでURLを短くし，メンバーIDを推定しにくくさせる
  */
 export function encodeAccessID(sessionId: SessionID, memberId: MemberID) {
-  const encodeTxt = `${sessionId}${SEP_TEXT}${memberId}`;
-  return Buffer.from(encodeTxt, 'binary').toString('base64');
+  const encodeTxt = Utilities.newBlob(`${sessionId}${SEP_TEXT}${memberId}`);
+  return Utilities.base64Encode(encodeTxt.getBytes());
 }
 
 /**
  * 取得したアクセスIDを元のデータに復元する
  */
 export function decodeAccessID(accessId: AccessID) {
-  const srcTxt = Buffer.from(accessId, 'base64').toString('binary');
+  const srcTxt = Utilities.newBlob(
+    Utilities.base64Decode(accessId)
+  ).getDataAsString();
   const splitTxts = srcTxt.split(SEP_TEXT);
   return {
     sessionId: SessionID.parse(splitTxts[0]),
