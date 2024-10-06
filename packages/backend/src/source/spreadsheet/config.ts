@@ -20,14 +20,14 @@ const configShowingKey: { [key in keyof Config]: string } = {
   leastRestTime: '最終開催日から最低限開けるべき日数',
   mustAttendRoles: '必ず出席を求めるロール',
   mustAttendOuterPlaceRoles: '外部会場の時には出席を求めるロール',
+  announceAnswerMailSubject: '下記依頼メールの件名',
   announceAnswerMail:
     '各調査の一番最初に回答を依頼するために送信するメールの文面',
-  announceAnswerMailSubject: '上記依頼メールの件名',
+  remindMailSubject: '下記リマインドメールの文面',
   remindMail: '依頼済みの調査のリマインドメールの文面',
-  remindMailSubject: '上記リマインドメールの文面',
+  requestApproveMailSubject: '下記承認メールの文面',
   requestApproveMail:
     '管理者に調査結果を通知し，開催日承認を依頼するメールの文面',
-  requestApproveMailSubject: '上記承認メールの文面',
   announceDecidedDateNotice: '決定した開催日をTeamsで通知する際のTeamsの文面',
 };
 
