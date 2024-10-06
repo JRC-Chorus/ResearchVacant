@@ -19,7 +19,7 @@ export function researchManager() {
 
   sessions.forEach((session) => {
     // 新規でセッションを開始（'ready' -> 'opening'）
-    // if(今日の日付＜セッションの開始日＆ステータス＝'ready')
+    // if(今日の日付＞セッションの開始日＆ステータス＝'ready')
     if (
       dayjs().diff(session.startDate, 'day') >= 0 &&
       session.status === 'ready'
@@ -28,10 +28,10 @@ export function researchManager() {
       updateSession(session.id, 'opening');
     }
     // リマインドの送付（'opening' -> 'opening'）
-    // if(リマインドの閾値＞セッションの終了日ー今日の日付＆ステータス＝'opening')
+    // if(今日の日付＞リマインド予定日＆ステータス＝'opening')
     else if (
       session.remindDate &&
-      dayjs().diff(session.endDate, 'day') >= -session.remindDate &&
+      dayjs().diff(session.remindDate, 'day') >= 0 &&
       session.status === 'opening'
     ) {
       sendRemindMail(session.id);
