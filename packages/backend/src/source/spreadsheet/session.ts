@@ -4,7 +4,7 @@ import { fromEntries, keys, toEntries, values } from 'backend/utils/obj/obj';
 import { getSheet } from './common';
 
 const SESSION_SHEET_NAME = 'セッション一覧';
-let cachedSessions: Session[] | undefined;
+let cachedSessions: Record<SessionID, Session> | undefined;
 
 // db source
 const header: Record<keyof Session, string> = {
@@ -32,8 +32,8 @@ function genSessionID() {
  * cf) ここではすべてのデータを毎回書き換える実装としているが，書き換えのサーバー処理より通信の方が実行時間は支配的になると考えてこのままにしている．
  * 遅延が目立つ場合には，書き込むデータをアップデートしたいデータのみに絞る実装に変更．
  */
-function writeSessions(sessions?: Session[]) {
-  if (!sessions) {
+function writeSessions(sessions?: Record<SessionID, Session>) {
+  if (sessions) {
     cachedSessions = sessions;
   }
   if (!cachedSessions) {
@@ -45,10 +45,12 @@ function writeSessions(sessions?: Session[]) {
 
   // write new data
   const headerKeys = keys(header);
-  const writeData = cachedSessions.map((s) => headerKeys.map((k) => s[k]));
+  const writeData = values(cachedSessions).map((s) =>
+    headerKeys.map((k) => s[k])
+  );
   const sheet = getSheet(SESSION_SHEET_NAME);
   sheet
-    .getRange(2, 1, cachedSessions.length + 1, headerKeys.length)
+    .getRange(2, 1, writeData.length + 1, headerKeys.length)
     .setValues(writeData);
 }
 
@@ -71,20 +73,25 @@ export function initSessionSheet(clearAllData: boolean = false) {
 /**
  * セッションの一覧を取得
  */
-export function getSessions(loadForce: boolean = false): Session[] {
+export function getSessions(
+  loadForce: boolean = false
+): Record<SessionID, Session> {
   if (!cachedSessions || loadForce) {
     const sheet = getSheet(SESSION_SHEET_NAME);
 
     const lastRow = sheet.getLastRow();
     if (lastRow < 2) {
-      cachedSessions = [];
+      cachedSessions = {};
     } else {
-      const srcData = sheet.getRange(2, 1, lastRow, 6).getValues();
-      cachedSessions = srcData.map((line) =>
+      const srcData = sheet
+        .getRange(2, 1, lastRow, keys(header).length)
+        .getValues();
+      const sessions = srcData.map((line) =>
         Session.parse(
           fromEntries(toEntries(header).map(([k, v], idx) => [k, line[idx]]))
         )
       );
+      cachedSessions = fromEntries(sessions.map((s) => [s.id, s]));
     }
   }
 
@@ -116,7 +123,7 @@ export function publishSession(
 
   // 書き込み
   const sessions = getSessions();
-  sessions.push(writeSession);
+  sessions[writeSession.id] = writeSession;
   writeSessions(sessions);
 
   return writeSession;
@@ -128,17 +135,13 @@ export function publishSession(
 export function updateSession(sessionId: SessionID, status: SessionStatus) {
   const sessions = getSessions();
 
-  // get all session ids
-  const idKeys: SessionID[] = sessions.map((s) => s.id);
-
-  // search target Data
-  const targetRowIdx = idKeys.indexOf(sessionId);
-  if (targetRowIdx === -1) {
+  // check session exists
+  if (!keys(sessions).some((id) => id === sessionId)) {
     throw new Error('Could not update unkown session');
   }
 
   // update sessions
-  sessions[targetRowIdx].status = status;
+  sessions[sessionId].status = status;
   writeSessions(sessions);
 }
 
@@ -148,12 +151,8 @@ export function updateSession(sessionId: SessionID, status: SessionStatus) {
 export function deleteSession(sessionId: SessionID) {
   // get all session ids
   const sessions = getSessions();
-  const idKeys: SessionID[] = sessions.map((s) => s.id);
-
-  // search target Data
-  const targetRowIdx = idKeys.indexOf(sessionId);
+  delete sessions[sessionId];
 
   // delete Session
-  sessions.splice(targetRowIdx, 1);
   writeSessions(sessions);
 }

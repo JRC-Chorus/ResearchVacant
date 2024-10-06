@@ -10,6 +10,7 @@ import {
   getSessions,
   publishSession,
 } from 'backend/source/spreadsheet/session';
+import { values } from 'backend/utils/obj/obj';
 
 /**
  * セッションの一覧を取得し，本日の日付に対して必要なセッションの発行を行う
@@ -18,7 +19,7 @@ import {
  */
 export function sessionChecker(): Session[] {
   const config = getConfig();
-  const sessions = getSessions();
+  const sessions = values(getSessions());
 
   // 存在しているはずの開始日
   const startDate = dayjs();
@@ -36,7 +37,7 @@ export function sessionChecker(): Session[] {
   }
 
   // publishしたセッションを追加済みの最新のリストを返す
-  return getSessions();
+  return values(getSessions());
 }
 
 /**
