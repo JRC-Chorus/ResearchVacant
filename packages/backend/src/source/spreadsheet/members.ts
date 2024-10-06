@@ -79,13 +79,19 @@ export function getMembers(loadForce: boolean = false) {
       // MemberID一覧が何列目にあるか
       const memberidIdx = keys(header).findIndex((k) => k === 'id');
       // メンバー一覧に整形
-      const members = srcData.map((line) =>
+      const members = srcData.map((line, rowIdx) =>
         Member.parse(
           fromEntries(
             toEntries(header).map(([k, v], idx) => {
               // MmeberIDのみ特殊処理
               if (idx === memberidIdx) {
                 const memberId = line[idx] === '' ? genMemberID() : line[idx];
+                // MemberIDがないときはDBに書き込む
+                if (line[idx] === '') {
+                  sheet
+                    .getRange(rowIdx + 2, memberidIdx + 1)
+                    .setValue(memberId);
+                }
                 return [k, memberId];
               }
               // roles（データベースの一番最後）も特殊処理
