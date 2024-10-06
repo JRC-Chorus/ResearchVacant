@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 import { RvDate } from 'backend/schema/db/common';
 import { Config } from 'backend/schema/db/config';
 import { Session, SessionID } from 'backend/schema/db/session';
+import { initAnsRecordSheet } from 'backend/source/spreadsheet/ansRecord';
 import { getConfig } from 'backend/source/spreadsheet/config';
 import {
   getSessions,
@@ -109,6 +110,8 @@ function getAnsEndDate(config: Config, startDate: dayjs.Dayjs): RvDate {
  */
 export function startSession(sessionId: SessionID) {
   // 回答記録用シートの作成，ステータスの更新等，必要なデータベースの整備を行う
+  initAnsRecordSheet(sessionId);
+
   // 案内メールの送付
 }
 
@@ -125,7 +128,7 @@ export function sendRemindMail(sessionId: SessionID) {}
 /** In Source Testing */
 if (import.meta.vitest) {
   const { describe, test, expect } = import.meta.vitest;
-  
+
   describe('beginResearch', async () => {
     const { getDefaults } = await import('backend/schema/defaultVals');
     const { deepcopy } = await import('backend/utils/deepcopy');
