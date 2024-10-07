@@ -6,7 +6,7 @@ import {
   getAnsweredMemberIDs,
   getAnswerSummary,
   registAnswer,
-} from 'backend/source/spreadsheet/ansRecord';
+} from 'backend/source/spreadsheet/answers';
 import { getMembers } from 'backend/source/spreadsheet/members';
 import { getSessions, updateSession } from 'backend/source/spreadsheet/session';
 import { getRecievedIds, isMember } from './access/checker';

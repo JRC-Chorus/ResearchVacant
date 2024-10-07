@@ -1,5 +1,5 @@
 import { SessionID } from 'backend/schema/db/session';
-import { getAnsweredMemberIDs } from 'backend/source/spreadsheet/ansRecord';
+import { getAnsweredMemberIDs } from 'backend/source/spreadsheet/answers';
 import { getConfig } from 'backend/source/spreadsheet/config';
 import { getMembers } from 'backend/source/spreadsheet/members';
 import { getAnswerURL } from 'backend/source/urlParam';
