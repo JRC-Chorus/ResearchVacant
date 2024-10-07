@@ -1,7 +1,10 @@
 import { MemberID } from 'backend/schema/db/member';
+import { SessionID } from 'backend/schema/db/session';
 import { getMembers } from 'backend/source/spreadsheet/members';
 import { decodeAccessID, getUrlParams } from 'backend/source/urlParam';
 import { keys } from 'backend/utils/obj/obj';
+
+let cachedIds: { sessionId: SessionID; memberId: MemberID } | undefined;
 
 /**
  * 有効な接続か確認
@@ -9,12 +12,16 @@ import { keys } from 'backend/utils/obj/obj';
  * 無効な場合はundefinedを返す
  */
 export function getRecievedIds() {
-  const urlParams = getUrlParams();
-  if (urlParams === void 0) {
-    return undefined;
+  if (!cachedIds) {
+    const urlParams = getUrlParams();
+    if (urlParams === void 0) {
+      return undefined;
+    }
+
+    cachedIds = decodeAccessID(urlParams.aId);
   }
 
-  return decodeAccessID(urlParams.aId);
+  return cachedIds;
 }
 
 /**
