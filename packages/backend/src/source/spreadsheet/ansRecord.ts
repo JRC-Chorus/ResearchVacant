@@ -177,8 +177,6 @@ function writeAnswers(
 
 /**
  * 回答を登録 / 更新
- *
- * @returns 回答の登録 / 更新が正常に完了したか否かを示す
  */
 export function registAnswer(sessionId: SessionID, record: Answer) {
   // update cache

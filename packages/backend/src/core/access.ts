@@ -1,11 +1,13 @@
 import { MemberStatus } from 'backend/schema/app';
-import { AnsDate } from 'backend/schema/db/answer';
+import { AnsDate, Answer } from 'backend/schema/db/answer';
 import { RvDate } from 'backend/schema/db/common';
 import { SessionID } from 'backend/schema/db/session';
 import {
   getAnsweredMemberIDs,
   getAnswerSummary,
+  registAnswer,
 } from 'backend/source/spreadsheet/ansRecord';
+import { getMembers } from 'backend/source/spreadsheet/members';
 import { getSessions, updateSession } from 'backend/source/spreadsheet/session';
 import { getRecievedIds, isMember } from './access/checker';
 
@@ -63,7 +65,25 @@ export function accessManager(): MemberStatus {
 /**
  * フロントエンドで記入した回答を提出する
  */
-export function submitAnswers(ans: AnsDate[], freeTxt: string) {}
+export function submitAnswers(ans: AnsDate[], freeTxt: string) {
+  // Check and Get some data
+  const ids = getRecievedIds();
+  const members = getMembers();
+  if (ids === void 0) {
+    throw new Error('Invalid user is accessed');
+  }
+
+  // Regist answer
+  const answer: Answer = {
+    ansDates: ans,
+    userId: ids.memberId,
+    userName: `${members[ids.memberId].firstName} ${
+      members[ids.memberId].lastName
+    }`,
+    freeText: freeTxt,
+  };
+  registAnswer(ids.sessionId, answer);
+}
 
 /**
  * 開催日を決定した際にフロントエンドから呼び出す関数
