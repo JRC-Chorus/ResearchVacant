@@ -16,7 +16,7 @@ jobs:
             **/*.{ts,tsx,js,jsx,json,vue}
       - uses: actions/setup-node@v3 #nodeをインストール & キャッシュを取得
         with:
-          node-version: 18
+          node-version: 20
           cache: 'yarn'
       - name: Run Prettier # prettier自体を実行
         run: |
