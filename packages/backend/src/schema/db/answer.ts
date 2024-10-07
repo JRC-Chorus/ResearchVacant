@@ -21,7 +21,7 @@ export const Answer = z.object({
   /** 回答内容 */
   ansDates: AnsDate.array(),
   /** 自由記述 */
-  freeText: z.string().optional(),
+  freeText: z.string(),
 });
 export type Answer = z.infer<typeof Answer>;
 
