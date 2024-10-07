@@ -95,7 +95,7 @@ export function getAnsweredMemberIDs(sessionId: SessionID) {
  *
  * 回答の生データは返さない（フロントエンドにデータ処理を行わせない）
  */
-export function getRecordSummary(sessionId: SessionID): AnswerSummary {
+export function getAnswerSummary(sessionId: SessionID): AnswerSummary {
   const answers = values(getAnswers(sessionId));
 
   const returnSummary: AnswerSummary = {

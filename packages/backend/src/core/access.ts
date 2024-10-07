@@ -2,7 +2,11 @@ import { MemberStatus } from 'backend/schema/app';
 import { AnsDate } from 'backend/schema/db/answer';
 import { RvDate } from 'backend/schema/db/common';
 import { SessionID } from 'backend/schema/db/session';
-import { updateSession } from 'backend/source/spreadsheet/session';
+import {
+  getAnsweredMemberIDs,
+  getAnswerSummary,
+} from 'backend/source/spreadsheet/ansRecord';
+import { getSessions, updateSession } from 'backend/source/spreadsheet/session';
 import { getRecievedIds, isMember } from './access/checker';
 
 /**
@@ -14,8 +18,46 @@ export function accessManager(): MemberStatus {
     return { status: 'invalidUser' };
   }
 
-  // TODO: メンバーIDとセッションのステータスを参照して適切なメンバーステータスを返す関数を実装
-  return { status: 'invalidUser' };
+  const answerIds = getAnsweredMemberIDs(ids.sessionId);
+  const summary = getAnswerSummary(ids.sessionId);
+  const sessionStatus = getSessions()[ids.sessionId].status;
+  // const targetRecord = getRecord()[ids.sessionId]
+
+  if (sessionStatus === 'ready') {
+    return {
+      status: 'beforeOpening',
+    };
+  } else if (
+    !answerIds.some((id) => id === ids.memberId) &&
+    sessionStatus === 'opening'
+  ) {
+    return {
+      status: 'noAns',
+      summary: summary,
+    };
+  } else if (sessionStatus === 'opening') {
+    return {
+      status: 'alreadyAns',
+      summary: summary,
+    };
+  } else if (sessionStatus === 'judge') {
+    return {
+      status: 'managerJudge',
+      summary: summary,
+    };
+  } else if (sessionStatus === 'closed') {
+    return {
+      status: 'finished',
+      summary: summary,
+      // TODO: 決定日を追記する
+      decidedDates: [],
+    };
+  }
+
+  // 上記以外の状態のアクセスは存在しないが，エラーハンドリングとして無効なユーザーを返す
+  return {
+    status: 'invalidUser',
+  };
 }
 
 /**
