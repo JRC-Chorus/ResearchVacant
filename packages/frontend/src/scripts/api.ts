@@ -1,16 +1,16 @@
 /**
  * URLパラメーターとして渡された情報を取得する
  */
-export function getUrlParams() {
-  if (google === void 0) {
-    return {
-      startDate: new Date(),
-      endDate: new Date(),
-    };
-  }
+// export function getUrlParams() {
+//   if (google === void 0) {
+//     return {
+//       startDate: new Date(),
+//       endDate: new Date(),
+//     };
+//   }
 
-  return google.script.run.getParams();
-}
+//   return google.script.run.getParams();
+// }
 
 /**
  * 回答した日付をバックエンドに送信し，データベースへの登録を待機する

@@ -16,7 +16,8 @@
     "clasp:push": "clasp push -f",
     "clasp:deploy": "clasp deploy -i AKfycbz3sPuwSQkW9nyaLXpTfZ9GzMZGaE_9CHUTEo_rjpbkz11WyTtFbMN7k-j8s_q1NpI4Eg",
     "dev": "yarn workspace @projects/frontend dev",
-    "open": "clasp open --webapp"
+    "open": "clasp open --webapp",
+    "test": "vitest"
   },
   "volta": {
     "node": "20.17.0",

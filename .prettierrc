@@ -9,6 +9,7 @@
     "^(vue-i18n/(.*)$)|^(vue-i18n$)",
     "^(quasar/(.*)$)|^(quasar$)",
     "<THIRD_PARTY_MODULES>",
+    "^(backend/*(.*))$",
     "^[./]"
   ],
   "importOrderSeparation": false,
