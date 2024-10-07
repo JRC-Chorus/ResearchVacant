@@ -27,5 +27,4 @@ export function notify4Teams() {
   // teams.send()
 }
 
-
 // TODO: 候補日の絞り方に関するテストを記述する
