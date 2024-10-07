@@ -1,4 +1,3 @@
-
 export interface FrontAPI {
   /** フロントエンドを描画 */
   doGet: (e: any) => GoogleAppsScript.HTML.HtmlOutput;

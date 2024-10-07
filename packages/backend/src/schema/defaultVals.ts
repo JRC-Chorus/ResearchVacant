@@ -1,5 +1,5 @@
-import { fromEntries, toEntries } from 'backend/utils/obj/obj';
 import { z } from 'zod';
+import { fromEntries, toEntries } from 'backend/utils/obj/obj';
 
 /**
  * Zodで定義された型定義のオブジェクトにおけるデフォルト値を取得する

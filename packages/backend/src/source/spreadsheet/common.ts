@@ -9,7 +9,7 @@ export function getSheet(sheetName: string, createNewSheet: boolean = false) {
 
   if (sheet === null) {
     if (createNewSheet) {
-      sheet = book.insertSheet(sheetName)
+      sheet = book.insertSheet(sheetName);
     } else {
       throw new Error('NOT_FOUND_SPREADSHEET');
     }

@@ -14,9 +14,7 @@ export default defineConfig({
       // target is only backend files
       include: ['**/backend/**'],
       // removed no test files
-      exclude: [
-        '**/schema/**'
-      ],
+      exclude: ['**/schema/**'],
       // set limit ratio
       // thresholds: {
       //   lines: 60,

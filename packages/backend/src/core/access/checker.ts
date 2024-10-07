@@ -5,16 +5,16 @@ import { keys } from 'backend/utils/obj/obj';
 
 /**
  * 有効な接続か確認
- * 
+ *
  * 無効な場合はundefinedを返す
  */
 export function getRecievedIds() {
-  const urlParams = getUrlParams()
+  const urlParams = getUrlParams();
   if (urlParams === void 0) {
-    return undefined
+    return undefined;
   }
-  
-  return decodeAccessID(urlParams.aId)
+
+  return decodeAccessID(urlParams.aId);
 }
 
 /**

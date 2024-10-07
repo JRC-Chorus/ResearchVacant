@@ -3,7 +3,7 @@ import { RvDate } from './common';
 import { MemberID } from './member';
 
 export const AnsStatus = ['OK', 'Pending', 'NG'] as const;
-export type AnsStatus = (typeof AnsStatus)[number]
+export type AnsStatus = (typeof AnsStatus)[number];
 
 export const AnsDate = z.object({
   /** 回答された日付 */
