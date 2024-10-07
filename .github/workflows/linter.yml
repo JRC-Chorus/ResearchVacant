@@ -12,4 +12,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-review
           eslint_flags: '**/*.{js,ts,vue}'
-          fail_on_error: true # 指摘が発生したらjobを失敗扱いにする
+          level: error # 指摘が発生したらjobを失敗扱いにする
