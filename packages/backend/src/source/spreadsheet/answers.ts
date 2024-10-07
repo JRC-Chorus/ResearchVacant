@@ -167,7 +167,14 @@ function writeAnswers(
   // write new data
   const headerKeys = keys(ansHeader);
   const writeData = values(cachedAnswers).map((s) =>
-    headerKeys.map((k) => s[k])
+    // 日付はオブジェクト状態でデータベースに格納するため，文字列化して書き込む
+    headerKeys.map((k) => {
+      if (k === 'ansDates') {
+        return JSON.stringify(s[k])
+      } else {
+        return s[k]
+      }
+    })
   );
   const sheet = getSheet(sessionId);
   sheet
