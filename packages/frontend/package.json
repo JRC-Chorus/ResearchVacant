@@ -1,5 +1,5 @@
 {
-  "name": "@projects/frontend",
+  "name": "@research-vacant/frontend",
   "version": "0.0.1",
   "description": "ResearchVacant's website",
   "productName": "ResearchVacant",
@@ -10,7 +10,6 @@
     "build": "quasar build && xcopy /ye .\\dist\\spa ..\\..\\dist\\"
   },
   "dependencies": {
-    "@projects/common": "*",
     "@quasar/extras": "^1.16.4",
     "pinia": "^2.0.11",
     "quasar": "^2.16.0",
