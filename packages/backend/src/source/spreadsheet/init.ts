@@ -1,4 +1,5 @@
 import { initConfigSheet } from './config';
+import { initRecordsSheet } from './decideRecord';
 import { initMemberSheet } from './members';
 import { initSessionSheet } from './session';
 
@@ -9,4 +10,5 @@ export function initSheet() {
   initMemberSheet();
   initConfigSheet();
   initSessionSheet();
+  initRecordsSheet();
 }

@@ -2,8 +2,8 @@
  * フロントエンドとの通信に関連のある型定義をおく
  */
 import { z } from 'zod';
-import { AnswerSummary } from './db/answer';
-import { RvDecidedDate } from './db/common';
+import { AnswerSummary, SummaryAnswers } from './db/answer';
+import { RvDate } from './db/common';
 
 export const AccessID = z.string().base64();
 export type AccessID = z.infer<typeof AccessID>;
@@ -13,12 +13,19 @@ export const UrlParams = z.object({
 });
 export type UrlParams = z.infer<typeof UrlParams>;
 
+export const PartyDate = z.object({
+  date: RvDate,
+  pos: z.string().optional(),
+  ans: SummaryAnswers,
+});
+export type PartyDate = z.infer<typeof PartyDate>;
+
 // アクセスしたメンバーのステータスを返す
 // 当該セッションは終了済み
 const MSFinished = z.object({
   status: z.enum(['finished']),
   summary: AnswerSummary,
-  decidedDates: RvDecidedDate.array(),
+  partyDates: PartyDate.array(),
 });
 type MSFinished = z.infer<typeof MSFinished>;
 // 当該セッションに回答済み（回答の変更が可能な期間）

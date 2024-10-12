@@ -1,12 +1,16 @@
 import { MemberStatus } from 'backend/schema/app';
 import { AnsDate, Answer } from 'backend/schema/db/answer';
-import { RvDate } from 'backend/schema/db/common';
+import { PartyInfo } from 'backend/schema/db/records';
 import { SessionID } from 'backend/schema/db/session';
 import {
   getAnsweredMemberIDs,
   getAnswerSummary,
   registAnswer,
 } from 'backend/source/spreadsheet/answers';
+import {
+  getPartys,
+  registPartyDate,
+} from 'backend/source/spreadsheet/decideRecord';
 import { getMembers } from 'backend/source/spreadsheet/members';
 import { getSessions, updateSession } from 'backend/source/spreadsheet/session';
 import { getRecievedIds, isMember } from './access/checker';
@@ -23,7 +27,6 @@ export function accessManager(): MemberStatus {
   const answerIds = getAnsweredMemberIDs(ids.sessionId);
   const summary = getAnswerSummary(ids.sessionId);
   const sessionStatus = getSessions()[ids.sessionId].status;
-  // const targetRecord = getRecord()[ids.sessionId]
 
   if (sessionStatus === 'ready') {
     return {
@@ -48,11 +51,17 @@ export function accessManager(): MemberStatus {
       summary: summary,
     };
   } else if (sessionStatus === 'closed') {
+    const targetRecord = getPartys()[ids.sessionId];
     return {
       status: 'finished',
       summary: summary,
-      // TODO: 決定日を追記する
-      decidedDates: [],
+      partyDates: targetRecord.infos.map((info) => {
+        return {
+          date: info.date,
+          pos: info.pos,
+          ans: summary.ansDates.find((d) => d.date === info.date)?.ans ?? [],
+        };
+      }),
     };
   }
 
@@ -90,8 +99,11 @@ export function submitAnswers(ans: AnsDate[], freeTxt: string) {
  *
  * 当該セッションのステータスを'judge' -> 'closed'とする
  */
-export function decideDates(sessionId: SessionID, dates: RvDate[]) {
-  // finish.tsのうち，必要な処理を呼び出す
+export function decideDates(sessionId: SessionID, infos: PartyInfo[]) {
+  // 開催日を登録
+  registPartyDate(sessionId, infos);
+
+  // TODO: 決定を通知（Teams？）
 
   // ステータスを更新
   updateSession(sessionId, 'closed');

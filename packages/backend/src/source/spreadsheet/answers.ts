@@ -133,7 +133,7 @@ export function getAnswerSummary(sessionId: SessionID): AnswerSummary {
     const ans = toEntries(ansStatus).map(([status, names]) => {
       return {
         status: status,
-        ansPersonCount: names.length,
+        ansPersonNames: names,
       };
     });
     return { date, ans };
@@ -170,9 +170,9 @@ function writeAnswers(
     // 日付はオブジェクト状態でデータベースに格納するため，文字列化して書き込む
     headerKeys.map((k) => {
       if (k === 'ansDates') {
-        return JSON.stringify(s[k])
+        return JSON.stringify(s[k]);
       } else {
-        return s[k]
+        return s[k];
       }
     })
   );
