@@ -1,0 +1,8 @@
+{
+  "name": "@research-vacant/mock",
+  "version": "0.0.1",
+  "description": "ResearchVacant's mock system",
+  "productName": "ResearchVacant",
+  "author": "JRC-Chorus <jrc.chorus@gmail.com>",
+  "main": "index.ts"
+}
