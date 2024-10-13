@@ -8,6 +8,7 @@ import { SpreadsheetApp as SpreadsheetAppInstance } from './SpreadsheetApp';
 import type HttpRequestType from './types/HttpRequest';
 import UrlFetchAppClass from './UrlFetchApp';
 import { UserClass } from './User';
+import { UtilitiesClass } from './Utilities';
 
 export const CacheService = CacheServiceClass;
 export const Logger = LoggerClass;
@@ -18,4 +19,5 @@ export const ScriptApp = ScriptAppClass;
 export const SpreadsheetApp = SpreadsheetAppInstance;
 export const UrlFetchApp = UrlFetchAppClass;
 export const User = UserClass;
+export const Utilities = UtilitiesClass;
 export type HttpRequest = HttpRequestType;
