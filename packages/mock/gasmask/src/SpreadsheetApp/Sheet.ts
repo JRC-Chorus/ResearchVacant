@@ -47,7 +47,8 @@ export class SheetClass implements GoogleAppsScript.Spreadsheet.Sheet {
     throw new Error('Method not implemented.');
   }
   clear(options?: unknown): GoogleAppsScript.Spreadsheet.Sheet {
-    throw new Error('Method not implemented.');
+    this.rows = [];
+    return this;
   }
   clearConditionalFormatRules(): void {
     throw new Error('Method not implemented.');
