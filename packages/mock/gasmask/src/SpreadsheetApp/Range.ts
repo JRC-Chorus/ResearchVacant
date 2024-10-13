@@ -28,13 +28,7 @@ export class RangeClass implements GoogleAppsScript.Spreadsheet.Range {
     this.criteria = criteria;
 
     if (criteria.a1) {
-      this.rangeComputed = {
-        row: 0,
-        col: 0,
-        numRows: 0,
-        numColumns: 0,
-      };
-      this.rangeValues = getValuesFromA1Notation(this.values, criteria.a1);
+      [this.rangeValues, this.rangeComputed] = getValuesFromA1Notation(this.values, criteria.a1);
       return;
     } else {
       this.rangeComputed = {
@@ -674,7 +668,7 @@ export class RangeClass implements GoogleAppsScript.Spreadsheet.Range {
     // Update Sheet
     if (this.__sheet && values) {
       for (let row = 0; row < values.length; row++) {
-        const rowValues = this.__sheet.rows[rc.row+ row];
+        const rowValues = this.__sheet.rows[rc.row + row];
         const newValues = values[row];
 
         // Range length check... (GAS does this too)
@@ -684,7 +678,7 @@ export class RangeClass implements GoogleAppsScript.Spreadsheet.Range {
           );
         }
 
-        this.__sheet.rows[rc.row+ row] = newValues;
+        this.__sheet.rows[rc.row + row] = newValues;
       }
       this.rangeValues = getValuesWithCriteria(this.values, this.rangeComputed);
     }
@@ -785,7 +779,10 @@ function letterToColumn(letter: string) {
 /**
  * @link https://stackoverflow.com/a/58545538
  */
-function getValuesFromA1Notation(values: any[][], textRange: string): any[][] {
+function getValuesFromA1Notation(
+  values: any[][],
+  textRange: string
+): [any[][], RangeComputed] {
   let startRow: number, startCol: number, endRow: number, endCol: number;
   let range = textRange.split(':');
   let ret = cellToRoWCol(range[0]);
@@ -823,7 +820,7 @@ function getValuesFromA1Notation(values: any[][], textRange: string): any[][] {
       });
   }
 
-  return values.slice(startRow, endRow + 1).map(function (i: any[]) {
+  return [values.slice(startRow, endRow + 1).map(function (i: any[]) {
     if (i.length < endCol + 1) {
       const numCols = endCol + 1 - startCol;
       // Not enough cols in our data?
@@ -834,7 +831,12 @@ function getValuesFromA1Notation(values: any[][], textRange: string): any[][] {
         });
     }
     return i.slice(startCol, endCol + 1);
-  });
+  }), {
+    row: startRow,
+    col: startCol,
+    numRows: endRow - startRow + 1,
+    numColumns: endCol - startCol + 1
+  }];
 }
 
 function cellToRoWCol(cell: string): [number, number] {
