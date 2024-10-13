@@ -46,8 +46,7 @@ const SEP_TEXT = ':';
  * ※アクセスIDにすることでURLを短くし，メンバーIDを推定しにくくさせる
  */
 export function encodeAccessID(sessionId: SessionID, memberId: MemberID) {
-  const encodeTxt = Utilities.newBlob(`${sessionId}${SEP_TEXT}${memberId}`);
-  return Utilities.base64Encode(encodeTxt.getBytes());
+  return Utilities.base64Encode(`${sessionId}${SEP_TEXT}${memberId}`);
 }
 
 /**
@@ -89,4 +88,23 @@ export function getAnswerURL(sessionId: SessionID, memberId: MemberID) {
   return `${config.webappUrl}?${toEntries(tmpParams)
     .map(([k, v]) => `${k}=${v}`)
     .join('&')}`;
+}
+
+/** In Source Testing */
+if (import.meta.vitest) {
+  const { test, expect } = import.meta.vitest;
+
+  test('decodeAccessID', async () => {
+    const { Utilities } = await import('@research-vacant/mock');
+    global.Utilities = new Utilities();
+
+    const aid =
+      'ZjBhNjA1ODgtOWU2MS00YjUzLWJlYzAtYjFkYWVkZDlkZDlhOmZmODM1Zjc5LTlhZjItNGIxNy1hZWNmLWM1NTQ1ZDM2NGYxZA==';
+    const sessionId = 'f0a60588-9e61-4b53-bec0-b1daedd9dd9a';
+    const memberId = 'ff835f79-9af2-4b17-aecf-c5545d364f1d';
+    const result = decodeAccessID(aid);
+
+    expect(result?.sessionId).toBe(sessionId);
+    expect(result?.memberId).toBe(memberId);
+  });
 }
