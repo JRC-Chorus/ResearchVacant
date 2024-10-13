@@ -112,3 +112,15 @@ export function getMembers(loadForce: boolean = false) {
 
   return cachedMembers;
 }
+
+/**
+ * メンバーを登録（テスト用）
+ */
+export function imitateRegistMember(data: Record<keyof Member, string>) {
+  const writeData = [keys(header).map(k => data[k])]
+
+  const sheet = getSheet(MEMBERS_SHEET_NAME);
+  sheet
+    .getRange(2, 1, 1, writeData[0].length)
+    .setValues(writeData);
+}

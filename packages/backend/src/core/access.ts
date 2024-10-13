@@ -112,3 +112,62 @@ export function decideDates(sessionId: SessionID, infos: PartyInfo[]) {
   // ステータスを更新
   updateSession(sessionId, 'closed');
 }
+
+/** In Source Testing */
+if (import.meta.vitest) {
+  const { describe, test, expect } = import.meta.vitest;
+  describe('accessManager', async () => {
+    // mocks
+    const { SpreadsheetApp, Utilities } = await import('@research-vacant/mock');
+    global.SpreadsheetApp = new SpreadsheetApp();
+    global.Utilities = new Utilities();
+
+    // initialize
+    const { migrateEnv } = await import('./migrate');
+    migrateEnv();
+
+    // sample member
+    const { imitateRegistMember } = await import(
+      'backend/source/spreadsheet/members'
+    );
+    imitateRegistMember({
+      id: '',
+      firstName: 'サンプル',
+      lastName: '太郎',
+      mailAddress: 'sample@email.com',
+      roles: '',
+    });
+
+    // get sample member's data
+    const { values } = await import('backend/utils/obj/obj');
+    const sampleMember = values(getMembers())[0];
+
+    // start sample session
+    // launch new session
+    const { sessionChecker } = await import('./research/checker');
+    const sampleSession = sessionChecker()[0];
+    // ready to get answer
+    const { initAnsRecordSheet } = await import(
+      'backend/source/spreadsheet/answers'
+    );
+    initAnsRecordSheet(sampleSession.id);
+
+    // valid AccessID
+    const { encodeAccessID } = await import('backend/source/urlParam');
+    const accessId = encodeAccessID(sampleSession.id, sampleMember.id);
+
+    test('invalid AccessID', () => {
+      const memberStatus = accessManager({
+        aId: 'INVALID ACCESS-ID',
+      });
+      expect(memberStatus.status).toBe('invalidUser');
+    });
+
+    test('not answer yet', () => {
+      const memberStatus = accessManager({
+        aId: accessId,
+      });
+      expect(memberStatus.status).toBe('noAns');
+    });
+  });
+}
