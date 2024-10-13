@@ -9,7 +9,7 @@ export interface FrontAPI {
   researchManager: () => void;
 
   /** フロントエンドからのアクセスに対するレスポンスを定義 */
-  accessManager(): MemberStatus;
+  accessManager: (params: Record<string, string>) => MemberStatus;
 
   /** SpreadSheetからサンプルデータを取得 */
   getSampleData: () => any[][];

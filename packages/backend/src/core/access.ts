@@ -13,13 +13,13 @@ import {
 } from 'backend/source/spreadsheet/decideRecord';
 import { getMembers } from 'backend/source/spreadsheet/members';
 import { getSessions, updateSession } from 'backend/source/spreadsheet/session';
-import { getRecievedIds, isMember } from './access/checker';
+import { isMember, parseRecievedIds } from './access/checker';
 
 /**
  * フロントエンドからのアクセスがあったときに，当該アクセスに対するレスポンスを定義
  */
-export function accessManager(): MemberStatus {
-  const ids = getRecievedIds();
+export function accessManager(params: Record<string, string>): MemberStatus {
+  const ids = parseRecievedIds(params);
   if (ids === void 0 || !isMember(ids.memberId)) {
     return { status: 'invalidUser' };
   }
@@ -74,9 +74,13 @@ export function accessManager(): MemberStatus {
 /**
  * フロントエンドで記入した回答を提出する
  */
-export function submitAnswers(ans: AnsDate[], freeTxt: string) {
+export function submitAnswers(
+  params: Record<string, string>,
+  ans: AnsDate[],
+  freeTxt: string
+) {
   // Check and Get some data
-  const ids = getRecievedIds();
+  const ids = parseRecievedIds(params);
   const members = getMembers();
   if (ids === void 0) {
     throw new Error('Invalid user is accessed');

@@ -11,9 +11,9 @@ let cachedIds: { sessionId: SessionID; memberId: MemberID } | undefined;
  *
  * 無効な場合はundefinedを返す
  */
-export function getRecievedIds() {
+export function parseRecievedIds(params: Record<string, string>) {
   if (!cachedIds) {
-    const urlParams = getUrlParams();
+    const urlParams = getUrlParams(params);
     if (urlParams === void 0) {
       return undefined;
     }
