@@ -28,7 +28,10 @@ export class RangeClass implements GoogleAppsScript.Spreadsheet.Range {
     this.criteria = criteria;
 
     if (criteria.a1) {
-      [this.rangeValues, this.rangeComputed] = getValuesFromA1Notation(this.values, criteria.a1);
+      [this.rangeValues, this.rangeComputed] = getValuesFromA1Notation(
+        this.values,
+        criteria.a1
+      );
       return;
     } else {
       this.rangeComputed = {
@@ -766,10 +769,10 @@ function getValuesWithCriteria(values: any[], c: RangeComputed): any[] {
 }
 
 function letterToColumn(letter: string) {
-  let column = 0,
-    length = letter.length;
+  let column = 0;
+  const length = letter.length;
 
-  for (var i = 0; i < length; i++) {
+  for (let i = 0; i < length; i++) {
     column += (letter.charCodeAt(i) - 64) * Math.pow(26, length - i - 1);
   }
 
@@ -784,7 +787,7 @@ function getValuesFromA1Notation(
   textRange: string
 ): [any[][], RangeComputed] {
   let startRow: number, startCol: number, endRow: number, endCol: number;
-  let range = textRange.split(':');
+  const range = textRange.split(':');
   let ret = cellToRoWCol(range[0]);
   startRow = ret[0];
   startCol = ret[1];
@@ -820,23 +823,26 @@ function getValuesFromA1Notation(
       });
   }
 
-  return [values.slice(startRow, endRow + 1).map(function (i: any[]) {
-    if (i.length < endCol + 1) {
-      const numCols = endCol + 1 - startCol;
-      // Not enough cols in our data?
-      i = new Array(numCols <= 0 ? endCol : numCols)
-        .fill('')
-        .map((emptyValue, index) => {
-          return i[index] || emptyValue;
-        });
-    }
-    return i.slice(startCol, endCol + 1);
-  }), {
-    row: startRow,
-    col: startCol,
-    numRows: endRow - startRow + 1,
-    numColumns: endCol - startCol + 1
-  }];
+  return [
+    values.slice(startRow, endRow + 1).map(function (i: any[]) {
+      if (i.length < endCol + 1) {
+        const numCols = endCol + 1 - startCol;
+        // Not enough cols in our data?
+        i = new Array(numCols <= 0 ? endCol : numCols)
+          .fill('')
+          .map((emptyValue, index) => {
+            return i[index] || emptyValue;
+          });
+      }
+      return i.slice(startCol, endCol + 1);
+    }),
+    {
+      row: startRow,
+      col: startCol,
+      numRows: endRow - startRow + 1,
+      numColumns: endCol - startCol + 1,
+    },
+  ];
 }
 
 function cellToRoWCol(cell: string): [number, number] {

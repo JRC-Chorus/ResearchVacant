@@ -519,10 +519,10 @@ export class SheetClass implements GoogleAppsScript.Spreadsheet.Sheet {
   }
 
   getSheetValues(
-    startRow: Number,
-    startColumn: Number,
-    numRows: Number,
-    numColumns: Number
+    startRow: number,
+    startColumn: number,
+    numRows: number,
+    numColumns: number
   ) {
     return this.getRange(
       startRow,

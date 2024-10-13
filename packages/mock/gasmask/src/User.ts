@@ -5,7 +5,7 @@ export class UserClass implements GoogleAppsScript.Base.User {
     this.email = email;
   }
   getUserLoginId(): string {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
 
   getEmail() {
