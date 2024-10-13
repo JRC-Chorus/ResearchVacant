@@ -1,16 +1,15 @@
-import DataValidationBuilderClass from './SpreadsheetApp/DataValidationBuilder';
-import RangeClass from './SpreadsheetApp/Range';
-import SheetClass from './SpreadsheetApp/Sheet';
-import SpreadsheetClass from './SpreadsheetApp/Spreadsheet';
-
-let activeSpreadsheet = new SpreadsheetClass();
+import { RangeClass } from './SpreadsheetApp/Range';
+import { SheetClass } from './SpreadsheetApp/Sheet';
+import { SpreadsheetClass } from './SpreadsheetApp/Spreadsheet';
 
 /**
  * Main SpreadsheetApp class
  */
-export class SpreadsheetAppClass
+class SpreadsheetAppClass
   implements GoogleAppsScript.Spreadsheet.SpreadsheetApp
 {
+  activeSpreadsheet = new SpreadsheetClass();
+
   AutoFillSeries!: typeof GoogleAppsScript.Spreadsheet.AutoFillSeries;
   BandingTheme!: typeof GoogleAppsScript.Spreadsheet.BandingTheme;
   BooleanCriteria!: typeof GoogleAppsScript.Spreadsheet.BooleanCriteria;
@@ -40,11 +39,13 @@ export class SpreadsheetAppClass
   ValueType!: typeof GoogleAppsScript.Spreadsheet.ValueType;
   WrapStrategy!: typeof GoogleAppsScript.Spreadsheet.WrapStrategy;
   create(
-    name: unknown,
-    rows?: unknown,
-    columns?: unknown
+    name: string,
+    rows?: number,
+    columns?: number
   ): GoogleAppsScript.Spreadsheet.Spreadsheet {
-    throw new Error('Method not implemented.');
+    this.activeSpreadsheet = new SpreadsheetClass(name, rows, columns);
+
+    return this.activeSpreadsheet;
   }
   enableAllDataSourcesExecution(): void {
     throw new Error('Method not implemented.');
@@ -65,10 +66,10 @@ export class SpreadsheetAppClass
     throw new Error('Method not implemented.');
   }
   getActiveSheet(): GoogleAppsScript.Spreadsheet.Sheet {
-    throw new Error('Method not implemented.');
+    return this.activeSpreadsheet.getActiveSheet();
   }
   getActiveSpreadsheet(): GoogleAppsScript.Spreadsheet.Spreadsheet {
-    return activeSpreadsheet as GoogleAppsScript.Spreadsheet.Spreadsheet;
+    return this.activeSpreadsheet;
   }
   getCurrentCell(): GoogleAppsScript.Spreadsheet.Range {
     throw new Error('Method not implemented.');
@@ -140,29 +141,23 @@ export class SpreadsheetAppClass
   ): GoogleAppsScript.Spreadsheet.Range {
     throw new Error('Method not implemented.');
   }
-  static getActiveSpreadsheet(): SpreadsheetClass {
-    return activeSpreadsheet;
-  }
-
-  static getActiveSheet(): SheetClass {
-    return activeSpreadsheet.getActiveSheet();
-  }
-
-  static create(name: string, rows?: number, cols?: number): SpreadsheetClass {
-    activeSpreadsheet = new SpreadsheetClass(name, rows, cols);
-
-    return activeSpreadsheet;
-  }
-
-  static newDataValidation(): DataValidationBuilderClass {
-    return new DataValidationBuilderClass();
-  }
 
   static flush() {}
 }
 
-export const DataValidationBuilder = DataValidationBuilderClass;
 export const SpreadsheetApp = SpreadsheetAppClass;
 export const Spreadsheet = SpreadsheetClass;
 export const Sheet = SheetClass;
 export const Range = RangeClass;
+
+/** In Source Testing */
+if (import.meta.vitest) {
+  const { expect, describe, it } = import.meta.vitest;
+
+  describe('SpreadsheetApp', () => {
+    it('should return a Spreadsheet instance when calling getActiveSpreadsheet()', () => {
+      const ssApp = new SpreadsheetAppClass();
+      expect(ssApp.getActiveSpreadsheet()).toBeInstanceOf(SpreadsheetClass);
+    });
+  });
+}
