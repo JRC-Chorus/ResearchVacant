@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import {
   AnsDate,
   AnsStatus,
@@ -6,7 +7,7 @@ import {
 } from 'backend/schema/db/answer';
 import { RvDate } from 'backend/schema/db/common';
 import { MemberID } from 'backend/schema/db/member';
-import { SessionID } from 'backend/schema/db/session';
+import { Session, SessionID } from 'backend/schema/db/session';
 import { fromEntries, keys, toEntries, values } from 'backend/utils/obj/obj';
 import { getSheet } from './common';
 
@@ -95,18 +96,22 @@ export function getAnsweredMemberIDs(sessionId: SessionID) {
  *
  * 回答の生データは返さない（フロントエンドにデータ処理を行わせない）
  */
-export function getAnswerSummary(sessionId: SessionID): AnswerSummary {
-  const answers = values(getAnswers(sessionId));
+export function getAnswerSummary(session: Session): AnswerSummary {
+  const answers = values(getAnswers(session.id));
 
   const returnSummary: AnswerSummary = {
     ansDates: [],
     freeTxts: [],
   };
 
-  // 適当なユーザーの回答がある日付で初期化
+  // 初期化
   const tmpAnsDates: Record<RvDate, Record<AnsStatus, string[]>> = fromEntries(
-    answers[0].ansDates.map((ans) => [
-      ans.date,
+    [...Array(dayjs(session.endDate).diff(session.startDate, 'day'))].map((_, idx) => [
+      RvDate.parse(
+        dayjs(session.startDate)
+          .add(idx, 'day')
+          .format()
+      ),
       fromEntries(AnsStatus.map((status) => [status, []])),
     ])
   );
@@ -114,7 +119,7 @@ export function getAnswerSummary(sessionId: SessionID): AnswerSummary {
   answers.forEach((userAns) => {
     // 日付の回答者を登録
     userAns.ansDates.forEach((ans) => {
-      if (ans.date in keys(tmpAnsDates)) {
+      if (keys(tmpAnsDates).some(d => d === ans.date)) {
         tmpAnsDates[ans.date][ans.ans].push(userAns.userName);
       }
     });
