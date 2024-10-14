@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { MemberStatus } from 'backend/schema/app';
 import { AnsDate, Answer } from 'backend/schema/db/answer';
 import { PartyInfo } from 'backend/schema/db/records';
@@ -25,32 +26,32 @@ export function accessManager(params: Record<string, string>): MemberStatus {
   }
 
   const answerIds = getAnsweredMemberIDs(ids.sessionId);
-  const summary = getAnswerSummary(ids.sessionId);
-  const sessionStatus = getSessions()[ids.sessionId].status;
+  const session = getSessions()[ids.sessionId];
+  const summary = getAnswerSummary(session);
 
-  if (sessionStatus === 'ready') {
+  if (session.status === 'ready') {
     return {
       status: 'beforeOpening',
     };
   } else if (
     !answerIds.some((id) => id === ids.memberId) &&
-    sessionStatus === 'opening'
+    session.status === 'opening'
   ) {
     return {
       status: 'noAns',
       summary: summary,
     };
-  } else if (sessionStatus === 'opening') {
+  } else if (session.status === 'opening') {
     return {
       status: 'alreadyAns',
       summary: summary,
     };
-  } else if (sessionStatus === 'judge') {
+  } else if (session.status === 'judge') {
     return {
       status: 'managerJudge',
       summary: summary,
     };
-  } else if (sessionStatus === 'closed') {
+  } else if (session.status === 'closed') {
     const targetRecord = getPartys()[ids.sessionId];
     return {
       status: 'finished',
@@ -151,6 +152,8 @@ if (import.meta.vitest) {
       'backend/source/spreadsheet/answers'
     );
     initAnsRecordSheet(sampleSession.id);
+    // open session
+    updateSession(sampleSession.id, 'opening');
 
     // valid AccessID
     const { encodeAccessID } = await import('backend/source/urlParam');
@@ -169,5 +172,70 @@ if (import.meta.vitest) {
       });
       expect(memberStatus.status).toBe('noAns');
     });
+
+    // create answer
+    const { RvDate } = await import('backend/schema/db/common');
+    const _ans1 = ['OK', 'NG', 'OK'] as const;
+    const _ans2 = ['NG', 'NG', 'OK'] as const;
+    const genSampleAns: (ans: typeof _ans1 | typeof _ans2) => AnsDate[] = (
+      ans
+    ) =>
+      [
+        ...Array(
+          dayjs(sampleSession.endDate).diff(sampleSession.startDate, 'day')
+        ),
+      ].map((_, idx) => {
+        return {
+          date: RvDate.parse(
+            dayjs(sampleSession.startDate).add(idx, 'day').format()
+          ),
+          ans: ans[idx],
+        };
+      });
+    const sampleAnswerTxt = 'Dummy free text';
+
+    test('regist answer', () => {
+      submitAnswers({ aId: accessId }, genSampleAns(_ans1), sampleAnswerTxt);
+
+      const memberStatus = accessManager({
+        aId: accessId,
+      });
+      expect(memberStatus.status).toBe('alreadyAns');
+    });
+
+    test('answer again', () => {
+      // 変更前
+      const memberStatus = accessManager({
+        aId: accessId,
+      });
+      expect(memberStatus.status).toBe('alreadyAns');
+      if ('summary' in memberStatus) {
+        expect(memberStatus.summary.ansDates.length).toBe(3);
+        expect(memberStatus.summary.ansDates[0].ans[0]).toMatchObject({
+          ansPersonNames: ['サンプル 太郎'],
+          status: 'OK',
+        });
+      }
+
+      // 回答を変更
+      submitAnswers({ aId: accessId }, genSampleAns(_ans2), sampleAnswerTxt);
+      const memberStatus2 = accessManager({
+        aId: accessId,
+      });
+      expect(memberStatus2.status).toBe('alreadyAns');
+      if ('summary' in memberStatus2) {
+        expect(memberStatus2.summary.ansDates.length).toBe(3);
+        expect(memberStatus2.summary.ansDates[0].ans[2]).toMatchObject({
+          ansPersonNames: ['サンプル 太郎'],
+          status: 'NG',
+        });
+      }
+    });
+
+    // TODO: テストを実装
+    test('after closing session (Judging)', () => {});
+
+    // TODO: テストを実装
+    test('after closing session (Decided holding date)', () => {});
   });
 }
