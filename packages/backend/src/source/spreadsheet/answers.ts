@@ -106,20 +106,18 @@ export function getAnswerSummary(session: Session): AnswerSummary {
 
   // 初期化
   const tmpAnsDates: Record<RvDate, Record<AnsStatus, string[]>> = fromEntries(
-    [...Array(dayjs(session.endDate).diff(session.startDate, 'day'))].map((_, idx) => [
-      RvDate.parse(
-        dayjs(session.startDate)
-          .add(idx, 'day')
-          .format()
-      ),
-      fromEntries(AnsStatus.map((status) => [status, []])),
-    ])
+    [...Array(dayjs(session.endDate).diff(session.startDate, 'day'))].map(
+      (_, idx) => [
+        RvDate.parse(dayjs(session.startDate).add(idx, 'day').format()),
+        fromEntries(AnsStatus.map((status) => [status, []])),
+      ]
+    )
   );
   // 回答を登録
   answers.forEach((userAns) => {
     // 日付の回答者を登録
     userAns.ansDates.forEach((ans) => {
-      if (keys(tmpAnsDates).some(d => d === ans.date)) {
+      if (keys(tmpAnsDates).some((d) => d === ans.date)) {
         tmpAnsDates[ans.date][ans.ans].push(userAns.userName);
       }
     });

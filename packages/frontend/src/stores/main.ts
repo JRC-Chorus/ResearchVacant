@@ -1,7 +1,7 @@
+import { isHoliday } from 'japanese-holidays';
 import { defineStore } from 'pinia';
 import { MemberStatus } from '../../../backend/src/schema/app';
 import { AnsDate } from '../../../backend/src/schema/db/answer';
-import { isHoliday } from 'japanese-holidays';
 
 type ErrorData = {
   title: string;
@@ -21,7 +21,10 @@ export const useMainStore = defineStore('mainStore', {
         const tmpStatus = this.getAccessStatus();
         if (tmpStatus && 'summary' in tmpStatus) {
           this.__answer = tmpStatus.summary.ansDates.map((d) => {
-            return { date: d.date, ans: isHoliday(new Date(d.date)) ? 'NG' : 'OK' };
+            return {
+              date: d.date,
+              ans: isHoliday(new Date(d.date)) ? 'NG' : 'OK',
+            };
           });
         }
       }
@@ -40,8 +43,8 @@ export const useMainStore = defineStore('mainStore', {
           });
         } else {
           this.__memberStatus = {
-            status: 'invalidUser'
-          }
+            status: 'invalidUser',
+          };
         }
       }
 
@@ -53,11 +56,11 @@ export const useMainStore = defineStore('mainStore', {
 /** In Source Testing */
 if (import.meta.vitest) {
   const { test, expect } = import.meta.vitest;
-  test('holiday checker',() => {
-    const naturalDay = new Date('2024-10-8')
-    const holiday = new Date('2024-10-14')
+  test('holiday checker', () => {
+    const naturalDay = new Date('2024-10-8');
+    const holiday = new Date('2024-10-14');
 
-    expect(!!isHoliday(naturalDay)).toBe(false)
-    expect(!!isHoliday(holiday)).toBe(true)
-  })
+    expect(!!isHoliday(naturalDay)).toBe(false);
+    expect(!!isHoliday(holiday)).toBe(true);
+  });
 }

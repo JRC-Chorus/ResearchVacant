@@ -1,9 +1,12 @@
-import type StringDict from './types/StringDict';
-import type HttpRequest from './types/HttpRequest';
 import HttpResponse from './HttpResponse';
+import type HttpRequest from './types/HttpRequest';
+import type StringDict from './types/StringDict';
 
 export default class UrlFetchApp {
-  static fetch(url: string, params: StringDict | HttpRequest = {}): HttpResponse {
+  static fetch(
+    url: string,
+    params: StringDict | HttpRequest = {}
+  ): HttpResponse {
     throw new Error(
       'Fetch not implemented. Mock/stub this with jest.spyOn(), sinon.stub(), or similar.'
     );

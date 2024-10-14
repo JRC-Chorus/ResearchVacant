@@ -2,9 +2,9 @@ import Properties from './Properties';
 
 // Setup properties so they remian constant to scope
 const _properties = {
-  'documentProperties': new Properties(),
-  'scriptProperties': new Properties(),
-  'userProperties': new Properties(),
+  documentProperties: new Properties(),
+  scriptProperties: new Properties(),
+  userProperties: new Properties(),
 };
 
 /**
@@ -24,4 +24,3 @@ export default class PropertiesService {
     return _properties['userProperties'];
   }
 }
-

@@ -2,10 +2,7 @@
   "extends": "@quasar/app-vite/tsconfig-preset",
   "compilerOptions": {
     "baseUrl": ".",
-    "types": [
-      "vitest/importMeta",
-      "@types/google-apps-script"
-    ]
+    "types": ["vitest/importMeta", "@types/google-apps-script"]
   },
   "exclude": [
     "./dist",

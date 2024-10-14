@@ -43,19 +43,19 @@ export class UtilitiesClass implements GoogleAppsScript.Utilities.Utilities {
         throw new Error('Method not implemented.');
       case this.DigestAlgorithm.MD5:
         returnTxt = CryptoJS.MD5(targetTxt).toString();
-        break
+        break;
       case this.DigestAlgorithm.SHA_1:
         returnTxt = CryptoJS.SHA1(targetTxt).toString();
-        break
+        break;
       case this.DigestAlgorithm.SHA_256:
         returnTxt = CryptoJS.SHA256(targetTxt).toString();
-        break
+        break;
       case this.DigestAlgorithm.SHA_384:
         returnTxt = CryptoJS.SHA384(targetTxt).toString();
-        break
+        break;
       case this.DigestAlgorithm.SHA_512:
         returnTxt = CryptoJS.SHA512(targetTxt).toString();
-        break
+        break;
       default:
         throw new Error('Method not implemented.');
     }

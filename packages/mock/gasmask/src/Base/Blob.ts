@@ -47,6 +47,6 @@ export class BlobClass implements GoogleAppsScript.Base.Blob {
     throw new Error('Method not implemented.');
   }
   getBlob(): GoogleAppsScript.Base.Blob {
-    return this
+    return this;
   }
 }

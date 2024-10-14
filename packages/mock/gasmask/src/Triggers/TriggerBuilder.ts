@@ -1,7 +1,7 @@
-import ClockTriggerBuilder from './ClockTriggerBuilder';
 import type Trigger from '../Trigger';
+import ClockTriggerBuilder from './ClockTriggerBuilder';
 
-export type OnCreateTrigger = (trigger: Trigger) => void
+export type OnCreateTrigger = (trigger: Trigger) => void;
 
 /**
  * TriggerBuilder
@@ -30,6 +30,9 @@ export default class TriggerBuilder {
    * Creates and returns a ClockTriggerBuilder for building time-based triggers.
    */
   timeBased(): ClockTriggerBuilder {
-    return new ClockTriggerBuilder(this._triggerFunction, this._onCreateTrigger);
+    return new ClockTriggerBuilder(
+      this._triggerFunction,
+      this._onCreateTrigger
+    );
   }
 }

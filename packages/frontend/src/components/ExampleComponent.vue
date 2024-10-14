@@ -24,14 +24,14 @@ const todoCount = computed(() => props.todos.length);
 const sampleResult = ref();
 
 onMounted(() => {
-  google?.script.url.getLocation(location => {
+  google?.script.url.getLocation((location) => {
     console.log('### test ###');
-    console.log(location.parameter)
+    console.log(location.parameter);
     google?.script.run
       .withSuccessHandler((val) => test(val))
       .withFailureHandler((err) => console.log(err))
       .accessManager(location.parameter);
-  })
+  });
 });
 function test(val: any[][]) {
   console.log(val);

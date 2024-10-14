@@ -8,7 +8,10 @@ export default class ClockTriggerBuilder {
   protected _functionName: string;
   protected _onCreateTrigger?: (trigger: Trigger) => void;
 
-  constructor(functionName: string, onCreateTrigger?: (trigger: Trigger) => void) {
+  constructor(
+    functionName: string,
+    onCreateTrigger?: (trigger: Trigger) => void
+  ) {
     this._functionName = functionName;
     this._onCreateTrigger = onCreateTrigger;
   }
@@ -64,7 +67,7 @@ export default class ClockTriggerBuilder {
    * Specifies to run the trigger every n days.
    * @param n
    */
-  everyDays(n: number): ClockTriggerBuilder	{
+  everyDays(n: number): ClockTriggerBuilder {
     return this;
   }
 
@@ -120,8 +123,7 @@ export default class ClockTriggerBuilder {
    * Specifies the day of the week that the trigger runs.
    * @param day
    */
-  onWeekDay(day:number): ClockTriggerBuilder {
+  onWeekDay(day: number): ClockTriggerBuilder {
     return this;
   }
 }
-

@@ -38,7 +38,9 @@ export default class Trigger {
   }
 
   getTriggerSourceId(): string | null {
-    return this._triggerSource === EventType.CLOCK ? null : 'gasmask_mock_' + this._id;
+    return this._triggerSource === EventType.CLOCK
+      ? null
+      : 'gasmask_mock_' + this._id;
   }
 
   getUniqueId(): string {
