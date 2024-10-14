@@ -1,0 +1,23 @@
+import CacheServiceClass from './CacheService';
+import HttpResponseClass from './HttpResponse';
+import LoggerClass from './Logger';
+import PropertiesServiceClass from './PropertiesService';
+import ScriptAppClass from './ScriptApp';
+import SessionClass from './Session';
+import { SpreadsheetApp as SpreadsheetAppInstance } from './SpreadsheetApp';
+import type HttpRequestType from './types/HttpRequest';
+import UrlFetchAppClass from './UrlFetchApp';
+import { UserClass } from './User';
+import { UtilitiesClass } from './Utilities';
+
+export const CacheService = CacheServiceClass;
+export const Logger = LoggerClass;
+export const HttpResponse = HttpResponseClass;
+export const PropertiesService = PropertiesServiceClass;
+export const Session = SessionClass;
+export const ScriptApp = ScriptAppClass;
+export const SpreadsheetApp = SpreadsheetAppInstance;
+export const UrlFetchApp = UrlFetchAppClass;
+export const User = UserClass;
+export const Utilities = UtilitiesClass;
+export type HttpRequest = HttpRequestType;

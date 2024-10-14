@@ -21,25 +21,26 @@ export const Answer = z.object({
   /** 回答内容 */
   ansDates: AnsDate.array(),
   /** 自由記述 */
-  freeText: z.string().optional(),
+  freeText: z.string(),
 });
 export type Answer = z.infer<typeof Answer>;
+
+export const SummaryAnswers = z
+  .object({
+    /** 回答の種別 */
+    status: z.enum(AnsStatus),
+    /** 回答者氏名一覧 */
+    ansPersonNames: z.string().array(),
+  })
+  .array()
+  .length(AnsStatus.length);
+export type SummaryAnswers = z.infer<typeof SummaryAnswers>;
 
 export const AnsSummaryDate = z.object({
   /** サマリがあらわす日付 */
   date: RvDate,
   /** 当該日における各種別の回答 */
-  ans: z
-    .object({
-      /** 回答の種別 */
-      status: z.enum(AnsStatus),
-      /** 回答人数 */
-      ansPersonCount: z.number(),
-      /** 回答者氏名一覧 */
-      // ansPersonNames: z.string().array(),
-    })
-    .array()
-    .length(AnsStatus.length),
+  ans: SummaryAnswers,
 });
 export type AnsSummaryDate = z.infer<typeof AnsSummaryDate>;
 

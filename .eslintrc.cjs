@@ -80,11 +80,10 @@ module.exports = {
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-namespace': 'off',
-    '@typescript-eslint/no-unused-vars': 'off',
 
     // The core 'no-unused-vars' rules (in the eslint:recommended ruleset)
     // does not work with type definitions
-    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': 'off',
 
     // allow debugger during development only
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'

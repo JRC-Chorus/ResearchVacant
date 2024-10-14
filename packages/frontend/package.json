@@ -1,5 +1,5 @@
 {
-  "name": "@projects/frontend",
+  "name": "@research-vacant/frontend",
   "version": "0.0.1",
   "description": "ResearchVacant's website",
   "productName": "ResearchVacant",
@@ -10,8 +10,8 @@
     "build": "quasar build && xcopy /ye .\\dist\\spa ..\\..\\dist\\"
   },
   "dependencies": {
-    "@projects/common": "*",
     "@quasar/extras": "^1.16.4",
+    "japanese-holidays": "^1.0.10",
     "pinia": "^2.0.11",
     "quasar": "^2.16.0",
     "vue": "^3.4.18",
@@ -20,6 +20,7 @@
   "devDependencies": {
     "@quasar/app-vite": "^1.9.0",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "@types/japanese-holidays": "^1.0.3",
     "@types/node": "^20.14.8",
     "@typescript-eslint/eslint-plugin": "^7.16.0",
     "@typescript-eslint/parser": "^7.16.0",

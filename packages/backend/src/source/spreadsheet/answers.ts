@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import {
   AnsDate,
   AnsStatus,
@@ -6,7 +7,7 @@ import {
 } from 'backend/schema/db/answer';
 import { RvDate } from 'backend/schema/db/common';
 import { MemberID } from 'backend/schema/db/member';
-import { SessionID } from 'backend/schema/db/session';
+import { Session, SessionID } from 'backend/schema/db/session';
 import { fromEntries, keys, toEntries, values } from 'backend/utils/obj/obj';
 import { getSheet } from './common';
 
@@ -95,26 +96,28 @@ export function getAnsweredMemberIDs(sessionId: SessionID) {
  *
  * 回答の生データは返さない（フロントエンドにデータ処理を行わせない）
  */
-export function getRecordSummary(sessionId: SessionID): AnswerSummary {
-  const answers = values(getAnswers(sessionId));
+export function getAnswerSummary(session: Session): AnswerSummary {
+  const answers = values(getAnswers(session.id));
 
   const returnSummary: AnswerSummary = {
     ansDates: [],
     freeTxts: [],
   };
 
-  // 適当なユーザーの回答がある日付で初期化
+  // 初期化
   const tmpAnsDates: Record<RvDate, Record<AnsStatus, string[]>> = fromEntries(
-    answers[0].ansDates.map((ans) => [
-      ans.date,
-      fromEntries(AnsStatus.map((status) => [status, []])),
-    ])
+    [...Array(dayjs(session.endDate).diff(session.startDate, 'day'))].map(
+      (_, idx) => [
+        RvDate.parse(dayjs(session.startDate).add(idx, 'day').format()),
+        fromEntries(AnsStatus.map((status) => [status, []])),
+      ]
+    )
   );
   // 回答を登録
   answers.forEach((userAns) => {
     // 日付の回答者を登録
     userAns.ansDates.forEach((ans) => {
-      if (ans.date in keys(tmpAnsDates)) {
+      if (keys(tmpAnsDates).some((d) => d === ans.date)) {
         tmpAnsDates[ans.date][ans.ans].push(userAns.userName);
       }
     });
@@ -133,7 +136,7 @@ export function getRecordSummary(sessionId: SessionID): AnswerSummary {
     const ans = toEntries(ansStatus).map(([status, names]) => {
       return {
         status: status,
-        ansPersonCount: names.length,
+        ansPersonNames: names,
       };
     });
     return { date, ans };
@@ -167,7 +170,14 @@ function writeAnswers(
   // write new data
   const headerKeys = keys(ansHeader);
   const writeData = values(cachedAnswers).map((s) =>
-    headerKeys.map((k) => s[k])
+    // 日付はオブジェクト状態でデータベースに格納するため，文字列化して書き込む
+    headerKeys.map((k) => {
+      if (k === 'ansDates') {
+        return JSON.stringify(s[k]);
+      } else {
+        return s[k];
+      }
+    })
   );
   const sheet = getSheet(sessionId);
   sheet
@@ -177,8 +187,6 @@ function writeAnswers(
 
 /**
  * 回答を登録 / 更新
- *
- * @returns 回答の登録 / 更新が正常に完了したか否かを示す
  */
 export function registAnswer(sessionId: SessionID, record: Answer) {
   // update cache

@@ -1,5 +1,5 @@
 {
-  "name": "@projects/backend",
+  "name": "@research-vacant/backend",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -9,6 +9,8 @@
     "dayjs": "^1.11.13"
   },
   "devDependencies": {
+    "@google/clasp": "^2.4.2",
+    "@research-vacant/mock": "^0.0.1",
     "@types/google-apps-script": "^1.0.83",
     "@vitest/coverage-v8": "^2.0.5",
     "esbuild-gas-plugin": "^0.8.0",

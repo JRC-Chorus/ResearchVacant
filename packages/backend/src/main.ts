@@ -1,4 +1,4 @@
-// import { accessManager } from './core/access';
+import { accessManager } from './core/access';
 import { migrateEnv } from './core/migrate';
 import { constructHomePage } from './core/page';
 import { researchManager } from './core/research';
@@ -13,7 +13,7 @@ global.migrateEnv = migrateEnv;
 global.researchManager = researchManager;
 
 /** フロントエンドに向けたAPI */
-// global.accessManager = accessManager;
+global.accessManager = accessManager;
 
 /** サンプルAPI（本番時には元の関数を含めて削除） */
 global.getSampleData = getSampleData;

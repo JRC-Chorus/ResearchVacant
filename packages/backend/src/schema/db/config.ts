@@ -11,7 +11,7 @@ export const researchFrequencyEnum = ['week', 'month'] as const;
  */
 export const Config = z.object({
   /** 公開したWebappのURL */
-  webappUrl: z.string(),
+  webappUrl: z.string().optional().default(''),
 
   /** 通知したいチャンネルの Teams Webhook リンク */
   teamsLink: z.string().optional().default(''),

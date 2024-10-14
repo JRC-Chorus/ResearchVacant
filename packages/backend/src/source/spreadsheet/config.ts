@@ -84,3 +84,20 @@ export function getConfig(): Config {
 
   return configCache;
 }
+
+/** In Source Testing */
+if (import.meta.vitest) {
+  const { test, expect } = import.meta.vitest;
+  test('config sheet', async () => {
+    const { SpreadsheetApp } = await import('@research-vacant/mock');
+    global.SpreadsheetApp = new SpreadsheetApp();
+
+    // initialize
+    initConfigSheet();
+
+    const defaultConfig = getDefaults(Config);
+    expect(getConfig().researchPartyCount).toBe(
+      defaultConfig.researchPartyCount
+    );
+  });
+}

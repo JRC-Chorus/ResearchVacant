@@ -1,9 +1,9 @@
 import { SessionID } from 'backend/schema/db/session';
-import { initAnsRecordSheet } from 'backend/source/spreadsheet/ansRecord';
+import { initAnsRecordSheet } from 'backend/source/spreadsheet/answers';
 import { getConfig } from 'backend/source/spreadsheet/config';
 import { getMembers } from 'backend/source/spreadsheet/members';
-import { getAnswerURL } from 'backend/source/urlParam';
 import { values } from 'backend/utils/obj/obj';
+import { getAnswerURL } from '../access/accessID';
 
 /**
  * 調査開始
