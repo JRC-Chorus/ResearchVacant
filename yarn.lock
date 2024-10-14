@@ -893,6 +893,11 @@
   resolved "https://registry.yarnpkg.com/@types/http-errors/-/http-errors-2.0.4.tgz#7eb47726c391b7345a6ec35ad7f4de469cf5ba4f"
   integrity sha512-D0CFMMtydbJAegzOyHjtiKPLlvnm3iTZyZRSZoLq2mRhDdmLfIWOCYPfQJ4cu2erKghU++QvjcUjp/5h7hESpA==
 
+"@types/japanese-holidays@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@types/japanese-holidays/-/japanese-holidays-1.0.3.tgz#a6000556910f2a6b7dbbed2ae80a12ee364df33f"
+  integrity sha512-IfAVHolZJ6xGC9S2D9+VYphDfq0tuZEe/nj4vB7oX14ZzvwGSO2UHqDKJfkcQBpd3WV8CAlmbb2YI2QE3E/ddQ==
+
 "@types/keyv@^3.1.4":
   version "3.1.4"
   resolved "https://registry.yarnpkg.com/@types/keyv/-/keyv-3.1.4.tgz#3ccdb1c6751b0c7e52300bcdacd5bcbf8faa75b6"
@@ -3467,6 +3472,11 @@ jackspeak@^3.1.2:
     "@isaacs/cliui" "^8.0.2"
   optionalDependencies:
     "@pkgjs/parseargs" "^0.11.0"
+
+japanese-holidays@^1.0.10:
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/japanese-holidays/-/japanese-holidays-1.0.10.tgz#79dee9482b4be90848035fa512b237077549ad51"
+  integrity sha512-OiK5801c432ljumKnQ65TGw6HSEuetU0Fvlz1/BPPPqwxQZ2kPeCy3XHO6q5nf+6zJqIf1fqcpQjWp+/SimO6Q==
 
 javascript-natural-sort@0.7.1:
   version "0.7.1"
