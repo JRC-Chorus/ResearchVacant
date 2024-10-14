@@ -4,5 +4,9 @@
   "description": "ResearchVacant's mock system",
   "productName": "ResearchVacant",
   "author": "JRC-Chorus <jrc.chorus@gmail.com>",
-  "main": "index.ts"
+  "main": "index.ts",
+  "devDependencies": {
+    "@types/crypto-js": "^4.2.2",
+    "crypto-js": "^4.2.0"
+  }
 }

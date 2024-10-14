@@ -1,10 +1,19 @@
+import CryptoJS from 'crypto-js';
 import { BlobClass } from './Base/Blob';
 
 export class UtilitiesClass implements GoogleAppsScript.Utilities.Utilities {
   Charset!: typeof GoogleAppsScript.Utilities.Charset;
-  DigestAlgorithm!: typeof GoogleAppsScript.Utilities.DigestAlgorithm;
+  DigestAlgorithm = {
+    MD2: 0,
+    MD5: 1,
+    SHA_1: 2,
+    SHA_256: 3,
+    SHA_384: 4,
+    SHA_512: 5,
+  };
   MacAlgorithm!: typeof GoogleAppsScript.Utilities.MacAlgorithm;
   RsaAlgorithm!: typeof GoogleAppsScript.Utilities.RsaAlgorithm;
+
   base64Decode(encoded: string, charset?: unknown): number[] {
     const decodeStr = atob(encoded);
     return [...Array(decodeStr.length)].map((_, idex) =>
@@ -15,23 +24,43 @@ export class UtilitiesClass implements GoogleAppsScript.Utilities.Utilities {
     throw new Error('Method not implemented.');
   }
   base64Encode(data: string | number[], charset?: unknown): string {
-    let byteData: number[];
-    if (typeof data === 'string') {
-      byteData = this.newBlob(data).getBytes();
-    } else {
-      byteData = data;
-    }
-    return Buffer.from(byteData).toString('base64');
+    return Buffer.from(this.newBlob(data).getBytes()).toString('base64');
   }
   base64EncodeWebSafe(data: unknown, charset?: unknown): string {
     throw new Error('Method not implemented.');
   }
   computeDigest(
-    algorithm: unknown,
-    value: unknown,
-    charset?: unknown
-  ): number[] {
-    throw new Error('Method not implemented.');
+    algorithm: GoogleAppsScript.Utilities.DigestAlgorithm,
+    value: string | GoogleAppsScript.Byte[],
+    charset?: GoogleAppsScript.Utilities.Charset
+  ): GoogleAppsScript.Byte[] {
+    // 文字列化
+    const targetTxt = this.newBlob(value).getDataAsString();
+    let returnTxt: string;
+
+    switch (algorithm) {
+      case this.DigestAlgorithm.MD2:
+        throw new Error('Method not implemented.');
+      case this.DigestAlgorithm.MD5:
+        returnTxt = CryptoJS.MD5(targetTxt).toString();
+        break
+      case this.DigestAlgorithm.SHA_1:
+        returnTxt = CryptoJS.SHA1(targetTxt).toString();
+        break
+      case this.DigestAlgorithm.SHA_256:
+        returnTxt = CryptoJS.SHA256(targetTxt).toString();
+        break
+      case this.DigestAlgorithm.SHA_384:
+        returnTxt = CryptoJS.SHA384(targetTxt).toString();
+        break
+      case this.DigestAlgorithm.SHA_512:
+        returnTxt = CryptoJS.SHA512(targetTxt).toString();
+        break
+      default:
+        throw new Error('Method not implemented.');
+    }
+
+    return this.newBlob(returnTxt).getBytes();
   }
   computeHmacSha256Signature(
     value: unknown,
@@ -138,6 +167,18 @@ if (import.meta.vitest) {
 
     expect(util.newBlob(util.base64Decode(encodeTxt)).getDataAsString()).toBe(
       srcTxt
+    );
+  });
+
+  test('hash', () => {
+    const util = new UtilitiesClass();
+
+    const srcTxt = 'test';
+    const sha256Txt =
+      '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08';
+
+    expect(util.computeDigest(util.DigestAlgorithm.SHA_256, srcTxt)).toEqual(
+      util.newBlob(sha256Txt).getBytes()
     );
   });
 }
