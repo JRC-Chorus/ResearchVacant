@@ -156,7 +156,7 @@ if (import.meta.vitest) {
     updateSession(sampleSession.id, 'opening');
 
     // valid AccessID
-    const { encodeAccessID } = await import('backend/source/urlParam');
+    const { encodeAccessID } = await import('./access/accessID');
     const accessId = encodeAccessID(sampleSession.id, sampleMember.id);
 
     test('invalid AccessID', () => {

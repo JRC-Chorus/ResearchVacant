@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { AnswerSummary, SummaryAnswers } from './db/answer';
 import { RvDate } from './db/common';
 
-export const AccessID = z.string().base64();
+export const AccessID = z.string();
 export type AccessID = z.infer<typeof AccessID>;
 export const UrlParams = z.object({
   /** アクセスID */
