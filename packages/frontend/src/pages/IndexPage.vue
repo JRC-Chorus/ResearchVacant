@@ -1,35 +1,23 @@
 <script setup lang="ts">
+import { onMounted, Ref, ref } from 'vue';
 import { useMainStore } from 'src/stores/main';
 
 const mainStore = useMainStore();
-const accessStatus = () => {
-  const tmpStatus = mainStore.getAccessStatus();
-  if (
-    tmpStatus &&
-    tmpStatus.status !== 'invalidUser' &&
-    tmpStatus.status !== 'beforeOpening'
-  ) {
-    return {
-      status: tmpStatus.status,
-      summary: tmpStatus.summary,
-    };
-  } else {
-    return {
-      status: tmpStatus?.status,
-    };
-  }
-};
-console.log(accessStatus());
+const status: Ref<{ status?: string; summary?: object } | undefined> = ref();
+
+onMounted(async () => {
+  status.value = await mainStore.getAccessStatus();
+});
 </script>
 
 <template>
   <q-page class="row items-center justify-evenly">
     <h2>Access Status</h2>
     <p>
-      {{ accessStatus()?.status }}
+      {{ status?.status }}
     </p>
-    <p v-if="accessStatus()?.status !== 'invalidUser'">
-      {{ accessStatus()?.summary }}
+    <p v-if="status?.status !== 'invalidUser'">
+      {{ status?.summary }}
     </p>
   </q-page>
 </template>

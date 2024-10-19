@@ -1,24 +1,20 @@
 import { isHoliday } from 'japanese-holidays';
 import { defineStore } from 'pinia';
+import { googleScriptRun } from 'src/scripts/api';
 import { MemberStatus } from '../../../backend/src/schema/app';
 import { AnsDate } from '../../../backend/src/schema/db/answer';
-
-type ErrorData = {
-  title: string;
-  message: string;
-};
 
 export const useMainStore = defineStore('mainStore', {
   state: () => ({
     __memberStatus: null as MemberStatus | null,
     __answer: null as AnsDate[] | null,
     freeTxt: '',
-    error: null as ErrorData | null,
+    error: null as Error | null,
   }),
   actions: {
-    getAnswers() {
+    async getAnswers() {
       if (this.__answer === null) {
-        const tmpStatus = this.getAccessStatus();
+        const tmpStatus = await this.getAccessStatus();
         if (tmpStatus && 'summary' in tmpStatus) {
           this.__answer = tmpStatus.summary.ansDates.map((d) => {
             return {
@@ -31,17 +27,19 @@ export const useMainStore = defineStore('mainStore', {
 
       return this.__answer;
     },
-    getAccessStatus() {
+    async getAccessStatus() {
       if (this.__memberStatus === null) {
-        // TODO: 実装最適化
-        if (google) {
-          google?.script.url.getLocation((location) => {
-            google?.script.run
-              .withSuccessHandler((val) => (this.__memberStatus = val))
-              .withFailureHandler((err) => console.log(err))
-              .accessManager(location.parameter);
+        if (import.meta.env.PROD) {
+          google?.script.url.getLocation(async (location) => {
+            this.__memberStatus = await googleScriptRun.accessManager(
+              location.parameter
+            );
           });
         } else {
+          this.__memberStatus = await googleScriptRun.accessManager({});
+        }
+
+        if (!this.__memberStatus) {
           this.__memberStatus = {
             status: 'invalidUser',
           };
