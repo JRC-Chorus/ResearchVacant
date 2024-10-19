@@ -27,6 +27,7 @@ export default defineConfig({
   resolve: {
     alias: {
       'backend/': __dirname + '/packages/backend/src/',
+      'src/': __dirname + '/packages/frontend/src/',
     },
   },
 });

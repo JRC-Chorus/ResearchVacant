@@ -60,7 +60,12 @@ export class UtilitiesClass implements GoogleAppsScript.Utilities.Utilities {
         throw new Error('Method not implemented.');
     }
 
-    return this.newBlob(returnTxt).getBytes();
+    const bytes = new Array(returnTxt.length / 2);
+    for (let i = 0; i < returnTxt.length; i += 2) {
+      bytes[i / 2] = parseInt(returnTxt.substr(i, 2), 16);
+    }
+
+    return bytes;
   }
   computeHmacSha256Signature(
     value: unknown,
@@ -177,8 +182,16 @@ if (import.meta.vitest) {
     const sha256Txt =
       '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08';
 
-    expect(util.computeDigest(util.DigestAlgorithm.SHA_256, srcTxt)).toEqual(
-      util.newBlob(sha256Txt).getBytes()
-    );
+    const hashedByte = util.computeDigest(util.DigestAlgorithm.SHA_256, srcTxt);
+    // convert 16bit string
+    var txtHash = '';
+    for (let j = 0; j < hashedByte.length; j++) {
+      var hashVal = hashedByte[j];
+      if (hashVal < 0) hashVal += 256;
+      if (hashVal.toString(16).length == 1) txtHash += '0';
+      txtHash += hashVal.toString(16);
+    }
+
+    expect(txtHash).toEqual(sha256Txt);
   });
 }
