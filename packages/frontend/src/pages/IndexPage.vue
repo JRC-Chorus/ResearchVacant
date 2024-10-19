@@ -11,13 +11,16 @@ onMounted(async () => {
 </script>
 
 <template>
-  <q-page class="row items-center justify-evenly">
+  <q-page class="items-center justify-evenly">
     <h2>Access Status</h2>
     <p>
       {{ status?.status }}
     </p>
     <p v-if="status?.status !== 'invalidUser'">
       {{ status?.summary }}
+    </p>
+    <p>
+      Error: {{ mainStore.error }}
     </p>
   </q-page>
 </template>

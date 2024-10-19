@@ -1,4 +1,4 @@
-import { IRun } from 'src/schema/global';
+import { IRun, IUrlLocation } from 'src/schema/global';
 import { useMainStore } from 'src/stores/main';
 import { MemberStatus } from '../../../backend/src/schema/app';
 import { RvDate } from '../../../backend/src/schema/db/common';
@@ -48,23 +48,37 @@ const mockFuncs: IRun = {
  * 汎用的にGASのAPIを呼び出す
  */
 export const googleScriptRun = import.meta.env.PROD
-  ? google ? new Proxy(google.script.run, {
-      get(
-        target: typeof google.script.run,
-        method: keyof typeof google.script.run
-      ) {
-        const mainStore = useMainStore();
-        return (...args: any[]) =>{
-          new Promise((resolve, reject) => {
-            (<any>target
-              .withSuccessHandler(resolve)
-              .withFailureHandler(err => mainStore.error = err)
-              [method])(...args);
-          });}
-      },
-    }) : mockFuncs
+  ? google
+    ? new Proxy(google.script.run, {
+        get(
+          target,
+          method: keyof typeof google.script.run
+        ) {
+          const mainStore = useMainStore();
+          return (...args: any[]) => {
+            return new Promise((resolve) => {
+              const callMethod = target
+                .withSuccessHandler(resolve)
+                .withFailureHandler((err) => (mainStore.error = err))[
+                method
+              ] as any;
+              callMethod(...args);
+            });
+          };
+        },
+      })
+    : mockFuncs
   : mockFuncs;
 
+const dummyLoc = new Promise<IUrlLocation>((resolve) =>
+  resolve({ hash: '', parameter: {}, parameters: {} })
+);
+export const getURLLocation = () =>
+  import.meta.env.PROD && google
+    ? new Promise<IUrlLocation>((resolve) =>
+        google.script.url.getLocation(resolve)
+      )
+    : dummyLoc;
 
 /**
  * 回答した日付をバックエンドに送信し，データベースへの登録を待機する

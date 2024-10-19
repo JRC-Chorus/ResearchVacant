@@ -1,6 +1,6 @@
 import { isHoliday } from 'japanese-holidays';
 import { defineStore } from 'pinia';
-import { googleScriptRun } from 'src/scripts/api';
+import { getURLLocation, googleScriptRun } from 'src/scripts/api';
 import { MemberStatus } from '../../../backend/src/schema/app';
 import { AnsDate } from '../../../backend/src/schema/db/answer';
 
@@ -29,15 +29,8 @@ export const useMainStore = defineStore('mainStore', {
     },
     async getAccessStatus() {
       if (this.__memberStatus === null) {
-        if (import.meta.env.PROD) {
-          google?.script.url.getLocation(async (location) => {
-            this.__memberStatus = await googleScriptRun.accessManager(
-              location.parameter
-            );
-          });
-        } else {
-          this.__memberStatus = await googleScriptRun.accessManager({});
-        }
+        const loc = await getURLLocation()
+        this.__memberStatus = await googleScriptRun.accessManager(loc.parameter);
 
         if (!this.__memberStatus) {
           this.__memberStatus = {

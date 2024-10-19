@@ -27,7 +27,7 @@ export type IRun = Asyncify<FrontAPI> & {
   withUserObject: (object: object) => IRun;
 };
 
-type IUrlLocation = {
+export type IUrlLocation = {
   /**
    * The string value of URL fragment after the # character, or an emptry string if no URL fragment is present
    */
