@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import CalendarView from 'src/components/CalendarView.vue';
 import IndentLine from 'src/components/utils/IndentLine.vue';
 import { useMainStore } from 'src/stores/main';
@@ -39,16 +38,21 @@ const mainStore = useMainStore();
             <ul>
               <li>
                 <IndentLine title="調査期間" max-width="10rem">
+                  <!-- TODO: 実際の値に変更 -->
                   ○○○○年○○月○○日　～　○○○○年○○月○○日
                 </IndentLine>
               </li>
               <li>
                 <IndentLine title="開催回数" max-width="10rem">
+                  <!-- TODO: データベースにこの項目が記録できるフィールドを追加し，MemberSummaryから取得できるようにする -->
+                  <!-- TODO: 管理者は個々のテキストをUI上から変更できるような機能を入れる -->
                   ２回（そのうち１回は外部練習を予定）
                 </IndentLine>
               </li>
               <li>
                 <IndentLine title="備考" max-width="10rem">
+                  <!-- TODO: データベースにこの項目が記録できるフィールドを追加し，MemberSummaryから取得できるようにする -->
+                  <!-- TODO: 管理者は個々のテキストをUI上から変更できるような機能を入れる -->
                   <i>＜特になし＞</i>
                 </IndentLine>
               </li>
@@ -83,6 +87,7 @@ const mainStore = useMainStore();
         >
           入力内容をリセット
         </q-btn>
+        <!-- TODO: 回答提出機能を実装 -->
         <q-btn fill color="primary" size="1rem"> 回答を提出 </q-btn>
       </div>
     </q-card-actions>
