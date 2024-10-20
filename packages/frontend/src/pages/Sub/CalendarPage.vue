@@ -11,7 +11,6 @@ interface Prop {
 defineProps<Prop>();
 
 const mainStore = useMainStore();
-const freeTxt = ref('');
 </script>
 
 <template>
@@ -64,7 +63,7 @@ const freeTxt = ref('');
       <!-- free text -->
       <div class="col fit" style="max-width: min(95vw, 80rem)">
         <h2>フリーメッセージ</h2>
-        <q-input v-model="freeTxt" filled style="font-size: 1rem" />
+        <q-input v-model="mainStore.freeTxt" filled style="font-size: 1rem" />
       </div>
     </q-card-section>
 
@@ -72,8 +71,19 @@ const freeTxt = ref('');
 
     <q-card-actions align="right">
       <div class="row q-gutter-x-lg q-py-sm">
-        <q-btn outline size="1rem">入力内容をリセット</q-btn>
-        <q-btn fill color="primary" size="1rem">回答を提出</q-btn>
+        <q-btn
+          outline
+          size="1rem"
+          @click="
+            () => {
+              mainStore.initAnsModel(status);
+              mainStore.freeTxt = '';
+            }
+          "
+        >
+          入力内容をリセット
+        </q-btn>
+        <q-btn fill color="primary" size="1rem"> 回答を提出 </q-btn>
       </div>
     </q-card-actions>
   </q-card>
