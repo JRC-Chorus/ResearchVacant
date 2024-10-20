@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { onMounted, Ref, ref } from 'vue';
 import { useMainStore } from 'src/stores/main';
+import { MemberStatus } from '../../../backend/src/schema/app';
+import CalendarPage from './Sub/CalendarPage.vue';
+import ErrorPage from './Sub/ErrorPage.vue';
+import LoadingPage from './Sub/LoadingPage.vue';
 
 const mainStore = useMainStore();
-const status: Ref<{ status?: string; summary?: object } | undefined> = ref();
+const status: Ref<MemberStatus | undefined> = ref();
 
 onMounted(async () => {
   status.value = await mainStore.getAccessStatus();
@@ -11,16 +15,11 @@ onMounted(async () => {
 </script>
 
 <template>
-  <q-page class="items-center justify-evenly">
-    <h2>Access Status</h2>
-    <p>
-      {{ status?.status }}
-    </p>
-    <p v-if="status?.status !== 'invalidUser'">
-      {{ status?.summary }}
-    </p>
-    <p>
-      Error: {{ mainStore.error }}
-    </p>
+  <q-page class="items-center flex">
+    <div class="column" style="flex: 1 1 0; min-height: inherit;">
+      <ErrorPage v-if="mainStore.error" />
+      <LoadingPage v-else-if="status === void 0" />
+      <CalendarPage v-else :status="status" />
+    </div>
   </q-page>
 </template>

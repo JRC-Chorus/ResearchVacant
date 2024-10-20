@@ -1,1 +1,36 @@
-// app global css in SCSS form
+body {
+  font-size: 18px;
+}
+
+p,
+li {
+  font-size: 1rem;
+}
+
+h1 {
+  font-size: 2rem;
+  line-height: 1em;
+  padding-top: 0rem;
+  padding-bottom: 0rem;
+}
+h2 {
+  font-size: 1.3rem;
+  line-height: 1em;
+  padding-top: 1.5rem;
+  padding-bottom: 0rem;
+}
+
+// adjust font size
+html {
+  font-size: 100%;
+}
+@media screen and (min-width: 768px) {
+  html {
+    font-size: 110%;
+  }
+}
+@media screen and (min-width: 1024px) {
+  html {
+    font-size: 120%;
+  }
+}
