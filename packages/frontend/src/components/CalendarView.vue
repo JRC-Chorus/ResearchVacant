@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { MemberStatus } from '@research-vacant/common';
-import { deepcopy } from 'src/scripts/deepcopy';
+import { deepcopy, MemberStatus } from '@research-vacant/common';
 import { useMainStore } from 'src/stores/main';
 import DayBox from './Calendar/DayBox.vue';
 
