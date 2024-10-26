@@ -100,13 +100,19 @@ export function getAnsweredMemberIDs(sessionId: SessionID) {
  *
  * 回答の生データは返さない（フロントエンドにデータ処理を行わせない）
  */
-export function getAnswerSummary(session: Session): AnswerSummary {
+export function getAnswerSummary(
+  session: Session,
+  accessedMemberId: MemberID
+): AnswerSummary {
   const answers = values(getAnswers(session.id));
 
   const returnSummary: AnswerSummary = {
     ansDates: [],
     freeTxts: [],
   };
+  const selfAns: Answer | undefined = answers.find(
+    (a) => a.userId === accessedMemberId
+  );
 
   // 初期化
   const tmpAnsDates: Record<RvDate, Record<AnsStatus, string[]>> = fromEntries(
@@ -127,7 +133,7 @@ export function getAnswerSummary(session: Session): AnswerSummary {
     });
 
     // 自由記述
-    if (userAns.freeText) {
+    if (userAns.freeText !== '') {
       returnSummary.freeTxts.push({
         txt: userAns.freeText,
         ansName: userAns.userName,
@@ -145,6 +151,11 @@ export function getAnswerSummary(session: Session): AnswerSummary {
     });
     return { date, ans };
   });
+
+  // 自身の回答が存在する場合は登録
+  if ((selfAns?.ansDates.length ?? 0) > 0) {
+    returnSummary.selfAns = selfAns;
+  }
 
   return returnSummary;
 }

@@ -48,9 +48,7 @@ export const useMainStore = defineStore('mainStore', {
     initAnsModel(summary: AnswerSummary) {
       // calc start and end research date
       const startDate = dayjs(summary.ansDates[0].date);
-      const endDate = dayjs(
-        summary.ansDates[summary.ansDates.length - 1].date
-      );
+      const endDate = dayjs(summary.ansDates[summary.ansDates.length - 1].date);
 
       // where is the start date in calendar's meta data
       const monthStartIdx = Number.parseInt(
@@ -83,7 +81,9 @@ export const useMainStore = defineStore('mainStore', {
               idx <= endDateIdx &&
               ![1, 0].includes((idx + 1) % 7)
             ) {
-              return holidayCheck ? 'NG' : 'OK';
+              return holidayCheck
+                ? 'NG'
+                : summary.selfAns?.ansDates[idx].ans ?? 'OK';
             } else {
               // 期間外の日付はすべてNG扱い
               return 'NG';

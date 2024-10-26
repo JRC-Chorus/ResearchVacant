@@ -30,7 +30,7 @@ export function accessManager(params: Record<string, string>): MemberStatus {
 
   const answerIds = getAnsweredMemberIDs(ids.sessionId);
   const session = getSessions()[ids.sessionId];
-  const summary = getAnswerSummary(session);
+  const summary = getAnswerSummary(session, ids.memberId);
 
   if (session.status === 'ready') {
     return {
