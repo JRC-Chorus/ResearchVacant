@@ -1,15 +1,23 @@
 <script setup lang="ts">
-import { MemberStatus } from '@research-vacant/common';
+import { AnswerSummary } from '@research-vacant/common';
+import dayjs from 'dayjs';
 import CalendarView from 'src/components/CalendarView.vue';
 import IndentLine from 'src/components/utils/IndentLine.vue';
 import { useMainStore } from 'src/stores/main';
 
 interface Prop {
-  status: MemberStatus;
+  summary: AnswerSummary;
 }
-defineProps<Prop>();
+const prop = defineProps<Prop>();
 
 const mainStore = useMainStore();
+
+const startDate = dayjs(prop.summary.ansDates[0].date);
+// TODO: 「終了日＝開始日＋回答期間の日数」に変更
+const endDate = dayjs(
+  prop.summary.ansDates[prop.summary.ansDates.length - 1].date
+);
+const showingDateFormat = 'YYYY年MM月DD日';
 </script>
 
 <template>
@@ -20,7 +28,9 @@ const mainStore = useMainStore();
       <div class="col row">
         <div class="col" style="min-width: 15rem">
           <div class="row justify-between items-center">
-            <h1 class="text-bold">10月の日程調整</h1>
+            <h1 class="text-bold">
+              {{ `${dayjs(summary.ansDates[0].date).month() + 1}月の日程調整` }}
+            </h1>
             <q-btn
               flat
               round
@@ -38,8 +48,11 @@ const mainStore = useMainStore();
             <ul>
               <li>
                 <IndentLine title="調査期間" max-width="10rem">
-                  <!-- TODO: 実際の値に変更 -->
-                  ○○○○年○○月○○日　～　○○○○年○○月○○日
+                  {{
+                    `${startDate.format(showingDateFormat)} ～ ${endDate.format(
+                      showingDateFormat
+                    )}`
+                  }}
                 </IndentLine>
               </li>
               <li>
@@ -60,7 +73,7 @@ const mainStore = useMainStore();
           </div>
         </div>
         <div style="max-width: min(90vw, 50rem); margin: 0 auto">
-          <CalendarView :status="status" />
+          <CalendarView :summary="summary" />
         </div>
       </div>
 
@@ -75,12 +88,13 @@ const mainStore = useMainStore();
 
     <q-card-actions align="right">
       <div class="row q-gutter-x-lg q-py-sm">
+        <!-- TODO: クリック時の挙動は「確認画面を表示 ⇒ 処理」とする -->
         <q-btn
           outline
           size="1rem"
           @click="
             () => {
-              mainStore.initAnsModel(status);
+              mainStore.initAnsModel(summary);
               mainStore.freeTxt = '';
             }
           "

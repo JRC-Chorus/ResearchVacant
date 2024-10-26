@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { deepcopy, MemberStatus } from '@research-vacant/common';
+import { AnswerSummary, deepcopy } from '@research-vacant/common';
 import { useMainStore } from 'src/stores/main';
 import DayBox from './Calendar/DayBox.vue';
 
 interface Prop {
-  status: MemberStatus;
+  summary: AnswerSummary;
 }
 const prop = defineProps<Prop>();
 
 const youbi = ['日', '月', '火', '水', '木', '金', '土'];
 const mainStore = useMainStore();
-mainStore.initAnsModel(prop.status);
+mainStore.initAnsModel(prop.summary);
 
 // 初期生成時点でNGの日付は無効にする
 const firstAllAns = deepcopy(mainStore.ansModel);

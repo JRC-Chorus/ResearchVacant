@@ -1,4 +1,8 @@
-import { AnsStatus, MemberStatus } from '@research-vacant/common';
+import {
+  AnsStatus,
+  AnswerSummary,
+  MemberStatus,
+} from '@research-vacant/common';
 import dayjs from 'dayjs';
 import { isHoliday } from 'japanese-holidays';
 import { defineStore } from 'pinia';
@@ -41,56 +45,52 @@ export const useMainStore = defineStore('mainStore', {
      *
      * TODO: 週次アンケートの場合，週の中で月をまたいでしまうと跨いだ先の日付が表示されないバグあり
      */
-    initAnsModel(status: MemberStatus) {
-      if ('summary' in status) {
-        // calc start and end research date
-        const startDate = dayjs(status.summary.ansDates[0].date);
-        const endDate = dayjs(
-          status.summary.ansDates[status.summary.ansDates.length - 1].date
-        );
+    initAnsModel(summary: AnswerSummary) {
+      // calc start and end research date
+      const startDate = dayjs(summary.ansDates[0].date);
+      const endDate = dayjs(
+        summary.ansDates[summary.ansDates.length - 1].date
+      );
 
-        // where is the start date in calendar's meta data
-        const monthStartIdx = Number.parseInt(
-          startDate.startOf('month').format('d')
-        );
-        const monthDateCount = startDate
-          .endOf('month')
-          .diff(startDate.startOf('month'), 'day');
-        const startDateIdx =
-          startDate.diff(startDate.startOf('month'), 'day') + monthStartIdx;
-        const endDateIdx =
-          endDate.diff(startDate.startOf('month'), 'day') + monthStartIdx;
+      // where is the start date in calendar's meta data
+      const monthStartIdx = Number.parseInt(
+        startDate.startOf('month').format('d')
+      );
+      const monthDateCount = startDate
+        .endOf('month')
+        .diff(startDate.startOf('month'), 'day');
+      const startDateIdx =
+        startDate.diff(startDate.startOf('month'), 'day') + monthStartIdx;
+      const endDateIdx =
+        endDate.diff(startDate.startOf('month'), 'day') + monthStartIdx;
 
-        // generate the init calendar data
-        this.ansModel = [...new Array(7 * this.showingWeekCount)].map(
-          (_, idx) => {
-            if (idx < monthStartIdx || idx > monthStartIdx + monthDateCount) {
-              // そもそも月始めよりも前，月終わりより後，の日付は非表示にする
-              return undefined;
+      // generate the init calendar data
+      this.ansModel = [...new Array(7 * this.showingWeekCount)].map(
+        (_, idx) => {
+          if (idx < monthStartIdx || idx > monthStartIdx + monthDateCount) {
+            // そもそも月始めよりも前，月終わりより後，の日付は非表示にする
+            return undefined;
+          } else {
+            // 休日チェック
+            const holidayCheck = isHoliday(
+              new Date(startDate.add(idx - startDateIdx, 'day').format())
+            );
+            this.specialHoliday.push(holidayCheck);
+
+            // 期間内の場合は休日を除き回答対象とする
+            if (
+              startDateIdx <= idx &&
+              idx <= endDateIdx &&
+              ![1, 0].includes((idx + 1) % 7)
+            ) {
+              return holidayCheck ? 'NG' : 'OK';
             } else {
-              // 休日チェック
-              const holidayCheck = isHoliday(
-                new Date(startDate.add(idx - startDateIdx, 'day').format())
-              );
-              this.specialHoliday.push(holidayCheck);
-
-              // 期間内の場合は休日を除き回答対象とする
-              if (
-                startDateIdx <= idx &&
-                idx <= endDateIdx &&
-                ![1, 0].includes((idx + 1) % 7)
-              ) {
-                return holidayCheck ? 'NG' : 'OK';
-              } else {
-                // 期間外の日付はすべてNG扱い
-                return 'NG';
-              }
+              // 期間外の日付はすべてNG扱い
+              return 'NG';
             }
           }
-        );
-      } else {
-        this.error = new Error('INVALID ANSWER IS COMMING IN CALENDAR');
-      }
+        }
+      );
     },
   },
 });
