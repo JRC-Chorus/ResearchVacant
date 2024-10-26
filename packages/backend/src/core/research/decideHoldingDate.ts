@@ -1,7 +1,7 @@
 /**
  * 調査結果を踏まえて開催日を決定する
  */
-import { SessionID } from 'backend/schema/db/session';
+import { SessionID } from '@research-vacant/common';
 
 /**
  * 調査結果をもとにした候補日の承認を管理者に問い合わせる

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { AnsStatus } from '../../../../backend/src/schema/db/answer';
+import { AnsStatus } from '@research-vacant/common';
 
 interface Prop {
   day: number;
@@ -94,11 +94,9 @@ const classNames = computed({
 }
 
 .day-text {
-  text-shadow:
-           1px 1px 0px #fff, -1px -1px 0px #fff,
-          -1px 1px 0px #fff,  1px -1px 0px #fff,
-           1px 0px 0px #fff, -1px  0px 0px #fff,
-           0px 1px 0px #fff,  0px -1px 0px #fff;
+  text-shadow: 1px 1px 0px #fff, -1px -1px 0px #fff, -1px 1px 0px #fff,
+    1px -1px 0px #fff, 1px 0px 0px #fff, -1px 0px 0px #fff, 0px 1px 0px #fff,
+    0px -1px 0px #fff;
 }
 
 .disappear {

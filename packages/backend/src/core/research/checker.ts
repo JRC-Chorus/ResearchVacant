@@ -1,13 +1,10 @@
+import { Config, RvDate, Session, values } from '@research-vacant/common';
 import dayjs from 'dayjs';
-import { RvDate } from 'backend/schema/db/common';
-import { Config } from 'backend/schema/db/config';
-import { Session } from 'backend/schema/db/session';
 import { getConfig } from 'backend/source/spreadsheet/config';
 import {
   getSessions,
   publishSession,
 } from 'backend/source/spreadsheet/session';
-import { values } from 'backend/utils/obj/obj';
 
 /**
  * セッションの一覧を取得し，本日の日付に対して必要なセッションの発行を行う
@@ -106,8 +103,7 @@ if (import.meta.vitest) {
   const { describe, test, expect } = import.meta.vitest;
 
   describe('beginResearch', async () => {
-    const { getDefaults } = await import('backend/schema/defaultVals');
-    const { deepcopy } = await import('backend/utils/deepcopy');
+    const { getDefaults, deepcopy } = await import('@research-vacant/common');
 
     const defaultConfig = getDefaults(Config);
     const today = dayjs('2024/1/1');

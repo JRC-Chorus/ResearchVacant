@@ -1,7 +1,6 @@
+import { MemberStatus, RvDate } from '@research-vacant/common';
 import { IRun, IUrlLocation } from 'src/schema/global';
 import { useMainStore } from 'src/stores/main';
-import { MemberStatus } from '../../../backend/src/schema/app';
-import { RvDate } from '../../../backend/src/schema/db/common';
 
 const mockFuncs: IRun = {
   doGet: function (e: any): Promise<GoogleAppsScript.HTML.HtmlOutput> {

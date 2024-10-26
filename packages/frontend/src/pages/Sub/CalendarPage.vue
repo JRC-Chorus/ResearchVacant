@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { MemberStatus } from '@research-vacant/common';
 import CalendarView from 'src/components/CalendarView.vue';
 import IndentLine from 'src/components/utils/IndentLine.vue';
 import { useMainStore } from 'src/stores/main';
-import { MemberStatus } from '../../../../backend/src/schema/app';
 
 interface Prop {
   status: MemberStatus;

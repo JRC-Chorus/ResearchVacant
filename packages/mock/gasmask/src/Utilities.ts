@@ -184,9 +184,9 @@ if (import.meta.vitest) {
 
     const hashedByte = util.computeDigest(util.DigestAlgorithm.SHA_256, srcTxt);
     // convert 16bit string
-    var txtHash = '';
+    let txtHash = '';
     for (let j = 0; j < hashedByte.length; j++) {
-      var hashVal = hashedByte[j];
+      let hashVal = hashedByte[j];
       if (hashVal < 0) hashVal += 256;
       if (hashVal.toString(16).length == 1) txtHash += '0';
       txtHash += hashVal.toString(16);

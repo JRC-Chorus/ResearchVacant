@@ -1,9 +1,15 @@
 /**
  * 調査によって決定した開催日に関する情報を保存する
  */
-import { DecidedRecord, PartyInfo } from 'backend/schema/db/records';
-import { SessionID } from 'backend/schema/db/session';
-import { fromEntries, keys, toEntries, values } from 'backend/utils/obj/obj';
+import {
+  DecidedRecord,
+  fromEntries,
+  keys,
+  PartyInfo,
+  SessionID,
+  toEntries,
+  values,
+} from '@research-vacant/common';
 import { getSheet } from './common';
 
 const RECORD_SHEET_NAME = '決定済み開催日一覧';

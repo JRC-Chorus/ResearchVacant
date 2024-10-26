@@ -1,8 +1,11 @@
+import {
+  AnsDate,
+  Answer,
+  MemberStatus,
+  PartyInfo,
+  SessionID,
+} from '@research-vacant/common';
 import dayjs from 'dayjs';
-import { MemberStatus } from 'backend/schema/app';
-import { AnsDate, Answer } from 'backend/schema/db/answer';
-import { PartyInfo } from 'backend/schema/db/records';
-import { SessionID } from 'backend/schema/db/session';
 import {
   getAnsweredMemberIDs,
   getAnswerSummary,
@@ -140,7 +143,7 @@ if (import.meta.vitest) {
     });
 
     // get sample member's data
-    const { values } = await import('backend/utils/obj/obj');
+    const { values } = await import('@research-vacant/common');
     const sampleMember = values(getMembers())[0];
 
     // start sample session
@@ -174,7 +177,7 @@ if (import.meta.vitest) {
     });
 
     // create answer
-    const { RvDate } = await import('backend/schema/db/common');
+    const { RvDate } = await import('@research-vacant/common');
     const _ans1 = ['OK', 'NG', 'OK'] as const;
     const _ans2 = ['NG', 'NG', 'OK'] as const;
     const genSampleAns: (ans: typeof _ans1 | typeof _ans2) => AnsDate[] = (

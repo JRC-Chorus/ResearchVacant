@@ -1,6 +1,10 @@
-import { Config, researchFrequencyEnum } from 'backend/schema/db/config';
-import { getDefaults } from 'backend/schema/defaultVals';
-import { fromEntries, keys } from 'backend/utils/obj/obj';
+import {
+  Config,
+  fromEntries,
+  getDefaults,
+  keys,
+  researchFrequencyEnum,
+} from '@research-vacant/common';
 import { getSheet } from './common';
 
 const CONFIG_SHEET_NAME = '設定';

@@ -1,10 +1,10 @@
-import { FrontAPI } from '../../../backend/src/schema/api';
+import { FrontAPI } from '@research-vacant/common';
 
 /**
  * 与えた型定義に含まれる関数の戻り値をPromiseに変更する
  */
 type Asyncify<T> = {
-  [K in keyof T]: T[K] extends (...args: any[]) => infer R 
+  [K in keyof T]: T[K] extends (...args: any[]) => infer R
     ? (...args: Parameters<T[K]>) => Promise<R>
     : T[K];
 };
