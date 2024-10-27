@@ -19,6 +19,7 @@ onMounted(async () => {
     onDialogCancel();
   }
   isLoading.value = false;
+  mainStore.isEnableReload = true;
 });
 </script>
 
@@ -38,7 +39,7 @@ onMounted(async () => {
             color="primary"
             track-color="transparent"
             class="col-2"
-            style="max-width: 3rem;"
+            style="max-width: 3rem"
           />
 
           <span class="col" style="font-size: 1.5rem; word-break: keep-all">

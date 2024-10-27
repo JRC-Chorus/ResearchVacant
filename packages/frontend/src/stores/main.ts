@@ -18,9 +18,11 @@ export const useMainStore = defineStore('mainStore', {
     /** フロントエンド用の回答一覧 */
     ansModel: [] as (AnsDate | undefined)[],
     /** 祝日記録用 */
-    specialHoliday: [] as (string | undefined)[],
+    specialHoliday: {} as Record<RvDate, string>,
     /** 自由記述 */
     freeTxt: '',
+    /** 再読み込み可能か */
+    isEnableReload: false,
     /** バックエンドとの通信でエラーがあった場合に格納 */
     error: null as Error | null,
   }),
@@ -70,11 +72,15 @@ export const useMainStore = defineStore('mainStore', {
             // そもそも月始めよりも前，月終わりより後，の日付は非表示にする
             return undefined;
           } else {
-            // 休日チェック
-            const holidayCheck = isHoliday(
-              new Date(startDate.add(idx - startDateIdx, 'day').format())
+            const thisDay = RvDate.parse(
+              startDate.add(idx - startDateIdx, 'day').format()
             );
-            this.specialHoliday.push(holidayCheck);
+
+            // 休日チェック
+            const holidayCheck = isHoliday(new Date(thisDay));
+            if (holidayCheck) {
+              this.specialHoliday[thisDay] = holidayCheck;
+            }
 
             // 期間内の場合は休日を除き回答対象とする
             const initAns = () => {
@@ -92,9 +98,7 @@ export const useMainStore = defineStore('mainStore', {
               }
             };
             return {
-              date: RvDate.parse(
-                startDate.add(idx - startDateIdx, 'day').format()
-              ),
+              date: thisDay,
               ans: initAns(),
             };
           }

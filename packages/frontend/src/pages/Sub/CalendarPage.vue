@@ -4,6 +4,13 @@ import { AnswerSummary } from '@research-vacant/common';
 import dayjs from 'dayjs';
 import CalendarView from 'src/components/CalendarView.vue';
 import AnsSendingDialog from 'src/components/Dialogs/AnsSendingDialog.vue';
+import CheckDialog from 'src/components/Dialogs/CheckDialog.vue';
+import {
+  CheckDialogProp,
+  InfoDialogProp,
+  ShowingDetail,
+} from 'src/components/Dialogs/iDialogProp';
+import InfoDialog from 'src/components/Dialogs/InfoDialog.vue';
 import IndentLine from 'src/components/utils/IndentLine.vue';
 import { useMainStore } from 'src/stores/main';
 
@@ -22,9 +29,65 @@ const endDate = dayjs(
 );
 const showingDateFormat = 'YYYY年MM月DD日';
 
+const showingDetails: ShowingDetail[] = [
+  {
+    title: '回答期間',
+    desc: `${startDate.format(showingDateFormat)} ～ ${endDate.format(
+      showingDateFormat
+    )}`,
+  },
+  {
+    title: '開催回数',
+    // TODO: データベースにこの項目が記録できるフィールドを追加し，MemberSummaryから取得できるようにする
+    // TODO: 管理者は個々のテキストをUI上から変更できるような機能を入れる
+    desc: '２回（そのうち１回は外部練習を予定）',
+  },
+  {
+    title: '備考',
+    // TODO: データベースにこの項目が記録できるフィールドを追加し，MemberSummaryから取得できるようにする
+    // TODO: 管理者は個々のテキストをUI上から変更できるような機能を入れる
+    desc: '＜特になし＞',
+  },
+];
+
+/**
+ * 回答の提出処理を実行
+ */
 function submitAns() {
   $q.dialog({
     component: AnsSendingDialog,
+  });
+}
+
+/**
+ * 調査情報の詳細を表示（スマホ版）
+ */
+function showInfoDialog() {
+  $q.dialog({
+    component: InfoDialog,
+    componentProps: {
+      showingDetails: showingDetails,
+    } as InfoDialogProp,
+  });
+}
+
+/**
+ * 入力内容のリセット
+ */
+function resetAllAns() {
+  $q.dialog({
+    component: CheckDialog,
+    componentProps: {
+      title: '入力内容のリセット',
+      message:
+        '回答済みの参加可否の情報やフリーテキストの入力データがリセットされます．\n入力内容を削除してもよろしいですか．',
+      okTxt: 'ＯＫ',
+      cancelTxt: 'キャンセル',
+    } as CheckDialogProp,
+  }).onOk(() => {
+    mainStore.isEnableReload = false;
+    mainStore.initAnsModel(prop.summary);
+    mainStore.freeTxt = '';
   });
 }
 </script>
@@ -48,6 +111,7 @@ function submitAns() {
               color="info"
               size="1.2rem"
               class="lt-lg"
+              @click="showInfoDialog()"
             />
           </div>
           <p>空き日程をカレンダーよりご回答ください．</p>
@@ -55,27 +119,9 @@ function submitAns() {
           <div class="gt-md">
             <h2><u>調整＆開催日の詳細情報</u></h2>
             <ul>
-              <li>
-                <IndentLine title="調査期間" max-width="10rem">
-                  {{
-                    `${startDate.format(showingDateFormat)} ～ ${endDate.format(
-                      showingDateFormat
-                    )}`
-                  }}
-                </IndentLine>
-              </li>
-              <li>
-                <IndentLine title="開催回数" max-width="10rem">
-                  <!-- TODO: データベースにこの項目が記録できるフィールドを追加し，MemberSummaryから取得できるようにする -->
-                  <!-- TODO: 管理者は個々のテキストをUI上から変更できるような機能を入れる -->
-                  ２回（そのうち１回は外部練習を予定）
-                </IndentLine>
-              </li>
-              <li>
-                <IndentLine title="備考" max-width="10rem">
-                  <!-- TODO: データベースにこの項目が記録できるフィールドを追加し，MemberSummaryから取得できるようにする -->
-                  <!-- TODO: 管理者は個々のテキストをUI上から変更できるような機能を入れる -->
-                  <i>＜特になし＞</i>
+              <li v-for="detail in showingDetails" :key="detail.title">
+                <IndentLine :title="detail.title" max-width="10rem">
+                  {{ detail.desc }}
                 </IndentLine>
               </li>
             </ul>
@@ -97,17 +143,7 @@ function submitAns() {
 
     <q-card-actions align="right">
       <div class="row q-gutter-x-lg q-py-sm">
-        <!-- TODO: クリック時の挙動は「確認画面を表示 ⇒ 処理」とする -->
-        <q-btn
-          outline
-          size="1rem"
-          @click="
-            () => {
-              mainStore.initAnsModel(summary);
-              mainStore.freeTxt = '';
-            }
-          "
-        >
+        <q-btn outline size="1rem" @click="resetAllAns()">
           入力内容をリセット
         </q-btn>
         <q-btn fill color="primary" size="1rem" @click="submitAns()">

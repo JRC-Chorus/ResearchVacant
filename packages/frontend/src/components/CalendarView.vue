@@ -14,6 +14,23 @@ mainStore.initAnsModel(prop.summary);
 
 // 初期生成時点でNGの日付は無効にする
 const firstAllAns = deepcopy(mainStore.ansModel);
+
+/**
+ * 祝日名を取得する
+ */
+function getSpecialHolidayName(idx: number, isWindowSize_gt_sm: boolean) {
+  const thisDay = mainStore.ansModel[idx - 1]?.date;
+
+  if (thisDay) {
+    return mainStore.specialHoliday[thisDay]
+      ? isWindowSize_gt_sm
+        ? mainStore.specialHoliday[thisDay]
+        : '*'
+      : '';
+  }
+
+  return '';
+}
 </script>
 
 <template>
@@ -39,17 +56,7 @@ const firstAllAns = deepcopy(mainStore.ansModel);
           class="text-center text-red"
           style="min-width: 4rem; height: 0.5rem"
         >
-          {{
-            mainStore.specialHoliday[
-              n - mainStore.ansModel.findIndex((a) => !!a) - 1
-            ]
-              ? $q.screen.gt.sm
-                ? mainStore.specialHoliday[
-                    n - mainStore.ansModel.findIndex((a) => !!a) - 1
-                  ]
-                : '*'
-              : ''
-          }}
+          {{ getSpecialHolidayName(n, $q.screen.gt.sm) }}
         </div>
         <DayBox
           v-model="mainStore.ansModel[n - 1]"

@@ -8,3 +8,15 @@ export interface BaseDialogProp {
   onOkClick?: () => void;
   onClose?: () => void;
 }
+
+export interface CheckDialogProp {
+  title: string;
+  message: string;
+  okTxt: string;
+  cancelTxt: string;
+}
+
+export type ShowingDetail = { title: string; desc: string };
+export interface InfoDialogProp {
+  showingDetails: ShowingDetail[];
+}
