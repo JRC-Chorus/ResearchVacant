@@ -55,7 +55,7 @@ const firstAllAns = deepcopy(mainStore.ansModel);
           v-model="mainStore.ansModel[n - 1]"
           :day="n - mainStore.ansModel.findIndex((a) => !!a)"
           :disappear="!mainStore.ansModel[n - 1]"
-          :disable="firstAllAns[n - 1] === 'NG'"
+          :disable="firstAllAns[n - 1]?.ans === 'NG'"
         />
       </div>
     </div>

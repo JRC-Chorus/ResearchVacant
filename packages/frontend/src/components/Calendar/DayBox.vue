@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { AnsStatus } from '@research-vacant/common';
+import { AnsDate, AnsStatus } from '@research-vacant/common';
 
 interface Prop {
   day: number;
@@ -9,16 +8,23 @@ interface Prop {
 }
 const prop = defineProps<Prop>();
 
-const selecter = defineModel<AnsStatus>();
-const classNames = computed({
-  get: () => {
-    const returnClass = [];
-    returnClass.push(prop.disable ? 'disable' : `active-${selecter.value}`);
-    returnClass.push(prop.disappear ? 'disappear' : '');
-    return returnClass.join(' ');
-  },
-  set: (val) => {},
-});
+const selecter = defineModel<AnsDate>();
+const classNames = () => {
+  const returnClass = [];
+  returnClass.push(prop.disable ? 'disable' : `active-${selecter.value?.ans}`);
+  returnClass.push(prop.disappear ? 'disappear' : '');
+  return returnClass.join(' ');
+};
+
+function onClicked() {
+  if (selecter.value) {
+    selecter.value.ans =
+      AnsStatus[
+        (AnsStatus.findIndex((v) => v === selecter.value?.ans) + 1) %
+          AnsStatus.length
+      ];
+  }
+}
 </script>
 
 <template>
@@ -28,17 +34,14 @@ const classNames = computed({
     flat
     :size="$q.screen.gt.xs ? '1.5rem' : '1rem'"
     :disable="disable"
-    @click="
-      selecter =
-        AnsStatus[
-          (AnsStatus.findIndex((v) => v === selecter) + 1) % AnsStatus.length
-        ]
-    "
-    :class="classNames"
+    @click="onClicked()"
+    :class="classNames()"
   >
-    <q-tooltip v-if="selecter === 'OK'"> 参加ＯＫ </q-tooltip>
-    <q-tooltip v-if="selecter === 'Pending'"> 回答保留（可否未定） </q-tooltip>
-    <q-tooltip v-if="selecter === 'NG' && !disable"> 参加ＮＧ </q-tooltip>
+    <q-tooltip v-if="selecter?.ans === 'OK'"> 参加ＯＫ </q-tooltip>
+    <q-tooltip v-if="selecter?.ans === 'Pending'">
+      回答保留（可否未定）
+    </q-tooltip>
+    <q-tooltip v-if="selecter?.ans === 'NG' && !disable"> 参加ＮＧ </q-tooltip>
     <div>
       <q-icon
         v-if="disable"
@@ -48,7 +51,7 @@ const classNames = computed({
         class="absolute-center disable"
       />
       <q-icon
-        v-else-if="selecter === 'OK'"
+        v-else-if="selecter?.ans === 'OK'"
         name="check"
         color="primary"
         :size="$q.screen.gt.xs ? '3rem' : '1.5rem'"
@@ -56,14 +59,14 @@ const classNames = computed({
       >
       </q-icon>
       <q-icon
-        v-else-if="selecter === 'Pending'"
+        v-else-if="selecter?.ans === 'Pending'"
         name="hourglass_empty"
         color="warning"
         :size="$q.screen.gt.xs ? '3rem' : '1.5rem'"
         class="absolute-center"
       />
       <q-icon
-        v-else-if="selecter === 'NG'"
+        v-else-if="selecter?.ans === 'NG'"
         name="close"
         color="negative"
         :size="$q.screen.gt.xs ? '3rem' : '1.5rem'"
