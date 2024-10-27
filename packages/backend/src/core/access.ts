@@ -86,7 +86,7 @@ export function submitAnswers(
   // Check and Get some data
   const ids = parseRecievedIds(params);
   const members = getMembers();
-  if (ids === void 0) {
+  if (ids === void 0 || !isMember(ids.memberId)) {
     throw new Error('Invalid user is accessed');
   }
 

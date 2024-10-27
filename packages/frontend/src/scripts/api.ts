@@ -44,6 +44,12 @@ const mockFuncs: IRun = {
       });
     });
   },
+  submitAnswers(params, ans, freeTxt) {
+    return new Promise((resolve) => {
+      setTimeout(() => {}, 5000);
+      resolve();
+    });
+  },
   getSampleData: function (): Promise<any[][]> {
     throw new Error('Function not implemented.');
   },
@@ -61,13 +67,10 @@ const mockFuncs: IRun = {
 /**
  * 汎用的にGASのAPIを呼び出す
  */
-export const googleScriptRun = import.meta.env.PROD
-  ? google
+export const googleScriptRun =
+  import.meta.env.PROD && google
     ? new Proxy(google.script.run, {
-        get(
-          target,
-          method: keyof typeof google.script.run
-        ) {
+        get(target, method: keyof typeof google.script.run) {
           const mainStore = useMainStore();
           return (...args: any[]) => {
             return new Promise((resolve) => {
@@ -81,25 +84,25 @@ export const googleScriptRun = import.meta.env.PROD
           };
         },
       })
-    : mockFuncs
-  : mockFuncs;
+    : mockFuncs;
 
-const dummyLoc = new Promise<IUrlLocation>((resolve) =>
-  resolve({ hash: '', parameter: {}, parameters: {} })
-);
+// アクセス時のURL情報を返す
+const dummyLoc: IUrlLocation = { hash: '', parameter: {}, parameters: {} };
 export const getURLLocation = () =>
-  import.meta.env.PROD && google
-    ? new Promise<IUrlLocation>((resolve) =>
-        google.script.url.getLocation(resolve)
-      )
-    : dummyLoc;
+  new Promise<IUrlLocation>((resolve) =>
+    import.meta.env.PROD && google
+      ? google.script.url.getLocation(resolve)
+      : resolve(dummyLoc)
+  );
 
 /**
  * 回答した日付をバックエンドに送信し，データベースへの登録を待機する
  */
-// export async function sendVacantDates(dates: Date[]) {
-//   // TODO: datesの情報をバックエンドに送信
+export async function sendVacantDates() {
+  const urlParams = (await getURLLocation()).parameter;
 
-//   // 通信が正常に完了した際にはTrueを返す
-//   return true;
-// }
+  const mainStore = useMainStore();
+  const ans = mainStore.ansModel.filter((a) => a !== void 0);
+
+  await googleScriptRun.submitAnswers(urlParams, ans, mainStore.freeTxt);
+}

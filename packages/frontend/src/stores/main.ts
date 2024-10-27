@@ -1,7 +1,8 @@
 import {
-  AnsStatus,
+  AnsDate,
   AnswerSummary,
   MemberStatus,
+  RvDate,
 } from '@research-vacant/common';
 import dayjs from 'dayjs';
 import { isHoliday } from 'japanese-holidays';
@@ -15,7 +16,7 @@ export const useMainStore = defineStore('mainStore', {
     /** 描画する週（１か月は必ず５週間以内に収まる） */
     showingWeekCount: 5,
     /** フロントエンド用の回答一覧 */
-    ansModel: [] as (AnsStatus | undefined)[],
+    ansModel: [] as (AnsDate | undefined)[],
     /** 祝日記録用 */
     specialHoliday: [] as (string | undefined)[],
     /** 自由記述 */
@@ -76,18 +77,26 @@ export const useMainStore = defineStore('mainStore', {
             this.specialHoliday.push(holidayCheck);
 
             // 期間内の場合は休日を除き回答対象とする
-            if (
-              startDateIdx <= idx &&
-              idx <= endDateIdx &&
-              ![1, 0].includes((idx + 1) % 7)
-            ) {
-              return holidayCheck
-                ? 'NG'
-                : summary.selfAns?.ansDates[idx].ans ?? 'OK';
-            } else {
-              // 期間外の日付はすべてNG扱い
-              return 'NG';
-            }
+            const initAns = () => {
+              if (
+                startDateIdx <= idx &&
+                idx <= endDateIdx &&
+                ![1, 0].includes((idx + 1) % 7)
+              ) {
+                return holidayCheck
+                  ? 'NG'
+                  : summary.selfAns?.ansDates[idx].ans ?? 'OK';
+              } else {
+                // 期間外の日付はすべてNG扱い
+                return 'NG';
+              }
+            };
+            return {
+              date: RvDate.parse(
+                startDate.add(idx - startDateIdx, 'day').format()
+              ),
+              ans: initAns(),
+            };
           }
         }
       );
