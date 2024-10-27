@@ -22,7 +22,7 @@ const mainStore = useMainStore();
             <div class="error-title">{{ mainStore.error?.name ?? title }}</div>
           </q-card-section>
           <q-separator inset class="q-my-md" />
-          <q-card-section style="white-space: pre-line;">
+          <q-card-section style="white-space: pre-line">
             {{ mainStore.error?.message ?? message?.join('\n') }}
           </q-card-section>
         </q-card-section>
