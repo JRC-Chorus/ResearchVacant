@@ -22,12 +22,26 @@ onMounted(async () => {
       <ErrorPage
         v-else-if="status.status === 'invalidUser'"
         title="無効なユーザーです"
-        message=""
+        :message="[
+          'アクセスしたユーザーはこの調査の対象者に含まれていないようです．',
+          '回答を求められているにもかかわらずこの画面が表示される場合は，管理者にお問い合わせください．',
+        ]"
       />
       <ErrorPage
         v-else-if="status.status === 'beforeOpening'"
         title="この調査は回答の収集を開始していません"
-        message=""
+        :message="[
+          'この調査はまだ回答の収集を開始していないようです．',
+          '回答期間になってからこのURLに再度アクセスしてください．',
+        ]"
+      />
+      <ErrorPage
+        v-else-if="status.status === 'judging' && !status.isManager"
+        title="調査結果をもとに開催日を決定中です"
+        :message="[
+          '開催日の決定はＢＯＴの管理者が行っています．',
+          '管理者が開催日を決定するまで，今しばらくお待ちください．',
+        ]"
       />
       <CalendarPage v-else :summary="status.summary" />
     </div>
