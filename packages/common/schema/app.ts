@@ -40,12 +40,13 @@ const MSNoAns = z.object({
   summary: AnswerSummary,
 });
 type MSNoAns = z.infer<typeof MSNoAns>;
-// 管理者による開催日の決定
-const MSManagerJudge = z.object({
-  status: z.enum(['managerJudge']),
+// 管理者による開催日の決定中
+const MSJudging = z.object({
+  status: z.enum(['judging']),
+  isManager: z.boolean(),
   summary: AnswerSummary,
 });
-type MSManagerJudge = z.infer<typeof MSManagerJudge>;
+type MSJudging = z.infer<typeof MSJudging>;
 // 無効なURLでアクセス（セッションIDやメンバーIDが無効なときに使用）
 const MSInvalidUser = z.object({
   status: z.enum(['invalidUser']),
@@ -60,6 +61,6 @@ export type MemberStatus =
   | MSNoAns
   | MSAlreadyAns
   | MSFinished
-  | MSManagerJudge
+  | MSJudging
   | MSInvalidUser
   | MSBeforeOpening;

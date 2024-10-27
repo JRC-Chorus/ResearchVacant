@@ -51,7 +51,8 @@ export function accessManager(params: Record<string, string>): MemberStatus {
     };
   } else if (session.status === 'judge') {
     return {
-      status: 'managerJudge',
+      status: 'judging',
+      isManager: !!getMembers()[ids.memberId].roles?.manager,
       summary: summary,
     };
   } else if (session.status === 'closed') {
