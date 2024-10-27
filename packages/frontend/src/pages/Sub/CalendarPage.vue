@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { useQuasar } from 'quasar';
 import { AnswerSummary } from '@research-vacant/common';
 import dayjs from 'dayjs';
 import CalendarView from 'src/components/CalendarView.vue';
+import AnsSendingDialog from 'src/components/Dialogs/AnsSendingDialog.vue';
 import IndentLine from 'src/components/utils/IndentLine.vue';
 import { useMainStore } from 'src/stores/main';
 
@@ -10,6 +12,7 @@ interface Prop {
 }
 const prop = defineProps<Prop>();
 
+const $q = useQuasar();
 const mainStore = useMainStore();
 
 const startDate = dayjs(prop.summary.ansDates[0].date);
@@ -18,6 +21,12 @@ const endDate = dayjs(
   prop.summary.ansDates[prop.summary.ansDates.length - 1].date
 );
 const showingDateFormat = 'YYYY年MM月DD日';
+
+function submitAns() {
+  $q.dialog({
+    component: AnsSendingDialog,
+  });
+}
 </script>
 
 <template>
@@ -101,8 +110,9 @@ const showingDateFormat = 'YYYY年MM月DD日';
         >
           入力内容をリセット
         </q-btn>
-        <!-- TODO: 回答提出機能を実装 -->
-        <q-btn fill color="primary" size="1rem"> 回答を提出 </q-btn>
+        <q-btn fill color="primary" size="1rem" @click="submitAns()">
+          回答を提出
+        </q-btn>
       </div>
     </q-card-actions>
   </q-card>

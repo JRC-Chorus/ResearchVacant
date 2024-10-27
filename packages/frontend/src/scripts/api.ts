@@ -46,8 +46,7 @@ const mockFuncs: IRun = {
   },
   submitAnswers(params, ans, freeTxt) {
     return new Promise((resolve) => {
-      setTimeout(() => {}, 5000);
-      resolve();
+      setTimeout(resolve, 5000);
     });
   },
   getSampleData: function (): Promise<any[][]> {
