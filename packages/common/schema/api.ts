@@ -1,4 +1,5 @@
 import { MemberStatus } from './app';
+import { AnsDate } from './db/answer';
 
 export interface FrontAPI {
   /** フロントエンドを描画 */
@@ -10,6 +11,12 @@ export interface FrontAPI {
 
   /** フロントエンドからのアクセスに対するレスポンスを定義 */
   accessManager: (params: Record<string, string>) => MemberStatus;
+  /** フロントエンドから回答を登録する */
+  submitAnswers: (
+    params: Record<string, string>,
+    ans: AnsDate[],
+    freeTxt: string
+  ) => void;
 
   /** SpreadSheetからサンプルデータを取得 */
   getSampleData: () => any[][];

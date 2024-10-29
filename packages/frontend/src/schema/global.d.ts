@@ -1,6 +1,15 @@
-import { FrontAPI } from '../../../backend/src/schema/api';
+import { FrontAPI } from '@research-vacant/common';
 
-type IRun = FrontAPI & {
+/**
+ * 与えた型定義に含まれる関数の戻り値をPromiseに変更する
+ */
+type Asyncify<T> = {
+  [K in keyof T]: T[K] extends (...args: any[]) => infer R
+    ? (...args: Parameters<T[K]>) => Promise<R>
+    : T[K];
+};
+
+export type IRun = Asyncify<FrontAPI> & {
   /**
    * Sets a callback function to run if the server-side function throws an exception. Without a failure handler, failures are logged to the JavaScript console. To override this, call withFailureHandler(null) or supply a failure handler that does nothing.
    * @param callback a client-side callback function to run if the server-side function throws an exception; the Error object is passed to the function as the first argument, and the user object (if any) is passed as a second argument
@@ -18,7 +27,7 @@ type IRun = FrontAPI & {
   withUserObject: (object: object) => IRun;
 };
 
-type IUrlLocation = {
+export type IUrlLocation = {
   /**
    * The string value of URL fragment after the # character, or an emptry string if no URL fragment is present
    */

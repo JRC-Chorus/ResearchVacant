@@ -1,6 +1,13 @@
-import { RvDate } from 'backend/schema/db/common';
-import { Session, SessionID, SessionStatus } from 'backend/schema/db/session';
-import { fromEntries, keys, toEntries, values } from 'backend/utils/obj/obj';
+import {
+  fromEntries,
+  keys,
+  RvDate,
+  Session,
+  SessionID,
+  SessionStatus,
+  toEntries,
+  values,
+} from '@research-vacant/common';
 import { getSheet } from './common';
 
 const SESSION_SHEET_NAME = 'セッション一覧';

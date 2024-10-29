@@ -47,6 +47,8 @@ export type AnsSummaryDate = z.infer<typeof AnsSummaryDate>;
 export const AnswerSummary = z.object({
   /** 当該セッションにおける回答一覧 */
   ansDates: AnsSummaryDate.array(),
+  /** 自身の回答記録（再回答時等に利用） */
+  selfAns: Answer.optional(),
   /** 自由記述一覧 */
   freeTxts: z
     .object({

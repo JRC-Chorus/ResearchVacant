@@ -6,7 +6,8 @@
     "build": "node .\\src\\bin\\deploy.js & copy .\\appsscript.json ..\\..\\dist\\appsscript.json"
   },
   "dependencies": {
-    "dayjs": "^1.11.13"
+    "dayjs": "^1.11.13",
+    "@research-vacant/common": "^0.0.1"
   },
   "devDependencies": {
     "@google/clasp": "^2.4.2",

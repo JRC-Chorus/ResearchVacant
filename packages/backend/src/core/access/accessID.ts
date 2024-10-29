@@ -1,10 +1,15 @@
-import { AccessID, UrlParams } from 'backend/schema/app';
-import { MemberID } from 'backend/schema/db/member';
-import { SessionID } from 'backend/schema/db/session';
+import {
+  AccessID,
+  fromEntries,
+  keys,
+  MemberID,
+  SessionID,
+  toEntries,
+  UrlParams,
+} from '@research-vacant/common';
 import { getConfig } from 'backend/source/spreadsheet/config';
 import { getMembers } from 'backend/source/spreadsheet/members';
 import { getSessions } from 'backend/source/spreadsheet/session';
-import { fromEntries, keys, toEntries } from 'backend/utils/obj/obj';
 
 /**
  * セッションIDとメンバーIDからURLに載せるアクセスIDを生成する
@@ -16,7 +21,16 @@ export function encodeAccessID(sessionId: SessionID, memberId: MemberID) {
     Utilities.DigestAlgorithm.MD5,
     `${sessionId}:${memberId}`
   );
-  return Utilities.newBlob(byteAid).getDataAsString();
+
+  // convert 16bit string
+  let txtHash = '';
+  for (let j = 0; j < byteAid.length; j++) {
+    let hashVal = byteAid[j];
+    if (hashVal < 0) hashVal += 256;
+    if (hashVal.toString(16).length == 1) txtHash += '0';
+    txtHash += hashVal.toString(16);
+  }
+  return txtHash;
 }
 
 type DecodeResult = { sessionId: SessionID; memberId: MemberID };
@@ -69,6 +83,28 @@ export function getAnswerURL(sessionId: SessionID, memberId: MemberID) {
 if (import.meta.vitest) {
   const { test, expect } = import.meta.vitest;
 
+  test('encodeAccessID', async () => {
+    const { Utilities } = await import('@research-vacant/mock');
+    global.Utilities = new Utilities();
+
+    // encode code
+    const byteAid = global.Utilities.computeDigest(
+      global.Utilities.DigestAlgorithm.MD5,
+      'input to hash'
+    );
+
+    // convert 16bit string
+    let txtHash = '';
+    for (let j = 0; j < byteAid.length; j++) {
+      let hashVal = byteAid[j];
+      if (hashVal < 0) hashVal += 256;
+      if (hashVal.toString(16).length == 1) txtHash += '0';
+      txtHash += hashVal.toString(16);
+    }
+
+    expect(txtHash).toBe('f0ec9040ced18a668f46905edecf7599');
+  });
+
   test('decodeAccessID', async () => {
     const { Utilities, SpreadsheetApp } = await import('@research-vacant/mock');
     global.Utilities = new Utilities();
@@ -91,7 +127,7 @@ if (import.meta.vitest) {
     });
 
     // get sample member's data
-    const { values } = await import('backend/utils/obj/obj');
+    const { values } = await import('@research-vacant/common');
     const sampleMember = values(getMembers())[0];
 
     // start sample session

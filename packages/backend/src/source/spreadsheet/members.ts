@@ -1,5 +1,12 @@
-import { Member, MemberID, Role } from 'backend/schema/db/member';
-import { fromEntries, keys, toEntries, values } from 'backend/utils/obj/obj';
+import {
+  fromEntries,
+  keys,
+  Member,
+  MemberID,
+  Role,
+  toEntries,
+  values,
+} from '@research-vacant/common';
 import { getSheet } from './common';
 import { getConfig } from './config';
 

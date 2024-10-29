@@ -1,5 +1,4 @@
-import { UrlParams } from 'backend/schema/app';
-import { keys } from 'backend/utils/obj/obj';
+import { keys, UrlParams } from '@research-vacant/common';
 
 /**
  * 取得したパラメータをフロントに渡す形に整形して返す

@@ -1,8 +1,11 @@
+import {
+  AnsDate,
+  Answer,
+  MemberStatus,
+  PartyInfo,
+  SessionID,
+} from '@research-vacant/common';
 import dayjs from 'dayjs';
-import { MemberStatus } from 'backend/schema/app';
-import { AnsDate, Answer } from 'backend/schema/db/answer';
-import { PartyInfo } from 'backend/schema/db/records';
-import { SessionID } from 'backend/schema/db/session';
 import {
   getAnsweredMemberIDs,
   getAnswerSummary,
@@ -27,7 +30,7 @@ export function accessManager(params: Record<string, string>): MemberStatus {
 
   const answerIds = getAnsweredMemberIDs(ids.sessionId);
   const session = getSessions()[ids.sessionId];
-  const summary = getAnswerSummary(session);
+  const summary = getAnswerSummary(session, ids.memberId);
 
   if (session.status === 'ready') {
     return {
@@ -48,7 +51,8 @@ export function accessManager(params: Record<string, string>): MemberStatus {
     };
   } else if (session.status === 'judge') {
     return {
-      status: 'managerJudge',
+      status: 'judging',
+      isManager: !!getMembers()[ids.memberId].roles?.manager,
       summary: summary,
     };
   } else if (session.status === 'closed') {
@@ -83,7 +87,7 @@ export function submitAnswers(
   // Check and Get some data
   const ids = parseRecievedIds(params);
   const members = getMembers();
-  if (ids === void 0) {
+  if (ids === void 0 || !isMember(ids.memberId)) {
     throw new Error('Invalid user is accessed');
   }
 
@@ -140,7 +144,7 @@ if (import.meta.vitest) {
     });
 
     // get sample member's data
-    const { values } = await import('backend/utils/obj/obj');
+    const { values } = await import('@research-vacant/common');
     const sampleMember = values(getMembers())[0];
 
     // start sample session
@@ -174,7 +178,7 @@ if (import.meta.vitest) {
     });
 
     // create answer
-    const { RvDate } = await import('backend/schema/db/common');
+    const { RvDate } = await import('@research-vacant/common');
     const _ans1 = ['OK', 'NG', 'OK'] as const;
     const _ans2 = ['NG', 'NG', 'OK'] as const;
     const genSampleAns: (ans: typeof _ans1 | typeof _ans2) => AnsDate[] = (

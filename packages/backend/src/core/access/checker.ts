@@ -1,8 +1,6 @@
-import { MemberID } from 'backend/schema/db/member';
-import { SessionID } from 'backend/schema/db/session';
+import { keys, MemberID, SessionID } from '@research-vacant/common';
 import { getMembers } from 'backend/source/spreadsheet/members';
 import { getUrlParams } from 'backend/source/urlParam';
-import { keys } from 'backend/utils/obj/obj';
 import { decodeAccessID } from './accessID';
 
 let cachedIds: { sessionId: SessionID; memberId: MemberID } | undefined;

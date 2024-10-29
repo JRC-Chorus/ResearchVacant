@@ -1,7 +1,7 @@
 /**
  * 調査終了時の処理を実装する
  */
-import { SessionID } from 'backend/schema/db/session';
+import { SessionID } from '@research-vacant/common';
 import { deleteSheet } from 'backend/source/spreadsheet/common';
 import { deleteSession } from 'backend/source/spreadsheet/session';
 

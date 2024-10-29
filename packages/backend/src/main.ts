@@ -1,8 +1,8 @@
+import { FrontAPI } from '@research-vacant/common';
 import { accessManager } from './core/access';
 import { migrateEnv } from './core/migrate';
 import { constructHomePage } from './core/page';
 import { researchManager } from './core/research';
-import { FrontAPI } from './schema/api';
 import { getSampleData } from './source/spreadsheet/sample';
 
 declare const global: FrontAPI;
