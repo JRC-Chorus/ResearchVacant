@@ -38,3 +38,5 @@ yarn-error.log*
 
 # secrets
 .clasp.json
+packages/backend/src/source/places/*.ts
+!packages/backend/src/source/places/base.ts
