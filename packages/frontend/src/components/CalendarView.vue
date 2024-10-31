@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { AnswerSummary, deepcopy } from '@research-vacant/common';
+import { AnswerSummary, CheckedOuterPlace } from '@research-vacant/common';
 import { useMainStore } from 'src/stores/main';
+import ApproveDayBox from './Calendar/ApproveDayBox.vue';
 import DayBox from './Calendar/DayBox.vue';
+import { isEnableDate } from './Calendar/script';
 
 interface Prop {
   summary: AnswerSummary;
+  places?: CheckedOuterPlace[];
 }
 const prop = defineProps<Prop>();
 
 const youbi = ['日', '月', '火', '水', '木', '金', '土'];
 const mainStore = useMainStore();
 mainStore.initAnsModel(prop.summary);
-
-// 初期生成時点でNGの日付は無効にする
-const firstAllAns = deepcopy(mainStore.ansModel);
 
 /**
  * 祝日名を取得する
@@ -58,11 +58,19 @@ function getSpecialHolidayName(idx: number, isWindowSize_gt_sm: boolean) {
         >
           {{ getSpecialHolidayName(n, $q.screen.gt.sm) }}
         </div>
-        <DayBox
+        <ApproveDayBox
+          v-if="places"
           v-model="mainStore.ansModel[n - 1]"
           :day="n - mainStore.ansModel.findIndex((a) => !!a)"
           :disappear="!mainStore.ansModel[n - 1]"
-          :disable="firstAllAns[n - 1]?.ans === 'NG'"
+          :disable="!isEnableDate(summary, mainStore.ansModel[n - 1]?.date)"
+        />
+        <DayBox
+          v-else
+          v-model="mainStore.ansModel[n - 1]"
+          :day="n - mainStore.ansModel.findIndex((a) => !!a)"
+          :disappear="!mainStore.ansModel[n - 1]"
+          :disable="!isEnableDate(summary, mainStore.ansModel[n - 1]?.date)"
         />
       </div>
     </div>
