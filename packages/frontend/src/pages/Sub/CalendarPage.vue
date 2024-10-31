@@ -27,13 +27,12 @@ const startDate = dayjs(prop.summary.ansDates[0].date);
 const endDate = dayjs(
   prop.summary.ansDates[prop.summary.ansDates.length - 1].date
 );
-const showingDateFormat = 'YYYY年MM月DD日';
 
 const showingDetails: ShowingDetail[] = [
   {
     title: '回答期間',
-    desc: `${startDate.format(showingDateFormat)} ～ ${endDate.format(
-      showingDateFormat
+    desc: `${startDate.format(mainStore.showingDateFormat)} ～ ${endDate.format(
+      mainStore.showingDateFormat
     )}`,
   },
   {

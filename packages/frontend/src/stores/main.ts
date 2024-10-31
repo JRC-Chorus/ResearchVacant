@@ -23,6 +23,8 @@ export const useMainStore = defineStore('mainStore', {
     freeTxt: '',
     /** 再読み込み可能か */
     isEnableReload: false,
+    /** 日付の標準フォーマット */    
+    showingDateFormat: 'YYYY年MM月DD日',
     /** バックエンドとの通信でエラーがあった場合に格納 */
     error: null as Error | null,
   }),
