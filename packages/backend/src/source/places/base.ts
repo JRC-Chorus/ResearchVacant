@@ -8,6 +8,8 @@ export abstract class Place {
   abstract placeName: string;
   /** 施設情報に関するURL（地図や公式HP等） */
   abstract placeURL?: string;
+  /** 予約が必要な施設か？（必要な場合，予約を促すダイアログを表示する） */
+  abstract isNeedReserve: boolean;
 
   /** 取得する日付の範囲 */
   protected targetDateRange: DateRange;
@@ -29,12 +31,22 @@ export abstract class Place {
 }
 
 /**
+ * 指定した日付の区間における施設利用可否情報を含む施設情報を返す
+ * 
+ * TODO: 運用コードに差替え
+ */
+export async function loadPlaces(targetDateRange: DateRange) {
+  return [new SamplePlace(targetDateRange)]
+}
+
+/**
  * 開催場所の定義サンプル
  */
 class SamplePlace extends Place {
   placeName: string = '部室（サンプル開催場所）';
   placeURL?: string | undefined =
     'https://github.com/JRC-Chorus/ResearchVacant';
+  isNeedReserve: boolean = false;
 
   async getVacantInfo(): Promise<AnsDate[]> {
     // 対象の日付一覧を取得
