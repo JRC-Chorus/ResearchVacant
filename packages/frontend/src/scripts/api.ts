@@ -14,8 +14,8 @@ const mockFuncs: IRun = {
   },
   accessManager: function (
     params: Record<string, string>
-  ): Promise<MemberStatus> {
-    return new Promise((resolve) => {
+  ): Promise<Promise<MemberStatus>> {
+    const target = new Promise<MemberStatus>((resolve) => {
       resolve({
         status: 'noAns',
         summary: {
@@ -42,6 +42,10 @@ const mockFuncs: IRun = {
           freeTxts: [],
         },
       });
+    });
+
+    return new Promise((resolve) => {
+      resolve(target);
     });
   },
   submitAnswers(params, ans, freeTxt) {

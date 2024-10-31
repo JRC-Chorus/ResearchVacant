@@ -10,7 +10,7 @@ export interface FrontAPI {
   researchManager: () => void;
 
   /** フロントエンドからのアクセスに対するレスポンスを定義 */
-  accessManager: (params: Record<string, string>) => MemberStatus;
+  accessManager: (params: Record<string, string>) => Promise<MemberStatus>;
   /** フロントエンドから回答を登録する */
   submitAnswers: (
     params: Record<string, string>,

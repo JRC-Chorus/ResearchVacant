@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import { updateSession } from 'backend/source/spreadsheet/session';
 import { sessionChecker } from './research/checker';
 import { sendJudgeCandidate } from './research/decideHoldingDate';
-import { sendRemindMail } from './research/remindResearch';
+import { sendRemind } from './research/remindResearch';
 import { startSession } from './research/startResearch';
 
 /**
@@ -32,7 +32,7 @@ export function researchManager() {
       dayjs().diff(session.remindDate, 'day') === 0 &&
       session.status === 'opening'
     ) {
-      sendRemindMail(session.id);
+      sendRemind(session.id);
     }
     // 管理者へ候補日の案内（'opening' -> 'judge'）
     // if(本日の日付＞セッションの終了日＆ステータス＝'opening')

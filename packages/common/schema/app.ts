@@ -2,8 +2,9 @@
  * フロントエンドとの通信に関連のある型定義をおく
  */
 import { z } from 'zod';
-import { AnswerSummary, SummaryAnswers } from './db/answer';
+import { AnsDate, AnswerSummary, SummaryAnswers } from './db/answer';
 import { RvDate } from './db/common';
+import { OuterPlace } from './db/records';
 
 export const AccessID = z.string();
 export type AccessID = z.infer<typeof AccessID>;
@@ -13,9 +14,24 @@ export const UrlParams = z.object({
 });
 export type UrlParams = z.infer<typeof UrlParams>;
 
+export const CheckedOuterPlace = z.object({
+  /** 施設名 */
+  placeName: z.string(),
+  /** 施設情報に関するURL（地図や公式HP等） */
+  placeURL: z.string().optional(),
+  /** 予約が必要な施設か？（必要な場合，予約を促すダイアログを表示する） */
+  isNeedReserve: z.boolean(),
+  /** 予約状況 */
+  vacantInfo: AnsDate.array(),
+});
+export type CheckedOuterPlace = z.infer<typeof CheckedOuterPlace>;
+
 export const PartyDate = z.object({
+  /** イベントの開催日 */
   date: RvDate,
-  pos: z.string().optional(),
+  /** 開催場所 */
+  pos: OuterPlace,
+  /** 開催日の回答状況 */
   ans: SummaryAnswers,
 });
 export type PartyDate = z.infer<typeof PartyDate>;
@@ -45,6 +61,7 @@ const MSJudging = z.object({
   status: z.enum(['judging']),
   isManager: z.boolean(),
   summary: AnswerSummary,
+  places: CheckedOuterPlace.array(),
 });
 type MSJudging = z.infer<typeof MSJudging>;
 // 無効なURLでアクセス（セッションIDやメンバーIDが無効なときに使用）

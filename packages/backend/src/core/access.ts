@@ -6,6 +6,7 @@ import {
   SessionID,
 } from '@research-vacant/common';
 import dayjs from 'dayjs';
+import { loadPlaces } from 'backend/source/places/base';
 import {
   getAnsweredMemberIDs,
   getAnswerSummary,
@@ -22,7 +23,9 @@ import { isMember, parseRecievedIds } from './access/checker';
 /**
  * フロントエンドからのアクセスがあったときに，当該アクセスに対するレスポンスを定義
  */
-export function accessManager(params: Record<string, string>): MemberStatus {
+export async function accessManager(
+  params: Record<string, string>
+): Promise<MemberStatus> {
   const ids = parseRecievedIds(params);
   if (ids === void 0 || !isMember(ids.memberId)) {
     return { status: 'invalidUser' };
@@ -50,10 +53,22 @@ export function accessManager(params: Record<string, string>): MemberStatus {
       summary: summary,
     };
   } else if (session.status === 'judge') {
+    const targetPlaces = loadPlaces(ids.sessionId);
+    const placeObjs = await Promise.all(
+      targetPlaces.map(async (p) => {
+        return {
+          placeName: p.placeName,
+          placeURL: p.placeURL,
+          isNeedReserve: p.isNeedReserve,
+          vacantInfo: await p.getVacantInfo(),
+        };
+      })
+    );
     return {
       status: 'judging',
       isManager: !!getMembers()[ids.memberId].roles?.manager,
       summary: summary,
+      places: placeObjs,
     };
   } else if (session.status === 'closed') {
     const targetRecord = getPartys()[ids.sessionId];
@@ -163,15 +178,15 @@ if (import.meta.vitest) {
     const { encodeAccessID } = await import('./access/accessID');
     const accessId = encodeAccessID(sampleSession.id, sampleMember.id);
 
-    test('invalid AccessID', () => {
-      const memberStatus = accessManager({
+    test('invalid AccessID', async () => {
+      const memberStatus = await accessManager({
         aId: 'INVALID ACCESS-ID',
       });
       expect(memberStatus.status).toBe('invalidUser');
     });
 
-    test('not answer yet', () => {
-      const memberStatus = accessManager({
+    test('not answer yet', async () => {
+      const memberStatus = await accessManager({
         aId: accessId,
       });
       expect(memberStatus.status).toBe('noAns');
@@ -198,18 +213,18 @@ if (import.meta.vitest) {
       });
     const sampleAnswerTxt = 'Dummy free text';
 
-    test('regist answer', () => {
+    test('regist answer', async () => {
       submitAnswers({ aId: accessId }, genSampleAns(_ans1), sampleAnswerTxt);
 
-      const memberStatus = accessManager({
+      const memberStatus = await accessManager({
         aId: accessId,
       });
       expect(memberStatus.status).toBe('alreadyAns');
     });
 
-    test('answer again', () => {
+    test('answer again', async () => {
       // 変更前
-      const memberStatus = accessManager({
+      const memberStatus = await accessManager({
         aId: accessId,
       });
       expect(memberStatus.status).toBe('alreadyAns');
@@ -223,7 +238,7 @@ if (import.meta.vitest) {
 
       // 回答を変更
       submitAnswers({ aId: accessId }, genSampleAns(_ans2), sampleAnswerTxt);
-      const memberStatus2 = accessManager({
+      const memberStatus2 = await accessManager({
         aId: accessId,
       });
       expect(memberStatus2.status).toBe('alreadyAns');

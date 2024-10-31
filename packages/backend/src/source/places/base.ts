@@ -1,5 +1,6 @@
-import { AnsDate, RvDate } from '@research-vacant/common';
+import { AnsDate, RvDate, SessionID } from '@research-vacant/common';
 import dayjs, { Dayjs } from 'dayjs';
+import { getSessions } from '../spreadsheet/session';
 
 type DateRange = [RvDate, RvDate];
 
@@ -32,11 +33,16 @@ export abstract class Place {
 
 /**
  * 指定した日付の区間における施設利用可否情報を含む施設情報を返す
- * 
+ *
  * TODO: 運用コードに差替え
  */
-export async function loadPlaces(targetDateRange: DateRange) {
-  return [new SamplePlace(targetDateRange)]
+export function loadPlaces(sessionId: SessionID) {
+  const targetSessoin = getSessions()[sessionId];
+  const targetDateRange: DateRange = [
+    targetSessoin.researchRangeStart,
+    targetSessoin.researchRangeEnd,
+  ];
+  return [new SamplePlace(targetDateRange)];
 }
 
 /**
