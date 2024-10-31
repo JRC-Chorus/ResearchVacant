@@ -2,6 +2,7 @@
 import { onMounted, Ref, ref } from 'vue';
 import { MemberStatus } from '@research-vacant/common';
 import { useMainStore } from 'src/stores/main';
+import ApprovePage from './Sub/ApprovePage.vue';
 import CalendarPage from './Sub/CalendarPage.vue';
 import ErrorPage from './Sub/ErrorPage.vue';
 import LoadingPage from './Sub/LoadingPage.vue';
@@ -42,6 +43,11 @@ onMounted(async () => {
           '開催日の決定はＢＯＴの管理者が行っています．',
           '管理者が開催日を決定するまで，今しばらくお待ちください．',
         ]"
+      />
+      <ApprovePage
+        v-else-if="status.status === 'judging'"
+        :summary="status.summary"
+        :places="status.places"
       />
       <CalendarPage v-else :summary="status.summary" />
     </div>
