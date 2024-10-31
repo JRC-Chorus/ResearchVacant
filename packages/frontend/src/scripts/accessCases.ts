@@ -11,26 +11,6 @@ import {
 } from '@research-vacant/common';
 
 /**
- * ダミーメンバー
- */
-const sampleMember: Member = {
-  id: MemberID.parse('1ef26ba4-f7b6-4616-9da6-263223fef29b'),
-  firstName: 'サンプル',
-  lastName: '太郎',
-  mailAddress: 'sample-taro@email.com',
-};
-
-/**
- * ダミー施設
- */
-const samplePlace: CheckedOuterPlace = {
-  placeName: 'サンプル施設',
-  placeURL: 'https://github.com/JRC-Chorus/ResearchVacant',
-  isNeedReserve: true,
-  vacantInfo: getRandomAns(),
-};
-
-/**
  * 回答対象日
  */
 const defaultAnsDates: AnswerSummary['ansDates'] = [
@@ -53,6 +33,26 @@ const defaultAnsDates: AnswerSummary['ansDates'] = [
   { date: RvDate.parse('2024-10-17'), ans: [] },
   { date: RvDate.parse('2024-10-18'), ans: [] },
 ];
+
+/**
+ * ダミーメンバー
+ */
+const sampleMember: Member = {
+  id: MemberID.parse('1ef26ba4-f7b6-4616-9da6-263223fef29b'),
+  firstName: 'サンプル',
+  lastName: '太郎',
+  mailAddress: 'sample-taro@email.com',
+};
+
+/**
+ * ダミー施設
+ */
+const samplePlace: CheckedOuterPlace = {
+  placeName: 'サンプル施設',
+  placeURL: 'https://github.com/JRC-Chorus/ResearchVacant',
+  isNeedReserve: true,
+  vacantInfo: getRandomAns(),
+};
 
 /**
  * デフォルトで指定した日付群に対して，適当な回答を付与した回答群を生成
