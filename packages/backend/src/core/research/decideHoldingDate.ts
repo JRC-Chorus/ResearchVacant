@@ -9,19 +9,17 @@ import { getMembers } from 'backend/source/spreadsheet/members';
  * 調査結果をもとにした候補日の承認を管理者に問い合わせる
  */
 export function sendJudgeCandidate(sessionId: SessionID) {
-  const fullMembers=  values(getMembers())
-  const managerMembers = fullMembers.filter(
-    (member) => member.roles?.manager
-  );
+  const fullMembers = values(getMembers());
+  const managerMembers = fullMembers.filter((member) => member.roles?.manager);
 
   // 管理者が登録されていない場合は一番上のメンバーを管理者と仮定する
   if (managerMembers.length === 0) {
-    managerMembers.push(fullMembers[0])
+    managerMembers.push(fullMembers[0]);
   }
 
-  managerMembers.forEach(m => {
-    sendApproveMail(sessionId, m)
-  })
+  managerMembers.forEach((m) => {
+    sendApproveMail(sessionId, m);
+  });
 }
 
 /**
