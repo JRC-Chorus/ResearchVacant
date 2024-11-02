@@ -116,7 +116,7 @@ function resetAllAns() {
           </div>
         </div>
         <div style="max-width: min(90vw, 50rem); margin: 0 auto">
-          <CalendarView :summary="summary" />
+          <CalendarView :summary="summary" :places="places" />
         </div>
       </div>
 
