@@ -15,8 +15,7 @@ export function isEnableDate(summary: AnswerSummary, date?: RvDate): boolean {
   const startDay = dayjs(summary.ansDates[0].date);
   const endDay = dayjs(summary.ansDates[summary.ansDates.length - 1].date);
   const isInnerDateRange =
-    startDay.diff(targetDay, 'date') <= 0 &&
-    endDay.diff(targetDay, 'date') >= 0;
+    targetDay.isAfter(startDay, 'date') && targetDay.isBefore(endDay, 'date');
 
   // 休日か
   const mainStore = useMainStore();
