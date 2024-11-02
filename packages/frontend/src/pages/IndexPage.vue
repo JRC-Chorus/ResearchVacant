@@ -38,9 +38,9 @@ onMounted(async () => {
       />
       <ErrorPage
         v-else-if="status.status === 'judging' && !status.isManager"
-        title="調査結果をもとに開催日を決定中です"
+        title="開催日を決定中です"
         :message="[
-          '開催日の決定はＢＯＴの管理者が行っています．',
+          '開催日の決定は調査結果をもとにＢＯＴの管理者が行っています．',
           '管理者が開催日を決定するまで，今しばらくお待ちください．',
         ]"
       />
