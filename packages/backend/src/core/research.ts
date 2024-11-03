@@ -19,7 +19,7 @@ export function researchManager() {
     // 新規でセッションを開始（'ready' -> 'opening'）
     // if(今日の日付＞セッションの開始日＆ステータス＝'ready')
     if (
-      dayjs().isAfter(session.startDate, 'day') &&
+      dayjs().diff(session.startDate, 'day') >= 0 &&
       session.status === 'ready'
     ) {
       startSession(session.id);
@@ -37,7 +37,7 @@ export function researchManager() {
     // 管理者へ候補日の案内（'opening' -> 'judge'）
     // if(本日の日付＞セッションの終了日＆ステータス＝'opening')
     else if (
-      dayjs().isAfter(session.endDate, 'day') &&
+      dayjs().diff(session.endDate, 'day') >= 0 &&
       session.status === 'opening'
     ) {
       sendJudgeCandidate(session.id);
