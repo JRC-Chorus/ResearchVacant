@@ -45,7 +45,7 @@ function getSpecialHolidayName(idx: number, isWindowSize_gt_sm: boolean) {
         {{ youbi[n - 1] }}
       </div>
     </div>
-    <div class="row q-gutter-x-none q-gutter-y-md">
+    <div class="row q-gutter-y-md" style="margin-left: -3px;">
       <div
         v-for="n in 7 * mainStore.showingWeekCount"
         :key="`none-${n}`"
@@ -60,7 +60,7 @@ function getSpecialHolidayName(idx: number, isWindowSize_gt_sm: boolean) {
         </div>
         <ApproveDayBox
           v-if="places"
-          :day="n - mainStore.ansModel.findIndex((a) => !!a)"
+          :date="mainStore.ansModel[n - 1]?.date"
           :disappear="!mainStore.ansModel[n - 1]"
           :disable="!isEnableDate(summary, mainStore.ansModel[n - 1]?.date)"
           :ans-dates="summary.ansDates"

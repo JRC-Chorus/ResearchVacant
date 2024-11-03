@@ -92,6 +92,7 @@ function resetAllAns() {
 </script>
 
 <template>
+  <!-- TODO: 管理者は承認ページを開いて調査を終了させることができるようにする -->
   <q-card flat class="col column">
     <q-card-section class="col column items-center">
       <div class="col"></div>
