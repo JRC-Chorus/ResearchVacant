@@ -1,8 +1,7 @@
 import { SessionID, values } from '@research-vacant/common';
+import { sendAnnounceMail } from 'backend/source/mail';
 import { initAnsRecordSheet } from 'backend/source/spreadsheet/answers';
-import { getConfig } from 'backend/source/spreadsheet/config';
 import { getMembers } from 'backend/source/spreadsheet/members';
-import { getAnswerURL } from '../access/accessID';
 
 /**
  * 調査開始
@@ -12,23 +11,13 @@ export function startSession(sessionId: SessionID) {
   initAnsRecordSheet(sessionId);
 
   // 案内メールの送付
-  sendAnnounceMail(sessionId);
+  sendAnnounce(sessionId);
 }
 
 /**
  * 部員全員に案内メールを送信する
  */
-function sendAnnounceMail(sessionId: SessionID) {
+function sendAnnounce(sessionId: SessionID) {
   const members = values(getMembers());
-  const config = getConfig();
-
-  members.forEach((m) =>
-    GmailApp.sendEmail(
-      m.mailAddress,
-      config.announceAnswerMailSubject,
-      `${config.announceAnswerMail}\n\n
-      【回答用サイトリンク】\n
-      ${getAnswerURL(sessionId, m.id)}`
-    )
-  );
+  members.forEach((m) => sendAnnounceMail(sessionId, m));
 }

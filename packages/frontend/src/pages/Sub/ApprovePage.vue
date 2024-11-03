@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { AnswerSummary } from '@research-vacant/common';
+import { AnswerSummary, CheckedOuterPlace } from '@research-vacant/common';
 import dayjs from 'dayjs';
 import CalendarView from 'src/components/CalendarView.vue';
 import AnsSendingDialog from 'src/components/Dialogs/AnsSendingDialog.vue';
@@ -16,25 +16,14 @@ import { useMainStore } from 'src/stores/main';
 
 interface Prop {
   summary: AnswerSummary;
+  places: CheckedOuterPlace[];
 }
 const prop = defineProps<Prop>();
 
 const $q = useQuasar();
 const mainStore = useMainStore();
 
-const startDate = dayjs(prop.summary.ansDates[0].date);
-// TODO: 「終了日＝開始日＋回答期間の日数」に変更
-const endDate = dayjs(
-  prop.summary.ansDates[prop.summary.ansDates.length - 1].date
-);
-
 const showingDetails: ShowingDetail[] = [
-  {
-    title: '回答期間',
-    desc: `${startDate.format(mainStore.showingDateFormat)} ～ ${endDate.format(
-      mainStore.showingDateFormat
-    )}`,
-  },
   {
     title: '開催回数',
     // TODO: データベースにこの項目が記録できるフィールドを追加し，MemberSummaryから取得できるようにする
@@ -79,7 +68,7 @@ function resetAllAns() {
     componentProps: {
       title: '入力内容のリセット',
       message:
-        '回答済みの参加可否の情報やフリーテキストの入力データがリセットされます．\n入力内容を削除してもよろしいですか．',
+        '決定済みの開催情報がリセットされます．\n入力内容を削除してもよろしいですか．',
       okTxt: 'ＯＫ',
       cancelTxt: 'キャンセル',
     } as CheckDialogProp,
@@ -113,10 +102,10 @@ function resetAllAns() {
               @click="showInfoDialog()"
             />
           </div>
-          <p>空き日程をカレンダーよりご回答ください．</p>
+          <p>回答結果をもとに開催日を決定してください．</p>
 
           <div class="gt-md">
-            <h2><u>調整＆開催日の詳細情報</u></h2>
+            <h2><u>開催日の詳細情報</u></h2>
             <ul>
               <li v-for="detail in showingDetails" :key="detail.title">
                 <IndentLine :title="detail.title" max-width="10rem">
@@ -127,7 +116,7 @@ function resetAllAns() {
           </div>
         </div>
         <div style="max-width: min(90vw, 50rem); margin: 0 auto">
-          <CalendarView :summary="summary" />
+          <CalendarView :summary="summary" :places="places" />
         </div>
       </div>
 

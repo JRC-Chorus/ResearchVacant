@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import { updateSession } from 'backend/source/spreadsheet/session';
 import { sessionChecker } from './research/checker';
 import { sendJudgeCandidate } from './research/decideHoldingDate';
-import { sendRemindMail } from './research/remindResearch';
+import { sendRemind } from './research/remindResearch';
 import { startSession } from './research/startResearch';
 
 /**
@@ -19,7 +19,7 @@ export function researchManager() {
     // 新規でセッションを開始（'ready' -> 'opening'）
     // if(今日の日付＞セッションの開始日＆ステータス＝'ready')
     if (
-      dayjs().diff(session.startDate, 'day') >= 0 &&
+      dayjs().isAfter(session.startDate, 'day') &&
       session.status === 'ready'
     ) {
       startSession(session.id);
@@ -29,15 +29,15 @@ export function researchManager() {
     // if(今日の日付＞リマインド予定日＆ステータス＝'opening')
     else if (
       session.remindDate &&
-      dayjs().diff(session.remindDate, 'day') === 0 &&
+      dayjs().isSame(session.remindDate, 'day') &&
       session.status === 'opening'
     ) {
-      sendRemindMail(session.id);
+      sendRemind(session.id);
     }
     // 管理者へ候補日の案内（'opening' -> 'judge'）
     // if(本日の日付＞セッションの終了日＆ステータス＝'opening')
     else if (
-      dayjs().diff(session.endDate, 'day') >= 0 &&
+      dayjs().isAfter(session.endDate, 'day') &&
       session.status === 'opening'
     ) {
       sendJudgeCandidate(session.id);
@@ -58,5 +58,8 @@ if (import.meta.vitest) {
     const today = dayjs('2024-01-03');
     expect(today.diff('2024-01-05', 'day')).toBe(-2);
     expect(today.diff('2024-01-01', 'day')).toBe(2);
+    expect(today.isAfter('2024-01-01', 'day')).toBe(true);
   });
+
+  // TODO: テストを作成
 }
