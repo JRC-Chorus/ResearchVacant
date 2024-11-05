@@ -1,4 +1,9 @@
-import { AnswerSummary, keys, RvDate } from '@research-vacant/common';
+import {
+  AnsStatus,
+  AnswerSummary,
+  keys,
+  RvDate,
+} from '@research-vacant/common';
 import dayjs from 'dayjs';
 import { useMainStore } from 'src/stores/main';
 
@@ -15,8 +20,7 @@ export function isEnableDate(summary: AnswerSummary, date?: RvDate): boolean {
   const startDay = dayjs(summary.ansDates[0].date);
   const endDay = dayjs(summary.ansDates[summary.ansDates.length - 1].date);
   const isInnerDateRange =
-    targetDay.diff(startDay, 'day') >= 0 &&
-    targetDay.diff(endDay, 'day') <= 0;
+    targetDay.diff(startDay, 'day') >= 0 && targetDay.diff(endDay, 'day') <= 0;
 
   // 休日か
   const mainStore = useMainStore();
@@ -26,6 +30,24 @@ export function isEnableDate(summary: AnswerSummary, date?: RvDate): boolean {
 
   return isInnerDateRange && !isHoliday;
 }
+
+/**
+ * アイコン情報
+ */
+export const iconList: Record<AnsStatus, { icon: string; color: string }> = {
+  OK: {
+    icon: 'check',
+    color: 'primary',
+  },
+  Pending: {
+    icon: 'hourglass_empty',
+    color: 'warning',
+  },
+  NG: {
+    icon: 'close',
+    color: 'negative',
+  },
+};
 
 /** In Source Testing */
 if (import.meta.vitest) {

@@ -64,6 +64,7 @@ function getSpecialHolidayName(idx: number, isWindowSize_gt_sm: boolean) {
           :disappear="!mainStore.ansModel[n - 1]"
           :disable="!isEnableDate(summary, mainStore.ansModel[n - 1]?.date)"
           :ans-dates="summary.ansDates"
+          :free-txts="summary.freeTxts"
           :places="places"
         />
         <DayBox

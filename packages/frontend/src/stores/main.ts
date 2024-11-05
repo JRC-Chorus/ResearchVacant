@@ -2,6 +2,7 @@ import {
   AnsDate,
   AnswerSummary,
   MemberStatus,
+  PartyInfo,
   RvDate,
 } from '@research-vacant/common';
 import dayjs from 'dayjs';
@@ -18,7 +19,7 @@ export const useMainStore = defineStore('mainStore', {
     /** フロントエンド用の回答一覧 */
     ansModel: [] as (AnsDate | undefined)[],
     /** 開催日決定時にマークされた日付 */
-    markedDates: new Set<RvDate>(),
+    markedDates: {} as Record<RvDate, PartyInfo>,
     /** 祝日記録用 */
     specialHoliday: {} as Record<RvDate, string>,
     /** 自由記述 */
@@ -110,7 +111,7 @@ export const useMainStore = defineStore('mainStore', {
       );
 
       // initialize markedDates
-      this.markedDates = new Set<RvDate>();
+      this.markedDates = {};
     },
   },
 });

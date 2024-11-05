@@ -1,21 +1,28 @@
 <script setup lang="ts">
+import { useQuasar } from 'quasar';
 import {
+  AnsFreeTxt,
   AnsSummaryDate,
   CheckedOuterPlace,
+  keys,
   RvDate,
 } from '@research-vacant/common';
 import dayjs from 'dayjs';
 import { useMainStore } from 'src/stores/main';
+import AnswerListDialog from '../Dialogs/AnswerListDialog.vue';
+import { AnswerListDialogProp } from '../Dialogs/iDialogProp';
 
 interface Prop {
   date?: RvDate;
   disable?: boolean;
   disappear?: boolean;
   ansDates: AnsSummaryDate[];
+  freeTxts: AnsFreeTxt[];
   places: CheckedOuterPlace[];
 }
 const prop = defineProps<Prop>();
 const mainStore = useMainStore();
+const $q = useQuasar();
 
 const dateObj = dayjs(prop.date);
 // 表示日においてOKを回答した割合
@@ -42,7 +49,9 @@ const classNames = () => {
   returnClass.push(prop.disable ? 'disable' : '');
   returnClass.push(prop.disappear ? 'disappear' : '');
   returnClass.push(
-    prop.date && mainStore.markedDates.has(prop.date) ? 'selected' : ''
+    prop.date && keys(mainStore.markedDates).includes(prop.date)
+      ? 'selected'
+      : ''
   );
   returnClass.push(
     btnStyle(acceptRatio()).color === 'primary' ? 'checked' : ''
@@ -72,13 +81,15 @@ const btnStyle = (ratio: number): btnStyleType => {
 // ダイアログ内で開催日の決定ボタンを設ける
 // ダイアログ内に「次の日付に遷移する」ボタンを設ける
 function onClicked() {
-  if (!prop.date) return;
-
-  if (mainStore.markedDates.has(prop.date)) {
-    mainStore.markedDates.delete(prop.date);
-  } else {
-    mainStore.markedDates.add(prop.date);
-  }
+  $q.dialog({
+    component: AnswerListDialog,
+    componentProps: {
+      date: prop.date,
+      ansDates: prop.ansDates,
+      freeTxts: prop.freeTxts,
+      places: prop.places,
+    } as AnswerListDialogProp,
+  });
 }
 </script>
 

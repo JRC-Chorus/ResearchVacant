@@ -44,19 +44,20 @@ export const AnsSummaryDate = z.object({
 });
 export type AnsSummaryDate = z.infer<typeof AnsSummaryDate>;
 
+export const AnsFreeTxt = z.object({
+  /** 自由記述の内容 */
+  txt: z.string(),
+  /** 記載した人の氏名 */
+  ansName: z.string(),
+});
+export type AnsFreeTxt = z.infer<typeof AnsFreeTxt>;
+
 export const AnswerSummary = z.object({
   /** 当該セッションにおける回答一覧 */
   ansDates: AnsSummaryDate.array(),
   /** 自身の回答記録（再回答時等に利用） */
   selfAns: Answer.optional(),
   /** 自由記述一覧 */
-  freeTxts: z
-    .object({
-      /** 自由記述の内容 */
-      txt: z.string(),
-      /** 記載した人の氏名 */
-      ansName: z.string(),
-    })
-    .array(),
+  freeTxts: AnsFreeTxt.array(),
 });
 export type AnswerSummary = z.infer<typeof AnswerSummary>;
