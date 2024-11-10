@@ -1,5 +1,5 @@
 import { FrontAPI } from '@research-vacant/common';
-import { accessManager, submitAnswers } from './core/access';
+import { accessManager, decideDates, submitAnswers } from './core/access';
 import { migrateEnv } from './core/migrate';
 import { constructHomePage } from './core/page';
 import { researchManager } from './core/research';
@@ -15,6 +15,7 @@ global.researchManager = researchManager;
 /** フロントエンドに向けたAPI */
 global.accessManager = accessManager;
 global.submitAnswers = submitAnswers;
+global.decideDates = decideDates;
 
 /** サンプルAPI（本番時には元の関数を含めて削除） */
 global.getSampleData = getSampleData;

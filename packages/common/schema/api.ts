@@ -1,5 +1,6 @@
 import { MemberStatus } from './app';
 import { AnsDate } from './db/answer';
+import { PartyInfo } from './db/records';
 
 export interface FrontAPI {
   /** フロントエンドを描画 */
@@ -16,6 +17,11 @@ export interface FrontAPI {
     params: Record<string, string>,
     ans: AnsDate[],
     freeTxt: string
+  ) => void;
+  /** フロントエンドで決定した開催日を登録する */
+  decideDates: (
+    params: Record<string, string>,
+    infos: PartyInfo[]
   ) => void;
 
   /** SpreadSheetからサンプルデータを取得 */

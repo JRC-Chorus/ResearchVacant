@@ -12,7 +12,7 @@ import SendingCircle from './SendingDialog/SendingCircle.vue';
 
 defineEmits({ ...useDialogPluginComponent.emitsObject });
 const { dialogRef, onDialogHide, onDialogCancel } = useDialogPluginComponent();
-defineProps<ApproveSendingDialogProp>();
+const prop = defineProps<ApproveSendingDialogProp>();
 
 const mainStore = useMainStore();
 const isChecking = ref(true);
@@ -21,7 +21,7 @@ const isLoading = ref(true);
 /** 開催日の承認を押すと，バックエンドに通知を飛ばす */
 async function isApproveClicked() {
   isChecking.value = false;
-  await sendPartyDate();
+  await sendPartyDate(prop.places);
 
   if (mainStore.error) {
     onDialogCancel();

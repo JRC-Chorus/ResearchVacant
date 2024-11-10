@@ -1,4 +1,9 @@
-import { MemberStatus } from '@research-vacant/common';
+import {
+  CheckedOuterPlace,
+  MemberStatus,
+  PartyInfo,
+  toEntries,
+} from '@research-vacant/common';
 import { IRun, IUrlLocation } from 'src/schema/global';
 import { useMainStore } from 'src/stores/main';
 import { loadAccessMock } from './accessCases';
@@ -25,6 +30,11 @@ const mockFuncs: IRun = {
     });
   },
   submitAnswers(params, ans, freeTxt) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, 5000);
+    });
+  },
+  decideDates(params, infos) {
     return new Promise((resolve) => {
       setTimeout(resolve, 5000);
     });
@@ -89,6 +99,20 @@ export async function sendVacantDates() {
 /**
  * 開催日を決定し，その通知をバックエンドに飛ばす
  */
-export async function sendPartyDate() {
-  // TODO: 実装
+export async function sendPartyDate(places: CheckedOuterPlace[]) {
+  const urlParams = (await getURLLocation()).parameter;
+
+  const mainStore = useMainStore();
+  const ans: PartyInfo[] = toEntries(mainStore.markedDates).map((kv) => {
+    const targetPlace = places.find((p) => p.placeId === kv[1]);
+    return {
+      date: kv[0],
+      pos: {
+        placeName: targetPlace?.placeName ?? '',
+        placeURL: targetPlace?.placeURL,
+      },
+    };
+  });
+
+  await googleScriptRun.decideDates(urlParams, ans);
 }

@@ -116,14 +116,23 @@ export function submitAnswers(
  *
  * 当該セッションのステータスを'judge' -> 'closed'とする
  */
-export function decideDates(sessionId: SessionID, infos: PartyInfo[]) {
+export function decideDates(
+  params: Record<string, string>,
+  infos: PartyInfo[]
+) {
+  // Check and Get some data
+  const ids = parseRecievedIds(params);
+  if (ids === void 0 || !isMember(ids.memberId)) {
+    throw new Error('Invalid user is accessed');
+  }
+
   // 開催日を登録
-  registPartyDate(sessionId, infos);
+  registPartyDate(ids.sessionId, infos);
 
   // TODO: 決定を通知（Teams？）
 
   // ステータスを更新
-  updateSession(sessionId, 'closed');
+  updateSession(ids.sessionId, 'closed');
 }
 
 /** In Source Testing */
