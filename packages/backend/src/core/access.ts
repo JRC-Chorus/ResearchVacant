@@ -55,14 +55,7 @@ export async function accessManager(
   } else if (session.status === 'judge') {
     const targetPlaces = loadPlaces(ids.sessionId);
     const placeObjs = await Promise.all(
-      targetPlaces.map(async (p) => {
-        return {
-          placeName: p.placeName,
-          placeURL: p.placeURL,
-          isNeedReserve: p.isNeedReserve,
-          vacantInfo: await p.getVacantInfo(),
-        };
-      })
+      targetPlaces.map(async (p) => p.toOuterPlace())
     );
     return {
       status: 'judging',

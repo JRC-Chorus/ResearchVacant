@@ -1,5 +1,12 @@
-import { AnsDate, RvDate, SessionID } from '@research-vacant/common';
+import {
+  AnsDate,
+  CheckedOuterPlace,
+  PlaceID,
+  RvDate,
+  SessionID,
+} from '@research-vacant/common';
 import dayjs, { Dayjs } from 'dayjs';
+import { encodeHash } from '../hash';
 import { getSessions } from '../spreadsheet/session';
 
 type DateRange = [RvDate, RvDate];
@@ -28,7 +35,25 @@ export abstract class Place {
   }
 
   /** 取得した情報に基づいて，施設の空き日程の一覧を返す */
-  abstract getVacantInfo(): Promise<AnsDate[]>;
+  protected abstract getVacantInfo(): Promise<AnsDate[]>;
+
+  /** ChecedOuterPlaceに変換する */
+  async toOuterPlace(): Promise<CheckedOuterPlace> {
+    const placeObj = {
+      placeName: this.placeName,
+      placeURL: this.placeURL,
+      isNeedReserve: this.isNeedReserve,
+    };
+    const pId = encodeHash(
+      GoogleAppsScript.Utilities.DigestAlgorithm.SHA_256,
+      placeObj
+    );
+
+    return Object.assign(
+      { placeId: PlaceID.parse(pId), vacantInfo: await this.getVacantInfo() },
+      placeObj
+    );
+  }
 }
 
 /**

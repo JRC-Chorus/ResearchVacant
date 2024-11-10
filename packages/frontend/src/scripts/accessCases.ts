@@ -8,6 +8,7 @@ import {
   MemberStatus,
   OuterPlace,
   pickRandom,
+  PlaceID,
   RvDate,
   SummaryAnswers,
   toEntries,
@@ -51,6 +52,7 @@ const sampleMember: Member = {
  * ダミー施設
  */
 const samplePlace: CheckedOuterPlace = {
+  placeId: PlaceID.parse('DUMMY PLACE ID'),
   placeName: 'サンプル施設',
   placeURL: 'https://github.com/JRC-Chorus/ResearchVacant',
   isNeedReserve: true,
