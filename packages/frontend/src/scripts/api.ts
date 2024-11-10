@@ -85,3 +85,10 @@ export async function sendVacantDates() {
 
   await googleScriptRun.submitAnswers(urlParams, ans, mainStore.freeTxt);
 }
+
+/**
+ * 開催日を決定し，その通知をバックエンドに飛ばす
+ */
+export async function sendPartyDate() {
+  // TODO: 実装
+}

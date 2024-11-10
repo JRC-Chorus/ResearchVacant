@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { AnswerSummary, CheckedOuterPlace } from '@research-vacant/common';
+import {
+  AnswerSummary,
+  CheckedOuterPlace,
+  keys,
+} from '@research-vacant/common';
 import dayjs from 'dayjs';
 import CalendarView from 'src/components/CalendarView.vue';
-import AnsSendingDialog from 'src/components/Dialogs/AnsSendingDialog.vue';
+import ApproveSendingDialog from 'src/components/Dialogs/ApproveSendingDialog.vue';
 import CheckDialog from 'src/components/Dialogs/CheckDialog.vue';
 import {
   CheckDialogProp,
@@ -43,7 +47,7 @@ const showingDetails: ShowingDetail[] = [
  */
 function submitAns() {
   $q.dialog({
-    component: AnsSendingDialog,
+    component: ApproveSendingDialog,
   });
 }
 
@@ -134,8 +138,14 @@ function resetAllAns() {
         <q-btn outline size="1rem" @click="resetAllAns()">
           入力内容をリセット
         </q-btn>
-        <q-btn fill color="primary" size="1rem" @click="submitAns()">
-          回答を提出
+        <q-btn
+          fill
+          color="primary"
+          size="1rem"
+          :disable="keys(mainStore.markedDates).length === 0"
+          @click="submitAns()"
+        >
+          開催日を決定
         </q-btn>
       </div>
     </q-card-actions>
