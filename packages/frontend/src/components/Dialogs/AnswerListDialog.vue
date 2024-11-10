@@ -37,13 +37,8 @@ function openURL(url?: string) {
 /** 開催登録＆ダイアログを閉じる */
 function onOkClicked() {
   if (selectedPlace.value !== void 0) {
-    mainStore.markedDates[prop.ansDates[showingIdx.value].date] = {
-      date: prop.ansDates[showingIdx.value].date,
-      pos: {
-        placeName: prop.places[selectedPlace.value].placeName,
-        placeURL: prop.places[selectedPlace.value].placeURL,
-      },
-    };
+    mainStore.markedDates[prop.ansDates[showingIdx.value].date] =
+      prop.places[selectedPlace.value].placeId;
   }
 
   onDialogOK();
