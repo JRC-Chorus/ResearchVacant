@@ -1,6 +1,7 @@
 import {
   AnsFreeTxt,
   AnsSummaryDate,
+  AnswerSummary,
   CheckedOuterPlace,
   RvDate,
 } from '@research-vacant/common';
@@ -33,4 +34,9 @@ export interface AnswerListDialogProp {
 export type ShowingDetail = { title: string; desc: string };
 export interface InfoDialogProp {
   showingDetails: ShowingDetail[];
+}
+
+export interface ApproveSendingDialogProp {
+  summary: AnswerSummary;
+  places: CheckedOuterPlace[];
 }

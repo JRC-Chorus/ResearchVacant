@@ -10,6 +10,7 @@ import CalendarView from 'src/components/CalendarView.vue';
 import ApproveSendingDialog from 'src/components/Dialogs/ApproveSendingDialog.vue';
 import CheckDialog from 'src/components/Dialogs/CheckDialog.vue';
 import {
+  ApproveSendingDialogProp,
   CheckDialogProp,
   InfoDialogProp,
   ShowingDetail,
@@ -48,6 +49,10 @@ const showingDetails: ShowingDetail[] = [
 function submitAns() {
   $q.dialog({
     component: ApproveSendingDialog,
+    componentProps: {
+      places: prop.places,
+      summary: prop.summary,
+    } as ApproveSendingDialogProp,
   });
 }
 
@@ -145,7 +150,7 @@ function resetAllAns() {
           :disable="keys(mainStore.markedDates).length === 0"
           @click="submitAns()"
         >
-          開催日を決定
+          開催日を確認
         </q-btn>
       </div>
     </q-card-actions>
