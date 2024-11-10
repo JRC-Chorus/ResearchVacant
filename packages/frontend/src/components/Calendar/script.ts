@@ -1,5 +1,6 @@
 import {
   AnsStatus,
+  AnsSummaryDate,
   AnswerSummary,
   keys,
   RvDate,
@@ -10,15 +11,20 @@ import { useMainStore } from 'src/stores/main';
 /**
  * 回答を求める必要がある日か
  */
-export function isEnableDate(summary: AnswerSummary, date?: RvDate): boolean {
+export function isEnableDate(ansDates: AnsSummaryDate[], date?: RvDate): boolean
+export function isEnableDate(summary: AnswerSummary, date?: RvDate): boolean
+export function isEnableDate(summary: AnsSummaryDate[] | AnswerSummary, date?: RvDate): boolean {
   if (!date) {
     return false;
   }
 
+  // 回答日の一覧を取得
+  const ansDates = 'ansDates' in summary ? summary.ansDates : summary
+
   // 日付は期間内か
   const targetDay = dayjs(date);
-  const startDay = dayjs(summary.ansDates[0].date);
-  const endDay = dayjs(summary.ansDates[summary.ansDates.length - 1].date);
+  const startDay = dayjs(ansDates[0].date);
+  const endDay = dayjs(ansDates[ansDates.length - 1].date);
   const isInnerDateRange =
     targetDay.diff(startDay, 'day') >= 0 && targetDay.diff(endDay, 'day') <= 0;
 

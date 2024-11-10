@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { Ref, ref } from 'vue';
 import { useDialogPluginComponent } from 'quasar';
-import { CheckedOuterPlace } from '@research-vacant/common';
+import { CheckedOuterPlace, keys, RvDate } from '@research-vacant/common';
 import dayjs from 'dayjs';
 import { useMainStore } from 'src/stores/main';
-import { iconList } from '../Calendar/script';
+import { iconList, isEnableDate } from '../Calendar/script';
 import IndentLine from '../utils/IndentLine.vue';
 import BaseDialog from './BaseDialog.vue';
 import { AnswerListDialogProp } from './iDialogProp';
@@ -15,17 +15,26 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
 const mainStore = useMainStore();
 
-const showingIdx = ref(
-  prop.ansDates.findIndex((a) => a.date === prop.date) ?? 0
+// 表示中の日付がカレンダー全体のどのインデックスか
+const showingDate = ref(prop.date);
+// 既に設定されている場所がある場合は選択する
+const getDefaultSelectedPlaceIdx = (newDate: RvDate) => {
+  const alreadySelectedPlaceIdx = prop.places.findIndex(
+    (p) => p.placeId === mainStore.markedDates[newDate]
+  );
+  return alreadySelectedPlaceIdx === -1 ? undefined : alreadySelectedPlaceIdx;
+};
+const selectedPlace: Ref<number | undefined> = ref(
+  getDefaultSelectedPlaceIdx(prop.date)
 );
-const selectedPlace: Ref<number | undefined> = ref();
+// 既に開催日としてマークされているか
+const isMarked = () => keys(mainStore.markedDates).includes(showingDate.value);
 
 /** 施設が利用可能か否か */
 function isUsablePlace(place: CheckedOuterPlace) {
   return (
-    place.vacantInfo.find(
-      (info) => info.date === prop.ansDates[showingIdx.value].date
-    )?.ans === 'OK'
+    place.vacantInfo.find((info) => info.date === showingDate.value)?.ans ===
+    'OK'
   );
 }
 
@@ -35,12 +44,18 @@ function openURL(url?: string) {
 }
 
 /** 開催登録＆ダイアログを閉じる */
-function onOkClicked() {
+function onMarkClicked() {
   if (selectedPlace.value !== void 0) {
-    mainStore.markedDates[prop.ansDates[showingIdx.value].date] =
+    mainStore.markedDates[showingDate.value] =
       prop.places[selectedPlace.value].placeId;
   }
 
+  onDialogOK();
+}
+
+/** 開催登録を解除 */
+function onUnmarkClicked() {
+  delete mainStore.markedDates[showingDate.value];
   onDialogOK();
 }
 </script>
@@ -49,18 +64,14 @@ function onOkClicked() {
   <!-- TODO: Update a BAAAAAAAAAAD Design -->
   <q-dialog ref="dialogRef" @hide="onDialogHide" persistent>
     <BaseDialog
-      :title="`${dayjs(ansDates[showingIdx].date).format(
+      :title="`${dayjs(showingDate).format(
         mainStore.showingDateFormat
       )}の回答一覧`"
-      ok-btn-txt="開催日としてマークする"
-      :disable="selectedPlace === void 0"
-      @ok-click="onOkClicked"
       @close="onDialogCancel"
       style="width: 40rem; max-width: 100vw; max-height: 90vh"
     >
-      <!-- TODO: 休日はスキップする -->
       <q-carousel
-        v-model="showingIdx"
+        v-model="showingDate"
         transition-prev="slide-right"
         transition-next="slide-left"
         swipeable
@@ -70,8 +81,20 @@ function onOkClicked() {
         padding
         arrows
         style="height: 60vh"
+        @transition="
+          (newVal) => {
+            selectedPlace = getDefaultSelectedPlaceIdx(RvDate.parse(newVal));
+          }
+        "
       >
-        <q-carousel-slide v-for="(d, idx) in ansDates" :name="idx" :key="idx">
+        <!-- 休日を除外して横スキップできるようにする -->
+        <q-carousel-slide
+          v-for="(d, idx) in ansDates.filter((ans) =>
+            isEnableDate(ansDates, ans.date)
+          )"
+          :name="d.date"
+          :key="idx"
+        >
           <div class="row q-gutter-y-lg">
             <div class="col" style="min-width: 15rem">
               <h2 class="q-pt-none">会場一覧</h2>
@@ -135,6 +158,19 @@ function onOkClicked() {
 
       <template #additionalBtns>
         <q-btn label="キャンセル" @click="onDialogCancel" />
+        <q-btn
+          v-if="!isMarked()"
+          label="開催日に設定"
+          color="primary"
+          :disable="selectedPlace === void 0"
+          @click="onMarkClicked"
+        />
+        <q-btn
+          v-else
+          label="開催日の設定を解除"
+          color="negative"
+          @click="onUnmarkClicked"
+        />
       </template>
     </BaseDialog>
   </q-dialog>
