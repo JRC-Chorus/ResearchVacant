@@ -59,6 +59,13 @@ function submitAns() {
 }
 
 /**
+ * 開催日決定モードに変更
+ */
+function changeViewer() {
+  mainStore.isShowApproverView = true
+}
+
+/**
  * 調査情報の詳細を表示（スマホ版）
  */
 function showInfoDialog() {
@@ -143,6 +150,9 @@ function resetAllAns() {
 
     <q-card-actions align="right">
       <div class="row q-gutter-x-lg q-py-sm">
+        <!-- <q-btn outline size="1rem" @click="changeViewer()">
+          管理者モードに切り替え
+        </q-btn> -->
         <q-btn outline size="1rem" @click="resetAllAns()">
           入力内容をリセット
         </q-btn>

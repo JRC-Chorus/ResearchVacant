@@ -44,6 +44,12 @@ onMounted(async () => {
           '管理者が開催日を決定するまで，今しばらくお待ちください．',
         ]"
       />
+      <!-- TODO: placesの取得処理をAPI.AccessManager()から分離した後に切り替える -->
+      <!-- <ApprovePage
+        v-else-if="status.status === 'judging' || mainStore.isShowApproverView"
+        :summary="status.summary"
+        :places="status.places"
+      /> -->
       <ApprovePage
         v-else-if="status.status === 'judging'"
         :summary="status.summary"

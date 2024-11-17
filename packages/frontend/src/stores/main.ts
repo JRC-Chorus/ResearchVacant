@@ -26,6 +26,8 @@ export const useMainStore = defineStore('mainStore', {
     freeTxt: '',
     /** 再読み込み可能か */
     isEnableReload: false,
+    /** 承認画面を表示するか（回答期間中） */
+    isShowApproverView: false,
     /** 日付の標準フォーマット */
     showingDateFormat: 'YYYY年MM月DD日',
     /** バックエンドとの通信でエラーがあった場合に格納 */
