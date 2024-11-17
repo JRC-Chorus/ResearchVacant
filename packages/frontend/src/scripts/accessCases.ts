@@ -74,7 +74,10 @@ function getRandomAns() {
 /**
  * accessManagerの戻り値を生成する（開発用のダミーデータを生成）
  */
-export function loadAccessMock(status: MemberStatus['status']): MemberStatus {
+export function loadAccessMock(
+  status: MemberStatus['status'],
+  isManager: boolean
+): MemberStatus {
   switch (status) {
     case 'noAns':
       return {
@@ -83,6 +86,7 @@ export function loadAccessMock(status: MemberStatus['status']): MemberStatus {
           ansDates: defaultAnsDates,
           freeTxts: [],
         },
+        isManager: isManager,
       };
     case 'alreadyAns':
       return {
@@ -97,6 +101,7 @@ export function loadAccessMock(status: MemberStatus['status']): MemberStatus {
           },
           freeTxts: [],
         },
+        isManager: isManager,
       };
     case 'finished':
       return {
@@ -182,7 +187,7 @@ export function loadAccessMock(status: MemberStatus['status']): MemberStatus {
           ansDates: judgingAnsDates,
           freeTxts: sampleComments,
         },
-        isManager: true,
+        isManager: isManager,
         places: [samplePlace],
       };
     case 'invalidUser':

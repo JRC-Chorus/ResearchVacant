@@ -3,7 +3,6 @@ import {
   Answer,
   MemberStatus,
   PartyInfo,
-  SessionID,
 } from '@research-vacant/common';
 import dayjs from 'dayjs';
 import { loadPlaces } from 'backend/source/places/base';
@@ -34,6 +33,7 @@ export async function accessManager(
   const answerIds = getAnsweredMemberIDs(ids.sessionId);
   const session = getSessions()[ids.sessionId];
   const summary = getAnswerSummary(session, ids.memberId);
+  const isManager = !!getMembers()[ids.memberId].roles?.manager;
 
   if (session.status === 'ready') {
     return {
@@ -46,11 +46,13 @@ export async function accessManager(
     return {
       status: 'noAns',
       summary: summary,
+      isManager: isManager,
     };
   } else if (session.status === 'opening') {
     return {
       status: 'alreadyAns',
       summary: summary,
+      isManager: isManager,
     };
   } else if (session.status === 'judge') {
     const targetPlaces = loadPlaces(ids.sessionId);
@@ -59,7 +61,7 @@ export async function accessManager(
     );
     return {
       status: 'judging',
-      isManager: !!getMembers()[ids.memberId].roles?.manager,
+      isManager: isManager,
       summary: summary,
       places: placeObjs,
     };

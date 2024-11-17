@@ -25,12 +25,14 @@ type MSFinished = z.infer<typeof MSFinished>;
 const MSAlreadyAns = z.object({
   status: z.enum(['alreadyAns']),
   summary: AnswerSummary,
+  isManager: z.boolean(),
 });
 type MSAlreadyAns = z.infer<typeof MSAlreadyAns>;
 // 当該セッションに未回答
 const MSNoAns = z.object({
   status: z.enum(['noAns']),
   summary: AnswerSummary,
+  isManager: z.boolean(),
 });
 type MSNoAns = z.infer<typeof MSNoAns>;
 // 管理者による開催日の決定中

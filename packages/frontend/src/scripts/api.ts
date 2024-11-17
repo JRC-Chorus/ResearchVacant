@@ -22,7 +22,7 @@ const mockFuncs: IRun = {
     params: Record<string, string>
   ): Promise<Promise<MemberStatus>> {
     const target = new Promise<MemberStatus>((resolve) => {
-      resolve(loadAccessMock('judging'));
+      resolve(loadAccessMock('judging', true));
     });
 
     return new Promise((resolve) => {
