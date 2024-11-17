@@ -8,7 +8,7 @@ import {
   toEntries,
   values,
 } from '@research-vacant/common';
-import { getSheet } from './common';
+import { getSheet, warpLock } from './common';
 import { getConfig } from './config';
 
 const SESSION_SHEET_NAME = 'セッション一覧';
@@ -68,6 +68,10 @@ function writeSessions(sessions?: Record<SessionID, Session>) {
  * セッションシートの初期化に用いる
  */
 export function initSessionSheet(clearAllData: boolean = false) {
+  warpLock(() => __initSessionSheet(clearAllData));
+}
+
+function __initSessionSheet(clearAllData: boolean = false) {
   const sheet = getSheet(SESSION_SHEET_NAME, true);
 
   // 既存のデータをすべて削除
@@ -139,7 +143,7 @@ export function publishSession(
   // 書き込み
   const sessions = getSessions();
   sessions[writeSession.id] = writeSession;
-  writeSessions(sessions);
+  warpLock(() => writeSessions(sessions));
 
   return writeSession;
 }
@@ -161,10 +165,16 @@ export function updateSession(
   }
 
   // update sessions
-  if (status) { sessions[sessionId].status = status }
-  if (partyCount) { sessions[sessionId].partyCount = partyCount }
-  if (bikou) { sessions[sessionId].bikou = bikou }
-  writeSessions(sessions);
+  if (status) {
+    sessions[sessionId].status = status;
+  }
+  if (partyCount) {
+    sessions[sessionId].partyCount = partyCount;
+  }
+  if (bikou) {
+    sessions[sessionId].bikou = bikou;
+  }
+  warpLock(() => writeSessions(sessions));
 }
 
 /**
@@ -176,5 +186,5 @@ export function deleteSession(sessionId: SessionID) {
   delete sessions[sessionId];
 
   // delete Session
-  writeSessions(sessions);
+  warpLock(() => writeSessions(sessions));
 }

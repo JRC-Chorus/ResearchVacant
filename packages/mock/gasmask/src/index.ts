@@ -1,5 +1,6 @@
 import CacheServiceClass from './CacheService';
 import HttpResponseClass from './HttpResponse';
+import { LockServiceClass } from './Lock';
 import LoggerClass from './Logger';
 import PropertiesServiceClass from './PropertiesService';
 import ScriptAppClass from './ScriptApp';
@@ -11,6 +12,7 @@ import { UserClass } from './User';
 import { UtilitiesClass } from './Utilities';
 
 export const CacheService = CacheServiceClass;
+export const LockService = LockServiceClass;
 export const Logger = LoggerClass;
 export const HttpResponse = HttpResponseClass;
 export const PropertiesService = PropertiesServiceClass;

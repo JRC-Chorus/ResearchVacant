@@ -7,7 +7,7 @@ import {
   toEntries,
   values,
 } from '@research-vacant/common';
-import { getSheet } from './common';
+import { getSheet, warpLock } from './common';
 import { getConfig } from './config';
 
 const MEMBERS_SHEET_NAME = 'メンバー一覧';
@@ -33,6 +33,10 @@ function genMemberID() {
  * メンバー一覧シートの初期化に用いる
  */
 export function initMemberSheet(clearAllData: boolean = false) {
+  warpLock(() => __initMemberSheet(clearAllData));
+}
+
+function __initMemberSheet(clearAllData: boolean = false) {
   const sheet = getSheet(MEMBERS_SHEET_NAME, true);
 
   // 既存のデータをすべて削除

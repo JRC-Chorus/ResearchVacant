@@ -5,7 +5,7 @@ import {
   keys,
   researchFrequencyEnum,
 } from '@research-vacant/common';
-import { getSheet } from './common';
+import { getSheet, warpLock } from './common';
 
 const CONFIG_SHEET_NAME = '設定';
 
@@ -40,6 +40,10 @@ let configCache: Config | undefined;
  * 設定シートの初期化
  */
 export function initConfigSheet(clearAllData: boolean = false) {
+  warpLock(() => __initConfigSheet(clearAllData));
+}
+
+function __initConfigSheet(clearAllData: boolean = false) {
   const sheet = getSheet(CONFIG_SHEET_NAME, true);
 
   // 既存のデータをすべて削除
@@ -92,8 +96,9 @@ export function getConfig(): Config {
 if (import.meta.vitest) {
   const { test, expect } = import.meta.vitest;
   test('config sheet', async () => {
-    const { SpreadsheetApp } = await import('@research-vacant/mock');
+    const { SpreadsheetApp, LockService } = await import('@research-vacant/mock');
     global.SpreadsheetApp = new SpreadsheetApp();
+    global.LockService = new LockService()
 
     // initialize
     initConfigSheet();
