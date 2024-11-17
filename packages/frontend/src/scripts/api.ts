@@ -22,7 +22,7 @@ const mockFuncs: IRun = {
     params: Record<string, string>
   ): Promise<Promise<MemberStatus>> {
     const target = new Promise<MemberStatus>((resolve) => {
-      resolve(loadAccessMock('judging', true));
+      resolve(loadAccessMock('noAns', true));
     });
 
     return new Promise((resolve) => {
@@ -93,7 +93,13 @@ export async function sendVacantDates() {
   const mainStore = useMainStore();
   const ans = mainStore.ansModel.filter((a) => a !== void 0);
 
-  await googleScriptRun.submitAnswers(urlParams, ans, mainStore.freeTxt);
+  await googleScriptRun.submitAnswers(
+    urlParams,
+    ans,
+    mainStore.freeTxt,
+    mainStore.partyCount,
+    mainStore.bikou
+  );
 }
 
 /**

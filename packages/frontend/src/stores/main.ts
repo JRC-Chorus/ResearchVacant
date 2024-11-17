@@ -24,6 +24,12 @@ export const useMainStore = defineStore('mainStore', {
     specialHoliday: {} as Record<RvDate, string>,
     /** 自由記述 */
     freeTxt: '',
+    /** 調査回答期間 */
+    ansDateRange: '',
+    /** 開催回数 */
+    partyCount: '',
+    /** 備考欄 */
+    bikou: '',
     /** 再読み込み可能か */
     isEnableReload: false,
     /** 承認画面を表示するか（回答期間中） */
@@ -35,6 +41,7 @@ export const useMainStore = defineStore('mainStore', {
   }),
   actions: {
     async getAccessStatus() {
+      // load session
       if (this.__memberStatus === null) {
         const loc = await getURLLocation();
         this.__memberStatus = await googleScriptRun.accessManager(
@@ -46,6 +53,21 @@ export const useMainStore = defineStore('mainStore', {
             status: 'invalidUser',
           };
         }
+      }
+
+      // init details
+      if (
+        this.__memberStatus.status === 'noAns' ||
+        this.__memberStatus.status === 'alreadyAns' ||
+        this.__memberStatus.status === 'judging'
+      ) {
+        const ansStart = dayjs(this.__memberStatus.details.researchStartDate);
+        const ansEnd = dayjs(this.__memberStatus.details.researchEndDate);
+        this.ansDateRange = `${ansStart.format(
+          this.showingDateFormat
+        )} ～ ${ansEnd.format(this.showingDateFormat)}`;
+        this.partyCount = this.__memberStatus.details.partyCount;
+        this.bikou = this.__memberStatus.details.bikou;
       }
 
       return this.__memberStatus;

@@ -78,6 +78,12 @@ export function loadAccessMock(
   status: MemberStatus['status'],
   isManager: boolean
 ): MemberStatus {
+  const details = {
+    researchStartDate: RvDate.parse('2024-9-1'),
+    researchEndDate: RvDate.parse('2024-9-7'),
+    partyCount: '２回（そのうち１回は外部練習を予定）',
+    bikou: '< 特になし >',
+  };
   switch (status) {
     case 'noAns':
       return {
@@ -87,6 +93,7 @@ export function loadAccessMock(
           freeTxts: [],
         },
         isManager: isManager,
+        details: details,
       };
     case 'alreadyAns':
       return {
@@ -102,6 +109,7 @@ export function loadAccessMock(
           freeTxts: [],
         },
         isManager: isManager,
+        details: details,
       };
     case 'finished':
       return {
@@ -132,6 +140,8 @@ export function loadAccessMock(
             pos: OuterPlace.parse(samplePlace),
           },
         ],
+        isManager: isManager,
+        details: details,
       };
     case 'judging':
       // N人分の回答データを生成
@@ -189,6 +199,7 @@ export function loadAccessMock(
         },
         isManager: isManager,
         places: [samplePlace],
+        details: details,
       };
     case 'invalidUser':
     case 'beforeOpening':

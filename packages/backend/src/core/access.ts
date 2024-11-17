@@ -3,6 +3,7 @@ import {
   Answer,
   MemberStatus,
   PartyInfo,
+  ResearchDetails,
 } from '@research-vacant/common';
 import dayjs from 'dayjs';
 import { loadPlaces } from 'backend/source/places/base';
@@ -34,6 +35,12 @@ export async function accessManager(
   const session = getSessions()[ids.sessionId];
   const summary = getAnswerSummary(session, ids.memberId);
   const isManager = !!getMembers()[ids.memberId].roles?.manager;
+  const details: ResearchDetails = {
+    researchStartDate: session.startDate,
+    researchEndDate: session.endDate,
+    partyCount: session.partyCount,
+    bikou: session.bikou,
+  };
 
   if (session.status === 'ready') {
     return {
@@ -47,12 +54,14 @@ export async function accessManager(
       status: 'noAns',
       summary: summary,
       isManager: isManager,
+      details: details,
     };
   } else if (session.status === 'opening') {
     return {
       status: 'alreadyAns',
       summary: summary,
       isManager: isManager,
+      details: details,
     };
   } else if (session.status === 'judge') {
     const targetPlaces = loadPlaces(ids.sessionId);
@@ -64,11 +73,13 @@ export async function accessManager(
       isManager: isManager,
       summary: summary,
       places: placeObjs,
+      details: details,
     };
   } else if (session.status === 'closed') {
     const targetRecord = getPartys()[ids.sessionId];
     return {
       status: 'finished',
+      isManager: isManager,
       summary: summary,
       partyDates: targetRecord.infos.map((info) => {
         return {
@@ -77,6 +88,7 @@ export async function accessManager(
           ans: summary.ansDates.find((d) => d.date === info.date)?.ans ?? [],
         };
       }),
+      details: details,
     };
   }
 
@@ -92,13 +104,20 @@ export async function accessManager(
 export function submitAnswers(
   params: Record<string, string>,
   ans: AnsDate[],
-  freeTxt: string
+  freeTxt: string,
+  partyCount: string,
+  bikou: string
 ) {
   // Check and Get some data
   const ids = parseRecievedIds(params);
   const members = getMembers();
   if (ids === void 0 || !isMember(ids.memberId)) {
     throw new Error('Invalid user is accessed');
+  }
+
+  // update session (only enable by manager)
+  if (!!getMembers()[ids.memberId].roles?.manager) {
+    updateSession(ids.sessionId, undefined, partyCount, bikou);
   }
 
   // Regist answer
@@ -218,7 +237,13 @@ if (import.meta.vitest) {
     const sampleAnswerTxt = 'Dummy free text';
 
     test('regist answer', async () => {
-      submitAnswers({ aId: accessId }, genSampleAns(_ans1), sampleAnswerTxt);
+      submitAnswers(
+        { aId: accessId },
+        genSampleAns(_ans1),
+        sampleAnswerTxt,
+        sampleSession.partyCount,
+        sampleSession.bikou
+      );
 
       const memberStatus = await accessManager({
         aId: accessId,
@@ -241,7 +266,13 @@ if (import.meta.vitest) {
       }
 
       // 回答を変更
-      submitAnswers({ aId: accessId }, genSampleAns(_ans2), sampleAnswerTxt);
+      submitAnswers(
+        { aId: accessId },
+        genSampleAns(_ans2),
+        sampleAnswerTxt,
+        sampleSession.partyCount,
+        sampleSession.bikou
+      );
       const memberStatus2 = await accessManager({
         aId: accessId,
       });

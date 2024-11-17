@@ -20,10 +20,10 @@ export const Config = z.object({
   researchFrequency: z.enum(researchFrequencyEnum).optional().default('month'),
 
   /** 問い合わせ期間における開催回数*/
-  researchPartyCount: z.number().min(1).optional().default(1),
+  researchPartyCount: z.string().optional().default('１回（２回に変更の可能性あり）'),
 
-  /** 開催回数のうち，外部施設の利用回数*/
-  outerPlacePartyCount: z.number().min(0).optional().default(0),
+  /** 調査画面における備考欄に表示するコメント */
+  researchGlobalComment: z.string().optional().default('< 特になし >'),
 
   /**
    * 調査対象の期間は現在から何サイクル後とするか（「１」で次サイクルを対象とする）
@@ -40,9 +40,6 @@ export const Config = z.object({
 
   /** リマインドの送付日 */
   remindDateBeforeEndResearch: z.number().min(-1).optional().default(1),
-
-  /** 最終開催日から最低限開けるべき日数 */
-  leastRestTime: z.number().optional().default(0),
 
   /** 開催日の承認を担当するロール */
   approverRoles: z

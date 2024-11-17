@@ -8,7 +8,6 @@ import CheckDialog from 'src/components/Dialogs/CheckDialog.vue';
 import {
   CheckDialogProp,
   InfoDialogProp,
-  ShowingDetail,
 } from 'src/components/Dialogs/iDialogProp';
 import InfoDialog from 'src/components/Dialogs/InfoDialog.vue';
 import IndentLine from 'src/components/utils/IndentLine.vue';
@@ -16,38 +15,12 @@ import { useMainStore } from 'src/stores/main';
 
 interface Prop {
   summary: AnswerSummary;
+  isManager: boolean;
 }
 const prop = defineProps<Prop>();
 
 const $q = useQuasar();
 const mainStore = useMainStore();
-
-const startDate = dayjs(prop.summary.ansDates[0].date);
-// TODO: 「終了日＝開始日＋回答期間の日数」に変更
-const endDate = dayjs(
-  prop.summary.ansDates[prop.summary.ansDates.length - 1].date
-);
-
-const showingDetails: ShowingDetail[] = [
-  {
-    title: '回答期間',
-    desc: `${startDate.format(mainStore.showingDateFormat)} ～ ${endDate.format(
-      mainStore.showingDateFormat
-    )}`,
-  },
-  {
-    title: '開催回数',
-    // TODO: データベースにこの項目が記録できるフィールドを追加し，MemberSummaryから取得できるようにする
-    // TODO: 管理者は個々のテキストをUI上から変更できるような機能を入れる
-    desc: '２回（そのうち１回は外部練習を予定）',
-  },
-  {
-    title: '備考',
-    // TODO: データベースにこの項目が記録できるフィールドを追加し，MemberSummaryから取得できるようにする
-    // TODO: 管理者は個々のテキストをUI上から変更できるような機能を入れる
-    desc: '＜特になし＞',
-  },
-];
 
 /**
  * 回答の提出処理を実行
@@ -62,7 +35,7 @@ function submitAns() {
  * 開催日決定モードに変更
  */
 function changeViewer() {
-  mainStore.isShowApproverView = true
+  mainStore.isShowApproverView = true;
 }
 
 /**
@@ -72,7 +45,7 @@ function showInfoDialog() {
   $q.dialog({
     component: InfoDialog,
     componentProps: {
-      showingDetails: showingDetails,
+      isManager: prop.isManager,
     } as InfoDialogProp,
   });
 }
@@ -99,7 +72,6 @@ function resetAllAns() {
 </script>
 
 <template>
-  <!-- TODO: 管理者は承認ページを開いて調査を終了させることができるようにする -->
   <q-card flat class="col column">
     <q-card-section class="col column items-center">
       <div class="col"></div>
@@ -126,9 +98,36 @@ function resetAllAns() {
           <div class="gt-md">
             <h2><u>調整＆開催日の詳細情報</u></h2>
             <ul>
-              <li v-for="detail in showingDetails" :key="detail.title">
-                <IndentLine :title="detail.title" max-width="10rem">
-                  {{ detail.desc }}
+              <li>
+                <IndentLine title="回答期間" max-width="10rem">
+                  {{ mainStore.ansDateRange }}
+                </IndentLine>
+              </li>
+              <li>
+                <q-input
+                  v-if="isManager"
+                  v-model="mainStore.partyCount"
+                  dense
+                  filled
+                  label="開催回数"
+                  class="q-my-sm"
+                />
+                <IndentLine v-else title="開催回数" max-width="10rem">
+                  {{ mainStore.partyCount }}
+                </IndentLine>
+              </li>
+              <li>
+                <q-input
+                  v-if="isManager"
+                  v-model="mainStore.bikou"
+                  dense
+                  filled
+                  type="textarea"
+                  label="備考欄"
+                  class="q-my-sm"
+                />
+                <IndentLine v-else title="備考欄" max-width="10rem">
+                  {{ mainStore.bikou }}
                 </IndentLine>
               </li>
             </ul>
@@ -150,6 +149,7 @@ function resetAllAns() {
 
     <q-card-actions align="right">
       <div class="row q-gutter-x-lg q-py-sm">
+        <!-- TODO: placeの取得処理を分離後に実装 -->
         <!-- <q-btn outline size="1rem" @click="changeViewer()">
           管理者モードに切り替え
         </q-btn> -->

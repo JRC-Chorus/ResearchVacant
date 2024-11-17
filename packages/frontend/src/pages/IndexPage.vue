@@ -54,8 +54,13 @@ onMounted(async () => {
         v-else-if="status.status === 'judging'"
         :summary="status.summary"
         :places="status.places"
+        :is-manager="status.isManager"
       />
-      <CalendarPage v-else :summary="status.summary" />
+      <CalendarPage
+        v-else
+        :summary="status.summary"
+        :is-manager="status.isManager"
+      />
     </div>
   </q-page>
 </template>

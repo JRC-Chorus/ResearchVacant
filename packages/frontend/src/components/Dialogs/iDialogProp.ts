@@ -31,9 +31,8 @@ export interface AnswerListDialogProp {
   places: CheckedOuterPlace[];
 }
 
-export type ShowingDetail = { title: string; desc: string };
 export interface InfoDialogProp {
-  showingDetails: ShowingDetail[];
+  isManager: boolean;
 }
 
 export interface ApproveSendingDialogProp {
