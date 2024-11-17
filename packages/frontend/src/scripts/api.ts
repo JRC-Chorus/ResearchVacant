@@ -39,9 +39,6 @@ const mockFuncs: IRun = {
       setTimeout(resolve, 5000);
     });
   },
-  getSampleData: function (): Promise<any[][]> {
-    throw new Error('Function not implemented.');
-  },
   withFailureHandler(callback) {
     throw new Error('Function not implemented.');
   },

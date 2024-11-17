@@ -22,7 +22,4 @@ export interface FrontAPI {
   ) => void;
   /** フロントエンドで決定した開催日を登録する */
   decideDates: (params: Record<string, string>, infos: PartyInfo[]) => void;
-
-  /** SpreadSheetからサンプルデータを取得 */
-  getSampleData: () => any[][];
 }
