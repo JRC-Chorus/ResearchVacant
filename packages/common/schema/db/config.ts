@@ -84,7 +84,7 @@ export const Config = z.object({
     .string()
     .optional()
     .default(
-      '先日より実施中の日程調査の締め切りが間近です．\n下記URLよりご回答をお願いいたします．'
+      '先日より実施中の日程調査の締め切りが間近です．下記URLよりご回答をお願いいたします．'
     ),
   /** リマインドメールの件名 */
   remindMailSubject: z
