@@ -11,15 +11,21 @@ import { useMainStore } from 'src/stores/main';
 /**
  * 回答を求める必要がある日か
  */
-export function isEnableDate(ansDates: AnsSummaryDate[], date?: RvDate): boolean
-export function isEnableDate(summary: AnswerSummary, date?: RvDate): boolean
-export function isEnableDate(summary: AnsSummaryDate[] | AnswerSummary, date?: RvDate): boolean {
+export function isEnableDate(
+  ansDates: AnsSummaryDate[],
+  date?: RvDate
+): boolean;
+export function isEnableDate(summary: AnswerSummary, date?: RvDate): boolean;
+export function isEnableDate(
+  summary: AnsSummaryDate[] | AnswerSummary,
+  date?: RvDate
+): boolean {
   if (!date) {
     return false;
   }
 
   // 回答日の一覧を取得
-  const ansDates = 'ansDates' in summary ? summary.ansDates : summary
+  const ansDates = 'ansDates' in summary ? summary.ansDates : summary;
 
   // 日付は期間内か
   const targetDay = dayjs(date);
@@ -58,8 +64,9 @@ export const iconList: Record<AnsStatus, { icon: string; color: string }> = {
 /** In Source Testing */
 if (import.meta.vitest) {
   const { describe, test, expect, beforeEach } = import.meta.vitest;
-  const { createPinia, setActivePinia } = await import('pinia');
-  describe('isEnableDate', () => {
+  describe('isEnableDate', async () => {
+    const { createPinia, setActivePinia } = await import('pinia');
+
     const dummyDates = [
       RvDate.parse('2024-10-01'),
       RvDate.parse('2024-10-02'),
