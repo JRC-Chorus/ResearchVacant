@@ -20,7 +20,10 @@ export const Config = z.object({
   researchFrequency: z.enum(researchFrequencyEnum).optional().default('month'),
 
   /** 問い合わせ期間における開催回数*/
-  researchPartyCount: z.string().optional().default('１回（２回に変更の可能性あり）'),
+  researchPartyCount: z
+    .string()
+    .optional()
+    .default('１回（２回に変更の可能性あり）'),
 
   /** 調査画面における備考欄に表示するコメント */
   researchGlobalComment: z.string().optional().default('< 特になし >'),
@@ -72,7 +75,9 @@ export const Config = z.object({
   announceAnswerMail: z
     .string()
     .optional()
-    .default('下記URLより日程調査の回答をお願いいたします．'),
+    .default(
+      '下記URLより日程調査の回答をお願いいたします．\n\n##_ANSWER_URL_##'
+    ),
   /** 回答案内時のメールの件名 */
   announceAnswerMailSubject: z
     .string()
@@ -84,7 +89,7 @@ export const Config = z.object({
     .string()
     .optional()
     .default(
-      '先日より実施中の日程調査の締め切りが間近です．下記URLよりご回答をお願いいたします．'
+      '先日より実施中の日程調査の締め切りが間近です．下記URLよりご回答をお願いいたします．\n\n##_ANSWER_URL_##'
     ),
   /** リマインドメールの件名 */
   remindMailSubject: z
@@ -96,7 +101,7 @@ export const Config = z.object({
   requestApproveMail: z
     .string()
     .optional()
-    .default('日程調査が終了しました．開催日の決定をお願いいたします．'),
+    .default('日程調査が終了しました．開催日の決定をお願いいたします．\n\n##_ANSWER_URL_##'),
   /** 承認依頼のメールの件名 */
   requestApproveMailSubject: z
     .string()
