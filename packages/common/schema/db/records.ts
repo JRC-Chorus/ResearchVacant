@@ -12,6 +12,8 @@ export const OuterPlace = z.object({
   placeName: z.string(),
   /** 施設情報に関するURL（地図や公式HP等） */
   placeURL: z.string().optional(),
+  /** 予約が必要な施設か？（必要な場合，予約を促すダイアログを表示する） */
+  isNeedReserve: z.boolean(),
 });
 export type OuterPlace = z.infer<typeof OuterPlace>;
 
@@ -30,12 +32,12 @@ export const CheckedOuterPlace = z.object({
 });
 export type CheckedOuterPlace = z.infer<typeof CheckedOuterPlace>;
 
-// 開催情報（バックエンド保持用）
+// 開催情報（フロントエンド <--> バックエンド 通信用）
 export const PartyInfo = z.object({
   /** 開催日 */
   date: RvDate,
   /** 開催場所 */
-  pos: OuterPlace,
+  placeId: PlaceID,
 });
 export type PartyInfo = z.infer<typeof PartyInfo>;
 

@@ -22,7 +22,7 @@ const mockFuncs: IRun = {
     params: Record<string, string>
   ): Promise<Promise<MemberStatus>> {
     const target = new Promise<MemberStatus>((resolve) => {
-      resolve(loadAccessMock('noAns', true));
+      resolve(loadAccessMock('judging', true));
     });
 
     return new Promise((resolve) => {
@@ -102,19 +102,12 @@ export async function sendVacantDates() {
 /**
  * 開催日を決定し，その通知をバックエンドに飛ばす
  */
-export async function sendPartyDate(places: CheckedOuterPlace[]) {
+export async function sendPartyDate() {
   const urlParams = (await getURLLocation()).parameter;
 
   const mainStore = useMainStore();
   const ans: PartyInfo[] = toEntries(mainStore.markedDates).map((kv) => {
-    const targetPlace = places.find((p) => p.placeId === kv[1]);
-    return {
-      date: kv[0],
-      pos: {
-        placeName: targetPlace?.placeName ?? '',
-        placeURL: targetPlace?.placeURL,
-      },
-    };
+    return { date: kv[0], placeId: kv[1] };
   });
 
   await googleScriptRun.decideDates(urlParams, ans);

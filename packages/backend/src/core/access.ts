@@ -6,7 +6,7 @@ import {
   ResearchDetails,
 } from '@research-vacant/common';
 import dayjs from 'dayjs';
-import { loadPlaces } from 'backend/source/places/base';
+import { loadPlaceProps, loadPlaces } from 'backend/source/places/base';
 import {
   getAnsweredMemberIDs,
   getAnswerSummary,
@@ -64,15 +64,12 @@ export async function accessManager(
       details: details,
     };
   } else if (session.status === 'judge') {
-    const targetPlaces = loadPlaces(ids.sessionId);
-    const placeObjs = await Promise.all(
-      targetPlaces.map(async (p) => p.toOuterPlace())
-    );
+    const targetPlaces = await loadPlaces(ids.sessionId);
     return {
       status: 'judging',
       isManager: isManager,
       summary: summary,
-      places: placeObjs,
+      places: targetPlaces,
       details: details,
     };
   } else if (session.status === 'closed') {
@@ -84,7 +81,7 @@ export async function accessManager(
       partyDates: targetRecord.infos.map((info) => {
         return {
           date: info.date,
-          pos: info.pos,
+          pos: loadPlaceProps(info.placeId),
           ans: summary.ansDates.find((d) => d.date === info.date)?.ans ?? [],
         };
       }),
