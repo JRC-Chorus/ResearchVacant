@@ -127,7 +127,9 @@ function resetAllAns() {
                   class="q-my-sm"
                 />
                 <IndentLine v-else title="備考欄" max-width="10rem">
-                  {{ mainStore.bikou }}
+                  <span style="white-space: pre-line">
+                    {{ mainStore.bikou }}
+                  </span>
                 </IndentLine>
               </li>
             </ul>

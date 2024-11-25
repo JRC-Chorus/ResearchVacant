@@ -82,7 +82,7 @@ export function loadAccessMock(
     researchStartDate: RvDate.parse('2024-9-1'),
     researchEndDate: RvDate.parse('2024-9-7'),
     partyCount: '２回（そのうち１回は外部練習を予定）',
-    bikou: '< 特になし >',
+    bikou: '備考１行目\nBikou 2nd line',
   };
   switch (status) {
     case 'noAns':
