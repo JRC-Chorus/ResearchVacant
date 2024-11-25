@@ -136,6 +136,11 @@ export const useMainStore = defineStore('mainStore', {
 
       // initialize markedDates
       this.markedDates = {};
+
+      // initialize free texts
+      if (summary.selfAns?.freeText) {
+        this.freeTxt = summary.selfAns?.freeText
+      }
     },
   },
 });
