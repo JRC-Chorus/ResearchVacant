@@ -123,12 +123,17 @@ export function getAnswerSummary(
 
   // 初期化
   const tmpAnsDates: Record<RvDate, Record<AnsStatus, string[]>> = fromEntries(
-    [...Array(dayjs(session.endDate).diff(session.startDate, 'day'))].map(
-      (_, idx) => [
-        RvDate.parse(dayjs(session.startDate).add(idx, 'day').format()),
-        fromEntries(AnsStatus.map((status) => [status, []])),
-      ]
-    )
+    [
+      ...Array(
+        dayjs(session.researchRangeEnd).diff(
+          session.researchRangeStart,
+          'day'
+        ) + 1
+      ),
+    ].map((_, idx) => [
+      RvDate.parse(dayjs(session.researchRangeStart).add(idx, 'day').format()),
+      fromEntries(AnsStatus.map((status) => [status, []])),
+    ])
   );
   // 回答を登録
   answers.forEach((userAns) => {
@@ -246,5 +251,38 @@ if (import.meta.vitest) {
       '2024-02-05',
       '2024-03-10',
     ]);
+  });
+
+  test('AnsSummary', async () => {
+    // Mock
+    const { SpreadsheetApp } = await import('@research-vacant/mock');
+    global.SpreadsheetApp = new SpreadsheetApp();
+
+    // migrate
+    const sessionId = SessionID.parse('aa62f273-4621-4e0a-a73f-c30a43808841');
+    __initAnsRecordSheet(sessionId);
+
+    // sample env
+    const targetSession: Session = {
+      status: 'ready',
+      id: sessionId,
+      startDate: RvDate.parse('2024-11-1'),
+      endDate: RvDate.parse('2024-11-7'),
+      researchRangeStart: RvDate.parse('2024-12-1'),
+      researchRangeEnd: RvDate.parse('2024-12-31'),
+      partyCount: '１回',
+      bikou: '特になし',
+    };
+    const targetMember = MemberID.parse('f181dd16-7f95-43d7-b8f1-1faf3612fed1');
+
+    // run test
+    const testSummary = getAnswerSummary(targetSession, targetMember);
+
+    // check
+    expect(testSummary.ansDates[0].date).toBe(targetSession.researchRangeStart);
+    expect(testSummary.ansDates[testSummary.ansDates.length - 1].date).toBe(
+      targetSession.researchRangeEnd
+    );
+    expect(testSummary.freeTxts.length).toBe(0);
   });
 }

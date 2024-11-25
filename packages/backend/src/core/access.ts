@@ -217,19 +217,20 @@ if (import.meta.vitest) {
 
     // create answer
     const { RvDate } = await import('@research-vacant/common');
-    const _ans1 = ['OK', 'NG', 'OK'] as const;
-    const _ans2 = ['NG', 'NG', 'OK'] as const;
+    const researchRangeCount =
+      dayjs(sampleSession.researchRangeEnd).diff(
+        sampleSession.researchRangeStart,
+        'day'
+      ) + 1;
+    const _ans1 = [...Array(researchRangeCount)].map((_) => 'OK' as const);
+    const _ans2 = [...Array(researchRangeCount)].map((_) => 'NG' as const);
     const genSampleAns: (ans: typeof _ans1 | typeof _ans2) => AnsDate[] = (
       ans
     ) =>
-      [
-        ...Array(
-          dayjs(sampleSession.endDate).diff(sampleSession.startDate, 'day')
-        ),
-      ].map((_, idx) => {
+      [...Array(researchRangeCount)].map((_, idx) => {
         return {
           date: RvDate.parse(
-            dayjs(sampleSession.startDate).add(idx, 'day').format()
+            dayjs(sampleSession.researchRangeStart).add(idx, 'day').format()
           ),
           ans: ans[idx],
         };
@@ -258,7 +259,7 @@ if (import.meta.vitest) {
       });
       expect(memberStatus.status).toBe('alreadyAns');
       if ('summary' in memberStatus) {
-        expect(memberStatus.summary.ansDates.length).toBe(3);
+        expect(memberStatus.summary.ansDates.length).toBe(researchRangeCount);
         expect(memberStatus.summary.ansDates[0].ans[0]).toMatchObject({
           ansPersonNames: ['サンプル 太郎'],
           status: 'OK',
@@ -278,7 +279,7 @@ if (import.meta.vitest) {
       });
       expect(memberStatus2.status).toBe('alreadyAns');
       if ('summary' in memberStatus2) {
-        expect(memberStatus2.summary.ansDates.length).toBe(3);
+        expect(memberStatus2.summary.ansDates.length).toBe(researchRangeCount);
         expect(memberStatus2.summary.ansDates[0].ans[2]).toMatchObject({
           ansPersonNames: ['サンプル 太郎'],
           status: 'NG',
