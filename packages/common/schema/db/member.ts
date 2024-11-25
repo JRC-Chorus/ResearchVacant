@@ -5,8 +5,6 @@ export const Role = z.object({
   manager: z.boolean(),
   // 出席必須か
   mustAttend: z.boolean(),
-  // 外部施設で開催する場合
-  mustAttendByOuter: z.boolean(),
 });
 export type Role = z.infer<typeof Role>;
 

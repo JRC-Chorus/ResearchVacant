@@ -51,7 +51,7 @@ export const Config = z.object({
       z.string().array()
     )
     .optional()
-    .default(['']),
+    .default(['管理者']),
 
   /** 必ず出席を求めるロール */
   mustAttendRoles: z
@@ -60,16 +60,7 @@ export const Config = z.object({
       z.string().array()
     )
     .optional()
-    .default(['']),
-
-  /** 外部会場の時には出席を求めるロール */
-  mustAttendOuterPlaceRoles: z
-    .preprocess(
-      (val) => (typeof val === 'string' ? [val] : val),
-      z.string().array()
-    )
-    .optional()
-    .default(['']),
+    .default(['必須出席者']),
 
   /** 回答案内時のメール */
   announceAnswerMail: z

@@ -22,7 +22,6 @@ const configShowingKey: { [key in keyof Config]: string } = {
   researchTargetCycle: '調査対象の期間は現在から何サイクル後とするか',
   prohibitReans: '再回答を禁止するか',
   mustAttendRoles: '必ず出席を求めるロール',
-  mustAttendOuterPlaceRoles: '外部会場の時には出席を求めるロール',
   announceAnswerMailSubject: '下記依頼メールの件名',
   announceAnswerMail:
     '各調査の一番最初に回答を依頼するために送信するメールの文面',
