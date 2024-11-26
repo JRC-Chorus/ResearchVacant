@@ -45,7 +45,7 @@ function getSpecialHolidayName(idx: number, isWindowSize_gt_sm: boolean) {
         {{ youbi[n - 1] }}
       </div>
     </div>
-    <div class="row q-gutter-y-md" style="margin-left: -3px;">
+    <div class="row q-gutter-y-md" style="margin-left: -3px">
       <div
         v-for="n in 7 * mainStore.showingWeekCount"
         :key="`none-${n}`"

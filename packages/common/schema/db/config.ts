@@ -92,7 +92,9 @@ export const Config = z.object({
   requestApproveMail: z
     .string()
     .optional()
-    .default('日程調査が終了しました．開催日の決定をお願いいたします．\n\n##_ANSWER_URL_##'),
+    .default(
+      '日程調査が終了しました．開催日の決定をお願いいたします．\n\n##_ANSWER_URL_##'
+    ),
   /** 承認依頼のメールの件名 */
   requestApproveMailSubject: z
     .string()

@@ -95,9 +95,11 @@ export function getConfig(): Config {
 if (import.meta.vitest) {
   const { test, expect } = import.meta.vitest;
   test('config sheet', async () => {
-    const { SpreadsheetApp, LockService } = await import('@research-vacant/mock');
+    const { SpreadsheetApp, LockService } = await import(
+      '@research-vacant/mock'
+    );
     global.SpreadsheetApp = new SpreadsheetApp();
-    global.LockService = new LockService()
+    global.LockService = new LockService();
 
     // initialize
     initConfigSheet();
