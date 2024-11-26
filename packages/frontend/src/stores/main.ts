@@ -59,7 +59,8 @@ export const useMainStore = defineStore('mainStore', {
       if (
         this.__memberStatus.status === 'noAns' ||
         this.__memberStatus.status === 'alreadyAns' ||
-        this.__memberStatus.status === 'judging'
+        this.__memberStatus.status === 'judging' ||
+        this.__memberStatus.status === 'finished'
       ) {
         const ansStart = dayjs(this.__memberStatus.details.researchStartDate);
         const ansEnd = dayjs(this.__memberStatus.details.researchEndDate);
@@ -139,7 +140,7 @@ export const useMainStore = defineStore('mainStore', {
 
       // initialize free texts
       if (summary.selfAns?.freeText) {
-        this.freeTxt = summary.selfAns?.freeText
+        this.freeTxt = summary.selfAns?.freeText;
       }
     },
   },
