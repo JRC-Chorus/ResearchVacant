@@ -3,10 +3,10 @@ import {
   Answer,
   MemberStatus,
   PartyInfo,
-  SessionID,
+  ResearchDetails,
 } from '@research-vacant/common';
 import dayjs from 'dayjs';
-import { loadPlaces } from 'backend/source/places/base';
+import { loadPlaceProps, loadPlaces } from 'backend/source/places/base';
 import {
   getAnsweredMemberIDs,
   getAnswerSummary,
@@ -34,6 +34,13 @@ export async function accessManager(
   const answerIds = getAnsweredMemberIDs(ids.sessionId);
   const session = getSessions()[ids.sessionId];
   const summary = getAnswerSummary(session, ids.memberId);
+  const isManager = !!getMembers()[ids.memberId].roles?.manager;
+  const details: ResearchDetails = {
+    researchStartDate: session.startDate,
+    researchEndDate: session.endDate,
+    partyCount: session.partyCount,
+    bikou: session.bikou,
+  };
 
   if (session.status === 'ready') {
     return {
@@ -46,42 +53,39 @@ export async function accessManager(
     return {
       status: 'noAns',
       summary: summary,
+      isManager: isManager,
+      details: details,
     };
   } else if (session.status === 'opening') {
     return {
       status: 'alreadyAns',
       summary: summary,
+      isManager: isManager,
+      details: details,
     };
   } else if (session.status === 'judge') {
-    const targetPlaces = loadPlaces(ids.sessionId);
-    const placeObjs = await Promise.all(
-      targetPlaces.map(async (p) => {
-        return {
-          placeName: p.placeName,
-          placeURL: p.placeURL,
-          isNeedReserve: p.isNeedReserve,
-          vacantInfo: await p.getVacantInfo(),
-        };
-      })
-    );
+    const targetPlaces = await loadPlaces(ids.sessionId);
     return {
       status: 'judging',
-      isManager: !!getMembers()[ids.memberId].roles?.manager,
+      isManager: isManager,
       summary: summary,
-      places: placeObjs,
+      places: targetPlaces,
+      details: details,
     };
   } else if (session.status === 'closed') {
     const targetRecord = getPartys()[ids.sessionId];
     return {
       status: 'finished',
+      isManager: isManager,
       summary: summary,
       partyDates: targetRecord.infos.map((info) => {
         return {
           date: info.date,
-          pos: info.pos,
+          pos: loadPlaceProps(info.placeId),
           ans: summary.ansDates.find((d) => d.date === info.date)?.ans ?? [],
         };
       }),
+      details: details,
     };
   }
 
@@ -97,13 +101,20 @@ export async function accessManager(
 export function submitAnswers(
   params: Record<string, string>,
   ans: AnsDate[],
-  freeTxt: string
+  freeTxt: string,
+  partyCount: string,
+  bikou: string
 ) {
   // Check and Get some data
   const ids = parseRecievedIds(params);
   const members = getMembers();
   if (ids === void 0 || !isMember(ids.memberId)) {
     throw new Error('Invalid user is accessed');
+  }
+
+  // update session (only enable by manager)
+  if (!!getMembers()[ids.memberId].roles?.manager) {
+    updateSession(ids.sessionId, undefined, partyCount, bikou);
   }
 
   // Regist answer
@@ -123,14 +134,23 @@ export function submitAnswers(
  *
  * 当該セッションのステータスを'judge' -> 'closed'とする
  */
-export function decideDates(sessionId: SessionID, infos: PartyInfo[]) {
+export function decideDates(
+  params: Record<string, string>,
+  infos: PartyInfo[]
+) {
+  // Check and Get some data
+  const ids = parseRecievedIds(params);
+  if (ids === void 0 || !isMember(ids.memberId)) {
+    throw new Error('Invalid user is accessed');
+  }
+
   // 開催日を登録
-  registPartyDate(sessionId, infos);
+  registPartyDate(ids.sessionId, infos);
 
   // TODO: 決定を通知（Teams？）
 
   // ステータスを更新
-  updateSession(sessionId, 'closed');
+  updateSession(ids.sessionId, 'closed');
 }
 
 /** In Source Testing */
@@ -138,9 +158,12 @@ if (import.meta.vitest) {
   const { describe, test, expect } = import.meta.vitest;
   describe('accessManager', async () => {
     // mocks
-    const { SpreadsheetApp, Utilities } = await import('@research-vacant/mock');
+    const { SpreadsheetApp, Utilities, LockService } = await import(
+      '@research-vacant/mock'
+    );
     global.SpreadsheetApp = new SpreadsheetApp();
     global.Utilities = new Utilities();
+    global.LockService = new LockService();
 
     // initialize
     const { migrateEnv } = await import('./migrate');
@@ -194,19 +217,20 @@ if (import.meta.vitest) {
 
     // create answer
     const { RvDate } = await import('@research-vacant/common');
-    const _ans1 = ['OK', 'NG', 'OK'] as const;
-    const _ans2 = ['NG', 'NG', 'OK'] as const;
+    const researchRangeCount =
+      dayjs(sampleSession.researchRangeEnd).diff(
+        sampleSession.researchRangeStart,
+        'day'
+      ) + 1;
+    const _ans1 = [...Array(researchRangeCount)].map((_) => 'OK' as const);
+    const _ans2 = [...Array(researchRangeCount)].map((_) => 'NG' as const);
     const genSampleAns: (ans: typeof _ans1 | typeof _ans2) => AnsDate[] = (
       ans
     ) =>
-      [
-        ...Array(
-          dayjs(sampleSession.endDate).diff(sampleSession.startDate, 'day')
-        ),
-      ].map((_, idx) => {
+      [...Array(researchRangeCount)].map((_, idx) => {
         return {
           date: RvDate.parse(
-            dayjs(sampleSession.startDate).add(idx, 'day').format()
+            dayjs(sampleSession.researchRangeStart).add(idx, 'day').format()
           ),
           ans: ans[idx],
         };
@@ -214,7 +238,13 @@ if (import.meta.vitest) {
     const sampleAnswerTxt = 'Dummy free text';
 
     test('regist answer', async () => {
-      submitAnswers({ aId: accessId }, genSampleAns(_ans1), sampleAnswerTxt);
+      submitAnswers(
+        { aId: accessId },
+        genSampleAns(_ans1),
+        sampleAnswerTxt,
+        sampleSession.partyCount,
+        sampleSession.bikou
+      );
 
       const memberStatus = await accessManager({
         aId: accessId,
@@ -229,7 +259,7 @@ if (import.meta.vitest) {
       });
       expect(memberStatus.status).toBe('alreadyAns');
       if ('summary' in memberStatus) {
-        expect(memberStatus.summary.ansDates.length).toBe(3);
+        expect(memberStatus.summary.ansDates.length).toBe(researchRangeCount);
         expect(memberStatus.summary.ansDates[0].ans[0]).toMatchObject({
           ansPersonNames: ['サンプル 太郎'],
           status: 'OK',
@@ -237,13 +267,19 @@ if (import.meta.vitest) {
       }
 
       // 回答を変更
-      submitAnswers({ aId: accessId }, genSampleAns(_ans2), sampleAnswerTxt);
+      submitAnswers(
+        { aId: accessId },
+        genSampleAns(_ans2),
+        sampleAnswerTxt,
+        sampleSession.partyCount,
+        sampleSession.bikou
+      );
       const memberStatus2 = await accessManager({
         aId: accessId,
       });
       expect(memberStatus2.status).toBe('alreadyAns');
       if ('summary' in memberStatus2) {
-        expect(memberStatus2.summary.ansDates.length).toBe(3);
+        expect(memberStatus2.summary.ansDates.length).toBe(researchRangeCount);
         expect(memberStatus2.summary.ansDates[0].ans[2]).toMatchObject({
           ansPersonNames: ['サンプル 太郎'],
           status: 'NG',

@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { AnswerSummary, CheckedOuterPlace } from '@research-vacant/common';
+import {
+  AnswerSummary,
+  CheckedOuterPlace,
+  keys,
+} from '@research-vacant/common';
 import dayjs from 'dayjs';
 import CalendarView from 'src/components/CalendarView.vue';
-import AnsSendingDialog from 'src/components/Dialogs/AnsSendingDialog.vue';
+import ApproveSendingDialog from 'src/components/Dialogs/ApproveSendingDialog.vue';
 import CheckDialog from 'src/components/Dialogs/CheckDialog.vue';
 import {
+  ApproveSendingDialogProp,
   CheckDialogProp,
   InfoDialogProp,
-  ShowingDetail,
 } from 'src/components/Dialogs/iDialogProp';
 import InfoDialog from 'src/components/Dialogs/InfoDialog.vue';
 import IndentLine from 'src/components/utils/IndentLine.vue';
@@ -17,33 +21,23 @@ import { useMainStore } from 'src/stores/main';
 interface Prop {
   summary: AnswerSummary;
   places: CheckedOuterPlace[];
+  isManager: boolean;
 }
 const prop = defineProps<Prop>();
 
 const $q = useQuasar();
 const mainStore = useMainStore();
 
-const showingDetails: ShowingDetail[] = [
-  {
-    title: '開催回数',
-    // TODO: データベースにこの項目が記録できるフィールドを追加し，MemberSummaryから取得できるようにする
-    // TODO: 管理者は個々のテキストをUI上から変更できるような機能を入れる
-    desc: '２回（そのうち１回は外部練習を予定）',
-  },
-  {
-    title: '備考',
-    // TODO: データベースにこの項目が記録できるフィールドを追加し，MemberSummaryから取得できるようにする
-    // TODO: 管理者は個々のテキストをUI上から変更できるような機能を入れる
-    desc: '＜特になし＞',
-  },
-];
-
 /**
  * 回答の提出処理を実行
  */
 function submitAns() {
   $q.dialog({
-    component: AnsSendingDialog,
+    component: ApproveSendingDialog,
+    componentProps: {
+      places: prop.places,
+      summary: prop.summary,
+    } as ApproveSendingDialogProp,
   });
 }
 
@@ -54,7 +48,7 @@ function showInfoDialog() {
   $q.dialog({
     component: InfoDialog,
     componentProps: {
-      showingDetails: showingDetails,
+      isManager: prop.isManager,
     } as InfoDialogProp,
   });
 }
@@ -107,9 +101,31 @@ function resetAllAns() {
           <div class="gt-md">
             <h2><u>開催日の詳細情報</u></h2>
             <ul>
-              <li v-for="detail in showingDetails" :key="detail.title">
-                <IndentLine :title="detail.title" max-width="10rem">
-                  {{ detail.desc }}
+              <li>
+                <q-input
+                  v-if="isManager"
+                  v-model="mainStore.partyCount"
+                  dense
+                  filled
+                  label="開催回数"
+                  class="q-my-sm"
+                />
+                <IndentLine v-else title="開催回数" max-width="10rem">
+                  {{ mainStore.partyCount }}
+                </IndentLine>
+              </li>
+              <li>
+                <q-input
+                  v-if="isManager"
+                  v-model="mainStore.bikou"
+                  dense
+                  filled
+                  type="textarea"
+                  label="備考欄"
+                  class="q-my-sm"
+                />
+                <IndentLine v-else title="備考欄" max-width="10rem">
+                  {{ mainStore.bikou }}
                 </IndentLine>
               </li>
             </ul>
@@ -134,8 +150,14 @@ function resetAllAns() {
         <q-btn outline size="1rem" @click="resetAllAns()">
           入力内容をリセット
         </q-btn>
-        <q-btn fill color="primary" size="1rem" @click="submitAns()">
-          回答を提出
+        <q-btn
+          fill
+          color="primary"
+          size="1rem"
+          :disable="keys(mainStore.markedDates).length === 0"
+          @click="submitAns()"
+        >
+          開催日を確認
         </q-btn>
       </div>
     </q-card-actions>

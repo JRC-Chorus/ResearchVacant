@@ -1,4 +1,9 @@
-import { MemberStatus } from '@research-vacant/common';
+import {
+  CheckedOuterPlace,
+  MemberStatus,
+  PartyInfo,
+  toEntries,
+} from '@research-vacant/common';
 import { IRun, IUrlLocation } from 'src/schema/global';
 import { useMainStore } from 'src/stores/main';
 import { loadAccessMock } from './accessCases';
@@ -17,7 +22,7 @@ const mockFuncs: IRun = {
     params: Record<string, string>
   ): Promise<Promise<MemberStatus>> {
     const target = new Promise<MemberStatus>((resolve) => {
-      resolve(loadAccessMock('judging'));
+      resolve(loadAccessMock('noAns', false));
     });
 
     return new Promise((resolve) => {
@@ -29,8 +34,10 @@ const mockFuncs: IRun = {
       setTimeout(resolve, 5000);
     });
   },
-  getSampleData: function (): Promise<any[][]> {
-    throw new Error('Function not implemented.');
+  decideDates(params, infos) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, 5000);
+    });
   },
   withFailureHandler(callback) {
     throw new Error('Function not implemented.');
@@ -83,5 +90,25 @@ export async function sendVacantDates() {
   const mainStore = useMainStore();
   const ans = mainStore.ansModel.filter((a) => a !== void 0);
 
-  await googleScriptRun.submitAnswers(urlParams, ans, mainStore.freeTxt);
+  await googleScriptRun.submitAnswers(
+    urlParams,
+    ans,
+    mainStore.freeTxt,
+    mainStore.partyCount,
+    mainStore.bikou
+  );
+}
+
+/**
+ * 開催日を決定し，その通知をバックエンドに飛ばす
+ */
+export async function sendPartyDate() {
+  const urlParams = (await getURLLocation()).parameter;
+
+  const mainStore = useMainStore();
+  const ans: PartyInfo[] = toEntries(mainStore.markedDates).map((kv) => {
+    return { date: kv[0], placeId: kv[1] };
+  });
+
+  await googleScriptRun.decideDates(urlParams, ans);
 }

@@ -1,4 +1,5 @@
 import {
+  AnsStatus,
   AnswerSummary,
   CheckedOuterPlace,
   deepcopy,
@@ -7,7 +8,10 @@ import {
   MemberStatus,
   OuterPlace,
   pickRandom,
+  PlaceID,
   RvDate,
+  SummaryAnswers,
+  toEntries,
 } from '@research-vacant/common';
 
 /**
@@ -48,6 +52,7 @@ const sampleMember: Member = {
  * ダミー施設
  */
 const samplePlace: CheckedOuterPlace = {
+  placeId: PlaceID.parse('DUMMY PLACE ID'),
   placeName: 'サンプル施設',
   placeURL: 'https://github.com/JRC-Chorus/ResearchVacant',
   isNeedReserve: true,
@@ -69,7 +74,16 @@ function getRandomAns() {
 /**
  * accessManagerの戻り値を生成する（開発用のダミーデータを生成）
  */
-export function loadAccessMock(status: MemberStatus['status']): MemberStatus {
+export function loadAccessMock(
+  status: MemberStatus['status'],
+  isManager: boolean
+): MemberStatus {
+  const details = {
+    researchStartDate: RvDate.parse('2024-9-1'),
+    researchEndDate: RvDate.parse('2024-9-7'),
+    partyCount: '２回（そのうち１回は外部練習を予定）',
+    bikou: '備考１行目\nBikou 2nd line',
+  };
   switch (status) {
     case 'noAns':
       return {
@@ -78,6 +92,8 @@ export function loadAccessMock(status: MemberStatus['status']): MemberStatus {
           ansDates: defaultAnsDates,
           freeTxts: [],
         },
+        isManager: isManager,
+        details: details,
       };
     case 'alreadyAns':
       return {
@@ -92,6 +108,8 @@ export function loadAccessMock(status: MemberStatus['status']): MemberStatus {
           },
           freeTxts: [],
         },
+        isManager: isManager,
+        details: details,
       };
     case 'finished':
       return {
@@ -122,26 +140,66 @@ export function loadAccessMock(status: MemberStatus['status']): MemberStatus {
             pos: OuterPlace.parse(samplePlace),
           },
         ],
+        isManager: isManager,
+        details: details,
       };
     case 'judging':
-      // 適当にデータを追加
-      const judgingAnsDates = deepcopy(defaultAnsDates).map((ans) => {
-        ans.ans.push({
-          status: pickRandom(['OK', 'NG', 'Pending'] as const),
-          ansPersonNames: [
-            `${sampleMember.firstName} ${sampleMember.lastName}`,
-          ],
+      // N人分の回答データを生成
+      const randomAnswers = (count: number): SummaryAnswers => {
+        // 人数分の回答を生成
+        const randomStatus = [...new Array(count)].map((_) =>
+          pickRandom(['OK', 'NG', 'Pending'] as const)
+        );
+
+        // 回答者名のリストに変換
+        const returnAnswers: Record<AnsStatus, string[]> = {
+          OK: [],
+          Pending: [],
+          NG: [],
+        };
+        randomStatus.forEach((status) => {
+          returnAnswers[status].push(
+            `${sampleMember.firstName} ${sampleMember.lastName}`
+          );
         });
+
+        // 要求データ形式に変換
+        return toEntries(returnAnswers).map((ans) => {
+          return {
+            status: ans[0],
+            ansPersonNames: ans[1],
+          };
+        });
+      };
+
+      const judgingAnsDates = deepcopy(defaultAnsDates).map((ans) => {
+        ans.ans = randomAnswers(10);
         return ans;
       });
+      const sampleComments = [
+        {
+          txt: 'sample comment1',
+          ansName: 'テストメンバー１',
+        },
+        {
+          txt: 'sample comment2',
+          ansName: 'テストメンバー２',
+        },
+        {
+          txt: 'sample comment3',
+          ansName: 'テストメンバー３',
+        },
+      ];
+
       return {
         status,
         summary: {
           ansDates: judgingAnsDates,
-          freeTxts: [],
+          freeTxts: sampleComments,
         },
-        isManager: true,
+        isManager: isManager,
         places: [samplePlace],
+        details: details,
       };
     case 'invalidUser':
     case 'beforeOpening':

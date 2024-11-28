@@ -20,10 +20,13 @@ export const Config = z.object({
   researchFrequency: z.enum(researchFrequencyEnum).optional().default('month'),
 
   /** 問い合わせ期間における開催回数*/
-  researchPartyCount: z.number().min(1).optional().default(1),
+  researchPartyCount: z
+    .string()
+    .optional()
+    .default('１回（２回に変更の可能性あり）'),
 
-  /** 開催回数のうち，外部施設の利用回数*/
-  outerPlacePartyCount: z.number().min(0).optional().default(0),
+  /** 調査画面における備考欄に表示するコメント */
+  researchGlobalComment: z.string().optional().default('< 特になし >'),
 
   /**
    * 調査対象の期間は現在から何サイクル後とするか（「１」で次サイクルを対象とする）
@@ -41,9 +44,6 @@ export const Config = z.object({
   /** リマインドの送付日 */
   remindDateBeforeEndResearch: z.number().min(-1).optional().default(1),
 
-  /** 最終開催日から最低限開けるべき日数 */
-  leastRestTime: z.number().optional().default(0),
-
   /** 開催日の承認を担当するロール */
   approverRoles: z
     .preprocess(
@@ -51,7 +51,7 @@ export const Config = z.object({
       z.string().array()
     )
     .optional()
-    .default(['']),
+    .default(['管理者']),
 
   /** 必ず出席を求めるロール */
   mustAttendRoles: z
@@ -60,22 +60,15 @@ export const Config = z.object({
       z.string().array()
     )
     .optional()
-    .default(['']),
-
-  /** 外部会場の時には出席を求めるロール */
-  mustAttendOuterPlaceRoles: z
-    .preprocess(
-      (val) => (typeof val === 'string' ? [val] : val),
-      z.string().array()
-    )
-    .optional()
-    .default(['']),
+    .default(['必須出席者']),
 
   /** 回答案内時のメール */
   announceAnswerMail: z
     .string()
     .optional()
-    .default('下記URLより日程調査の回答をお願いいたします．'),
+    .default(
+      '下記URLより日程調査の回答をお願いいたします．\n\n##_ANSWER_URL_##'
+    ),
   /** 回答案内時のメールの件名 */
   announceAnswerMailSubject: z
     .string()
@@ -87,7 +80,7 @@ export const Config = z.object({
     .string()
     .optional()
     .default(
-      '先日より実施中の日程調査の締め切りが間近です．\n下記URLよりご回答をお願いいたします．'
+      '先日より実施中の日程調査の締め切りが間近です．下記URLよりご回答をお願いいたします．\n\n##_ANSWER_URL_##'
     ),
   /** リマインドメールの件名 */
   remindMailSubject: z
@@ -99,7 +92,9 @@ export const Config = z.object({
   requestApproveMail: z
     .string()
     .optional()
-    .default('日程調査が終了しました．開催日の決定をお願いいたします．'),
+    .default(
+      '日程調査が終了しました．開催日の決定をお願いいたします．\n\n##_ANSWER_URL_##'
+    ),
   /** 承認依頼のメールの件名 */
   requestApproveMailSubject: z
     .string()

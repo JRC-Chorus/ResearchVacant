@@ -1,3 +1,11 @@
+import {
+  AnsFreeTxt,
+  AnsSummaryDate,
+  AnswerSummary,
+  CheckedOuterPlace,
+  RvDate,
+} from '@research-vacant/common';
+
 export interface BaseDialogProp {
   loading?: boolean;
   disable?: boolean;
@@ -16,7 +24,18 @@ export interface CheckDialogProp {
   cancelTxt: string;
 }
 
-export type ShowingDetail = { title: string; desc: string };
+export interface AnswerListDialogProp {
+  date: RvDate;
+  ansDates: AnsSummaryDate[];
+  freeTxts: AnsFreeTxt[];
+  places: CheckedOuterPlace[];
+}
+
 export interface InfoDialogProp {
-  showingDetails: ShowingDetail[];
+  isManager: boolean;
+}
+
+export interface ApproveSendingDialogProp {
+  summary: AnswerSummary;
+  places: CheckedOuterPlace[];
 }

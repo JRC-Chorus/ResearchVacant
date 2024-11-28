@@ -25,15 +25,36 @@ const isSpecialHolidayExists = keys(mainStore.specialHoliday).length > 0;
       @ok-click="onDialogOK"
     >
       <q-card-section>
-        <div
-          v-for="detail in showingDetails"
-          :key="detail.title"
-          class="q-my-sm"
-        >
-          <div>{{ detail.title }}</div>
-          <span class="q-pl-md" style="font-size: 0.9rem">{{
-            detail.desc
-          }}</span>
+        <div class="q-my-sm">
+          <div>回答期間</div>
+          <span class="q-pl-md" style="font-size: 0.9rem">
+            {{ mainStore.ansDateRange }}
+          </span>
+        </div>
+        <div class="q-my-sm">
+          <div>開催回数</div>
+          <q-input
+            v-if="isManager"
+            v-model="mainStore.partyCount"
+            dense
+            filled
+          />
+          <span v-else class="q-pl-md" style="font-size: 0.9rem">
+            {{ mainStore.partyCount }}
+          </span>
+        </div>
+        <div class="q-my-sm">
+          <div>備考欄</div>
+          <q-input
+            v-if="isManager"
+            v-model="mainStore.bikou"
+            dense
+            filled
+            type="textarea"
+          />
+          <span v-else class="q-pl-md" style="font-size: 0.9rem">
+            {{ mainStore.bikou }}
+          </span>
         </div>
         <div v-if="isSpecialHolidayExists" class="q-my-sm">
           <div>祝日</div>

@@ -8,7 +8,8 @@ import {
   toEntries,
   values,
 } from '@research-vacant/common';
-import { getSheet } from './common';
+import { getSheet, warpLock } from './common';
+import { getConfig } from './config';
 
 const SESSION_SHEET_NAME = 'セッション一覧';
 let cachedSessions: Record<SessionID, Session> | undefined;
@@ -22,6 +23,8 @@ const header: Record<keyof Session, string> = {
   endDate: '終了日',
   researchRangeStart: '調査対象開始日',
   researchRangeEnd: '調査対象終了日',
+  partyCount: '開催回数',
+  bikou: '備考欄',
 };
 
 /**
@@ -65,6 +68,10 @@ function writeSessions(sessions?: Record<SessionID, Session>) {
  * セッションシートの初期化に用いる
  */
 export function initSessionSheet(clearAllData: boolean = false) {
+  warpLock(() => __initSessionSheet(clearAllData));
+}
+
+function __initSessionSheet(clearAllData: boolean = false) {
   const sheet = getSheet(SESSION_SHEET_NAME, true);
 
   // 既存のデータをすべて削除
@@ -117,6 +124,9 @@ export function publishSession(
   researchRangeStart: RvDate,
   researchRangeEnd: RvDate
 ) {
+  // 設定項目の読み込み
+  const config = getConfig();
+
   // データチェック
   const writeSession = Session.parse({
     id: genSessionID(),
@@ -126,12 +136,14 @@ export function publishSession(
     status: 'ready',
     researchRangeStart: researchRangeStart,
     researchRangeEnd: researchRangeEnd,
+    partyCount: config.researchPartyCount,
+    bikou: config.researchGlobalComment,
   });
 
   // 書き込み
   const sessions = getSessions();
   sessions[writeSession.id] = writeSession;
-  writeSessions(sessions);
+  warpLock(() => writeSessions(sessions));
 
   return writeSession;
 }
@@ -139,7 +151,12 @@ export function publishSession(
 /**
  * セッションのアップデート
  */
-export function updateSession(sessionId: SessionID, status: SessionStatus) {
+export function updateSession(
+  sessionId: SessionID,
+  status?: SessionStatus,
+  partyCount?: string,
+  bikou?: string
+) {
   const sessions = getSessions();
 
   // check session exists
@@ -148,8 +165,16 @@ export function updateSession(sessionId: SessionID, status: SessionStatus) {
   }
 
   // update sessions
-  sessions[sessionId].status = status;
-  writeSessions(sessions);
+  if (status) {
+    sessions[sessionId].status = status;
+  }
+  if (partyCount) {
+    sessions[sessionId].partyCount = partyCount;
+  }
+  if (bikou) {
+    sessions[sessionId].bikou = bikou;
+  }
+  warpLock(() => writeSessions(sessions));
 }
 
 /**
@@ -161,5 +186,5 @@ export function deleteSession(sessionId: SessionID) {
   delete sessions[sessionId];
 
   // delete Session
-  writeSessions(sessions);
+  warpLock(() => writeSessions(sessions));
 }

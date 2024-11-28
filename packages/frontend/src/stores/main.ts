@@ -2,6 +2,7 @@ import {
   AnsDate,
   AnswerSummary,
   MemberStatus,
+  PlaceID,
   RvDate,
 } from '@research-vacant/common';
 import dayjs from 'dayjs';
@@ -17,12 +18,22 @@ export const useMainStore = defineStore('mainStore', {
     showingWeekCount: 5,
     /** フロントエンド用の回答一覧 */
     ansModel: [] as (AnsDate | undefined)[],
+    /** 開催日決定時にマークされた日付 */
+    markedDates: {} as Record<RvDate, PlaceID>,
     /** 祝日記録用 */
     specialHoliday: {} as Record<RvDate, string>,
     /** 自由記述 */
     freeTxt: '',
+    /** 調査回答期間 */
+    ansDateRange: '',
+    /** 開催回数 */
+    partyCount: '',
+    /** 備考欄 */
+    bikou: '',
     /** 再読み込み可能か */
     isEnableReload: false,
+    /** 承認画面を表示するか（回答期間中） */
+    isShowApproverView: false,
     /** 日付の標準フォーマット */
     showingDateFormat: 'YYYY年MM月DD日',
     /** バックエンドとの通信でエラーがあった場合に格納 */
@@ -30,6 +41,7 @@ export const useMainStore = defineStore('mainStore', {
   }),
   actions: {
     async getAccessStatus() {
+      // load session
       if (this.__memberStatus === null) {
         const loc = await getURLLocation();
         this.__memberStatus = await googleScriptRun.accessManager(
@@ -41,6 +53,22 @@ export const useMainStore = defineStore('mainStore', {
             status: 'invalidUser',
           };
         }
+      }
+
+      // init details
+      if (
+        this.__memberStatus.status === 'noAns' ||
+        this.__memberStatus.status === 'alreadyAns' ||
+        this.__memberStatus.status === 'judging' ||
+        this.__memberStatus.status === 'finished'
+      ) {
+        const ansStart = dayjs(this.__memberStatus.details.researchStartDate);
+        const ansEnd = dayjs(this.__memberStatus.details.researchEndDate);
+        this.ansDateRange = `${ansStart.format(
+          this.showingDateFormat
+        )} ～ ${ansEnd.format(this.showingDateFormat)}`;
+        this.partyCount = this.__memberStatus.details.partyCount;
+        this.bikou = this.__memberStatus.details.bikou;
       }
 
       return this.__memberStatus;
@@ -106,6 +134,14 @@ export const useMainStore = defineStore('mainStore', {
           }
         }
       );
+
+      // initialize markedDates
+      this.markedDates = {};
+
+      // initialize free texts
+      if (summary.selfAns?.freeText) {
+        this.freeTxt = summary.selfAns?.freeText;
+      }
     },
   },
 });

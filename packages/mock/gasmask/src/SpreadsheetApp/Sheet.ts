@@ -191,7 +191,9 @@ export class SheetClass implements GoogleAppsScript.Spreadsheet.Sheet {
     throw new Error('Method not implemented.');
   }
   getLastColumn(): GoogleAppsScript.Integer {
-    return this.rows.length ? this.rows[0]?.length : 1;
+    return this.rows.length
+      ? Math.max(...this.rows.map((line) => line.length))
+      : 1;
   }
   getLastRow(): GoogleAppsScript.Integer {
     return this.rows.length;

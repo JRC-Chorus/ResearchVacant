@@ -10,7 +10,7 @@ import {
   toEntries,
   values,
 } from '@research-vacant/common';
-import { getSheet } from './common';
+import { getSheet, warpLock } from './common';
 
 const RECORD_SHEET_NAME = '決定済み開催日一覧';
 let cachedRecords: Record<SessionID, DecidedRecord> | undefined;
@@ -25,6 +25,10 @@ const header: Record<keyof DecidedRecord, string> = {
  * セッションシートの初期化に用いる
  */
 export function initRecordsSheet(clearAllData: boolean = false) {
+  warpLock(() => __initRecordsSheet(clearAllData));
+}
+
+function __initRecordsSheet(clearAllData: boolean = false) {
   const sheet = getSheet(RECORD_SHEET_NAME, true);
 
   // 既存のデータをすべて削除
@@ -123,5 +127,5 @@ function writeRecords(records: Record<SessionID, DecidedRecord>) {
 export function registPartyDate(sessionId: SessionID, infos: PartyInfo[]) {
   const tmpRecords = getPartys();
   tmpRecords[sessionId] = { sessionId, infos };
-  writeRecords(tmpRecords);
+  warpLock(() => writeRecords(tmpRecords));
 }

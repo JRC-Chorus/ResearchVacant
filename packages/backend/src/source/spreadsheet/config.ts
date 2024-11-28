@@ -5,7 +5,7 @@ import {
   keys,
   researchFrequencyEnum,
 } from '@research-vacant/common';
-import { getSheet } from './common';
+import { getSheet, warpLock } from './common';
 
 const CONFIG_SHEET_NAME = '設定';
 
@@ -17,13 +17,11 @@ const configShowingKey: { [key in keyof Config]: string } = {
   remindDateBeforeEndResearch:
     'リマインドは調査終了の何日前に送信するか（`-1`なら送信しない）',
   researchPartyCount: '調査対象の期間における開催回数',
-  outerPlacePartyCount: '開催回数のうち，外部施設の利用回数',
+  researchGlobalComment: '調査画面における備考欄に表示するコメント',
   approverRoles: '開催日の承認を担当するロール',
   researchTargetCycle: '調査対象の期間は現在から何サイクル後とするか',
   prohibitReans: '再回答を禁止するか',
-  leastRestTime: '最終開催日から最低限開けるべき日数',
   mustAttendRoles: '必ず出席を求めるロール',
-  mustAttendOuterPlaceRoles: '外部会場の時には出席を求めるロール',
   announceAnswerMailSubject: '下記依頼メールの件名',
   announceAnswerMail:
     '各調査の一番最初に回答を依頼するために送信するメールの文面',
@@ -41,6 +39,10 @@ let configCache: Config | undefined;
  * 設定シートの初期化
  */
 export function initConfigSheet(clearAllData: boolean = false) {
+  warpLock(() => __initConfigSheet(clearAllData));
+}
+
+function __initConfigSheet(clearAllData: boolean = false) {
   const sheet = getSheet(CONFIG_SHEET_NAME, true);
 
   // 既存のデータをすべて削除
@@ -93,8 +95,11 @@ export function getConfig(): Config {
 if (import.meta.vitest) {
   const { test, expect } = import.meta.vitest;
   test('config sheet', async () => {
-    const { SpreadsheetApp } = await import('@research-vacant/mock');
+    const { SpreadsheetApp, LockService } = await import(
+      '@research-vacant/mock'
+    );
     global.SpreadsheetApp = new SpreadsheetApp();
+    global.LockService = new LockService();
 
     // initialize
     initConfigSheet();

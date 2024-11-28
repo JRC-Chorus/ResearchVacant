@@ -106,9 +106,12 @@ if (import.meta.vitest) {
   });
 
   test('decodeAccessID', async () => {
-    const { Utilities, SpreadsheetApp } = await import('@research-vacant/mock');
+    const { Utilities, SpreadsheetApp, LockService } = await import(
+      '@research-vacant/mock'
+    );
     global.Utilities = new Utilities();
     global.SpreadsheetApp = new SpreadsheetApp();
+    global.LockService = new LockService();
 
     // initialize
     const { migrateEnv } = await import('../migrate');

@@ -27,5 +27,9 @@ export const Session = z.object({
   researchRangeStart: RvDate,
   /** 調査対象とする期間の最終日 */
   researchRangeEnd: RvDate,
+  /** 開催回数 */
+  partyCount: z.string(),
+  /** 備考 */
+  bikou: z.string(),
 });
 export type Session = z.infer<typeof Session>;
