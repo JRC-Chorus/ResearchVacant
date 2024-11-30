@@ -6,6 +6,7 @@ import ApprovePage from './Sub/ApprovePage.vue';
 import CalendarPage from './Sub/CalendarPage.vue';
 import ErrorPage from './Sub/ErrorPage.vue';
 import LoadingPage from './Sub/LoadingPage.vue';
+import FinishedPage from './Sub/FinishedPage.vue';
 
 const mainStore = useMainStore();
 const status: Ref<MemberStatus | undefined> = ref();
@@ -55,6 +56,10 @@ onMounted(async () => {
         :summary="status.summary"
         :places="status.places"
         :is-manager="status.isManager"
+      />
+      <FinishedPage
+        v-else-if="status.status === 'finished'"
+        
       />
       <CalendarPage
         v-else
