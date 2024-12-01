@@ -21,12 +21,3 @@ export function sendJudgeCandidate(sessionId: SessionID) {
     sendApproveMail(sessionId, m);
   });
 }
-
-/**
- * 決定日をTeamsに通知する
- */
-export function notify4Teams() {
-  // teams.send()
-}
-
-// TODO: 候補日の絞り方に関するテストを記述する

@@ -101,11 +101,16 @@ export const Config = z.object({
     .optional()
     .default('【日程調査】開催日の承認依頼'),
 
-  /** Teamsへの通知メッセージ */
-  announceDecidedDateNotice: z
+  /** Teamsで表示するときのタイトル */
+  teamsTitle: z.string().optional().default('日程調整結果'),
+
+  /** Teamsで表示するときの説明文 */
+  teamsDesc: z
     .string()
     .optional()
-    .default('開催日が決定しました．当日はお気をつけてご出席ください．'),
+    .default(
+      '@Team\n\n日程調整結果です．\n\n調整の結果，開催日は上記日程の**13：00～**で確定となりました．\n\nよろしくお願いいたします．'
+    ),
 
   // 将来的にはメールの内容もconfigから受け取る？
 });

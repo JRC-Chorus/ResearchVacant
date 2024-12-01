@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { Ref, ref } from 'vue';
 import { useDialogPluginComponent } from 'quasar';
-import { CheckedOuterPlace, keys, RvDate } from '@research-vacant/common';
+import {
+  CheckedOuterPlace,
+  keys,
+  RvDate,
+  SHOWING_DATE_FORMAT,
+} from '@research-vacant/common';
 import dayjs from 'dayjs';
 import { useMainStore } from 'src/stores/main';
 import { iconList, isEnableDate } from '../Calendar/script';
@@ -64,9 +69,7 @@ function onUnmarkClicked() {
   <!-- TODO: Update a BAAAAAAAAAAD Design -->
   <q-dialog ref="dialogRef" @hide="onDialogHide" persistent>
     <BaseDialog
-      :title="`${dayjs(showingDate).format(
-        mainStore.showingDateFormat
-      )}の回答一覧`"
+      :title="`${dayjs(showingDate).format(SHOWING_DATE_FORMAT)}の回答一覧`"
       @close="onDialogCancel"
       style="width: 40rem; max-width: 100vw; max-height: 90vh"
     >

@@ -12,6 +12,7 @@ const BASE_INFO: OuterPlace = {
   placeURL: 'https://github.com/JRC-Chorus/ResearchVacant',
   isNeedReserve: false,
 };
+let samplePlace: OuterPlace & { placeId: PlaceID };
 
 /**
  * 開催場所の定義サンプル（施設の空き状況情報なし）
@@ -31,7 +32,10 @@ export async function getSamplePlaceWithVacants(
  * 開催場所の定義サンプル（施設の空き状況情報なし）
  */
 export function getSamplePlace(genId: (p: OuterPlace) => PlaceID) {
-  return Object.assign(BASE_INFO, { placeId: genId(BASE_INFO) });
+  if (!samplePlace) {
+    samplePlace = Object.assign(BASE_INFO, { placeId: genId(BASE_INFO) });
+  }
+  return samplePlace;
 }
 
 /**
