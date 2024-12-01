@@ -30,7 +30,8 @@ const configShowingKey: { [key in keyof Config]: string } = {
   requestApproveMailSubject: '下記承認メールの文面',
   requestApproveMail:
     '管理者に調査結果を通知し，開催日承認を依頼するメールの文面',
-  announceDecidedDateNotice: '決定した開催日をTeamsで通知する際のTeamsの文面',
+  teamsTitle: '開催日決定後のTeams通知におけるカードのタイトル',
+  teamsDesc: '開催日決定後のTeams通知におけるカードに記載するメッセージ',
 };
 
 let configCache: Config | undefined;

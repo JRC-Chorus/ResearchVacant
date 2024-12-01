@@ -18,6 +18,7 @@ import {
 } from 'backend/source/spreadsheet/decideRecord';
 import { getMembers } from 'backend/source/spreadsheet/members';
 import { getSessions, updateSession } from 'backend/source/spreadsheet/session';
+import { sendNotifyPartyDate4Teams } from 'backend/source/teams';
 import { isMember, parseRecievedIds } from './access/checker';
 
 /**
@@ -147,7 +148,8 @@ export function decideDates(
   // 開催日を登録
   registPartyDate(ids.sessionId, infos);
 
-  // TODO: 決定を通知（Teams？）
+  // 決定を通知
+  sendNotifyPartyDate4Teams(infos);
 
   // ステータスを更新
   updateSession(ids.sessionId, 'closed');
