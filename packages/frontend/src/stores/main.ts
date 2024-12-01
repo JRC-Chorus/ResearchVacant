@@ -4,6 +4,7 @@ import {
   MemberStatus,
   PlaceID,
   RvDate,
+  SHOWING_DATE_FORMAT,
 } from '@research-vacant/common';
 import dayjs from 'dayjs';
 import { isHoliday } from 'japanese-holidays';
@@ -34,8 +35,6 @@ export const useMainStore = defineStore('mainStore', {
     isEnableReload: false,
     /** 承認画面を表示するか（回答期間中） */
     isShowApproverView: false,
-    /** 日付の標準フォーマット */
-    showingDateFormat: 'YYYY年MM月DD日',
     /** バックエンドとの通信でエラーがあった場合に格納 */
     error: null as Error | null,
   }),
@@ -65,8 +64,8 @@ export const useMainStore = defineStore('mainStore', {
         const ansStart = dayjs(this.__memberStatus.details.researchStartDate);
         const ansEnd = dayjs(this.__memberStatus.details.researchEndDate);
         this.ansDateRange = `${ansStart.format(
-          this.showingDateFormat
-        )} ～ ${ansEnd.format(this.showingDateFormat)}`;
+          SHOWING_DATE_FORMAT
+        )} ～ ${ansEnd.format(SHOWING_DATE_FORMAT)}`;
         this.partyCount = this.__memberStatus.details.partyCount;
         this.bikou = this.__memberStatus.details.bikou;
       }
