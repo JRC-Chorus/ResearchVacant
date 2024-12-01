@@ -12,6 +12,7 @@ import {
   getAnswerSummary,
   registAnswer,
 } from 'backend/source/spreadsheet/answers';
+import { getConfig } from 'backend/source/spreadsheet/config';
 import {
   getPartys,
   registPartyDate,
@@ -149,7 +150,13 @@ export function decideDates(
   registPartyDate(ids.sessionId, infos);
 
   // 決定を通知
-  sendNotifyPartyDate4Teams(infos);
+  const config = getConfig();
+  sendNotifyPartyDate4Teams(
+    config.teamsLink,
+    config.teamsTitle,
+    config.teamsDesc,
+    infos
+  );
 
   // ステータスを更新
   updateSession(ids.sessionId, 'closed');

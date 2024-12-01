@@ -74,9 +74,15 @@ export function loadPlaces(sessionId: SessionID): Promise<CheckedOuterPlace[]> {
 /**
  * PlaceIDで指定された施設の情報を取得する（空き情報は取得しない）
  */
-export function loadPlaceProps(placeId: PlaceID) {
+export function loadPlaceProps(): (OuterPlace & { placeId: PlaceID })[];
+export function loadPlaceProps(placeId: PlaceID): OuterPlace;
+export function loadPlaceProps(placeId?: PlaceID) {
   const places = ALL_PLACE_GETTERS.map((getter) => getter.getObj());
-  return OuterPlace.parse(places.find((p) => p.placeId === placeId));
+  if (placeId) {
+    return OuterPlace.parse(places.find((p) => p.placeId === placeId));
+  } else {
+    return places;
+  }
 }
 
 /** In Source Testing */
