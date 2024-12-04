@@ -5,8 +5,8 @@ import { useMainStore } from 'src/stores/main';
 import ApprovePage from './Sub/ApprovePage.vue';
 import CalendarPage from './Sub/CalendarPage.vue';
 import ErrorPage from './Sub/ErrorPage.vue';
-import LoadingPage from './Sub/LoadingPage.vue';
 import FinishedPage from './Sub/FinishedPage.vue';
+import LoadingPage from './Sub/LoadingPage.vue';
 
 const mainStore = useMainStore();
 const status: Ref<MemberStatus | undefined> = ref();
@@ -59,7 +59,9 @@ onMounted(async () => {
       />
       <FinishedPage
         v-else-if="status.status === 'finished'"
-        
+        :summary="status.summary"
+        :party-dates="status.partyDates"
+        :is-manager="status.isManager"
       />
       <CalendarPage
         v-else
