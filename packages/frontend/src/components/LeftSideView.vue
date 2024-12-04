@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
+import { PartyDate } from '@research-vacant/common';
+import dayjs from 'dayjs';
 import { useMainStore } from 'src/stores/main';
 import { InfoDialogProp } from './Dialogs/iDialogProp';
 import InfoDialog from './Dialogs/InfoDialog.vue';
@@ -8,6 +10,7 @@ import IndentLine from './utils/IndentLine.vue';
 interface Prop {
   isManager?: boolean;
   month: number;
+  partyDates?: PartyDate[];
 }
 const prop = defineProps<Prop>();
 
@@ -44,7 +47,29 @@ function showInfoDialog() {
         @click="showInfoDialog()"
       />
     </div>
-    <p>回答結果をもとに開催日を決定してください．</p>
+    <p v-if="!partyDates">回答結果をもとに開催日を決定してください．</p>
+    <div
+      v-else
+      style="border: 4px solid green"
+      class="column q-pa-md q-my-md text-bold text-h6 text-center"
+    >
+      <div class="col">決定した開催日</div>
+      <q-separator inset class="q-my-sm" />
+      <div
+        v-for="pDate in partyDates"
+        :key="pDate.date"
+        class="col justify-center row"
+      >
+        <span>{{ dayjs(pDate.date).format(mainStore.showingDateFormat) }}</span>
+        <span class="q-mx-xs">＠</span>
+        <a v-if="pDate.pos.placeURL" :href="pDate.pos.placeURL">
+          {{ pDate.pos.placeName }}
+        </a>
+        <span v-else>
+          {{ pDate.pos.placeName }}
+        </span>
+      </div>
+    </div>
 
     <div class="gt-md">
       <h2><u>開催日の詳細情報</u></h2>
