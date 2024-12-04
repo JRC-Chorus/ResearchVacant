@@ -25,7 +25,7 @@ const classNames = () => {
     flat
     :size="$q.screen.gt.xs ? '1.5rem' : '1rem'"
     :class="classNames()"
-    style="pointer-events: none;"
+    style="pointer-events: none"
   >
     <div>
       <q-icon
