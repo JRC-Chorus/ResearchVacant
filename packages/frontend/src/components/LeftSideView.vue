@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { PartyDate } from '@research-vacant/common';
+import { PartyDate, SHOWING_DATE_FORMAT } from '@research-vacant/common';
 import dayjs from 'dayjs';
 import { useMainStore } from 'src/stores/main';
 import { InfoDialogProp } from './Dialogs/iDialogProp';
@@ -60,7 +60,7 @@ function showInfoDialog() {
         :key="pDate.date"
         class="col justify-center row"
       >
-        <span>{{ dayjs(pDate.date).format(mainStore.showingDateFormat) }}</span>
+        <span>{{ dayjs(pDate.date).format(SHOWING_DATE_FORMAT) }}</span>
         <span class="q-mx-xs">＠</span>
         <a v-if="pDate.pos.placeURL" :href="pDate.pos.placeURL">
           {{ pDate.pos.placeName }}
