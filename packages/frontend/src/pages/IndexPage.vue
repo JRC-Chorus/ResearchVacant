@@ -5,6 +5,7 @@ import { useMainStore } from 'src/stores/main';
 import ApprovePage from './Sub/ApprovePage.vue';
 import CalendarPage from './Sub/CalendarPage.vue';
 import ErrorPage from './Sub/ErrorPage.vue';
+import FinishedPage from './Sub/FinishedPage.vue';
 import LoadingPage from './Sub/LoadingPage.vue';
 
 const mainStore = useMainStore();
@@ -54,6 +55,12 @@ onMounted(async () => {
         v-else-if="status.status === 'judging'"
         :summary="status.summary"
         :places="status.places"
+        :is-manager="status.isManager"
+      />
+      <FinishedPage
+        v-else-if="status.status === 'finished'"
+        :summary="status.summary"
+        :party-dates="status.partyDates"
         :is-manager="status.isManager"
       />
       <CalendarPage

@@ -12,10 +12,8 @@ import CheckDialog from 'src/components/Dialogs/CheckDialog.vue';
 import {
   ApproveSendingDialogProp,
   CheckDialogProp,
-  InfoDialogProp,
 } from 'src/components/Dialogs/iDialogProp';
-import InfoDialog from 'src/components/Dialogs/InfoDialog.vue';
-import IndentLine from 'src/components/utils/IndentLine.vue';
+import LeftSideView from 'src/components/LeftSideView.vue';
 import { useMainStore } from 'src/stores/main';
 
 interface Prop {
@@ -38,18 +36,6 @@ function submitAns() {
       places: prop.places,
       summary: prop.summary,
     } as ApproveSendingDialogProp,
-  });
-}
-
-/**
- * 調査情報の詳細を表示（スマホ版）
- */
-function showInfoDialog() {
-  $q.dialog({
-    component: InfoDialog,
-    componentProps: {
-      isManager: prop.isManager,
-    } as InfoDialogProp,
   });
 }
 
@@ -80,57 +66,10 @@ function resetAllAns() {
       <div class="col"></div>
       <!-- main display -->
       <div class="col row">
-        <div class="col" style="min-width: 15rem">
-          <div class="row justify-between items-center">
-            <h1 class="text-bold">
-              {{ `${dayjs(summary.ansDates[0].date).month() + 1}月の日程調整` }}
-            </h1>
-            <q-btn
-              flat
-              round
-              dense
-              icon="info"
-              color="info"
-              size="1.2rem"
-              class="lt-lg"
-              @click="showInfoDialog()"
-            />
-          </div>
-          <p>回答結果をもとに開催日を決定してください．</p>
-
-          <div class="gt-md">
-            <h2><u>開催日の詳細情報</u></h2>
-            <ul>
-              <li>
-                <q-input
-                  v-if="isManager"
-                  v-model="mainStore.partyCount"
-                  dense
-                  filled
-                  label="開催回数"
-                  class="q-my-sm"
-                />
-                <IndentLine v-else title="開催回数" max-width="10rem">
-                  {{ mainStore.partyCount }}
-                </IndentLine>
-              </li>
-              <li>
-                <q-input
-                  v-if="isManager"
-                  v-model="mainStore.bikou"
-                  dense
-                  filled
-                  type="textarea"
-                  label="備考欄"
-                  class="q-my-sm"
-                />
-                <IndentLine v-else title="備考欄" max-width="10rem">
-                  {{ mainStore.bikou }}
-                </IndentLine>
-              </li>
-            </ul>
-          </div>
-        </div>
+        <LeftSideView
+          :is-manager="isManager"
+          :month="dayjs(summary.ansDates[0].date).month() + 1"
+        />
         <div style="max-width: min(90vw, 50rem); margin: 0 auto">
           <CalendarView :summary="summary" :places="places" />
         </div>

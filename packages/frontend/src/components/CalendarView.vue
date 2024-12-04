@@ -1,13 +1,19 @@
 <script setup lang="ts">
-import { AnswerSummary, CheckedOuterPlace } from '@research-vacant/common';
+import {
+  AnswerSummary,
+  CheckedOuterPlace,
+  PartyDate,
+} from '@research-vacant/common';
 import { useMainStore } from 'src/stores/main';
 import ApproveDayBox from './Calendar/ApproveDayBox.vue';
 import DayBox from './Calendar/DayBox.vue';
+import FinishedDayBox from './Calendar/FinishedDayBox.vue';
 import { isEnableDate } from './Calendar/script';
 
 interface Prop {
   summary: AnswerSummary;
   places?: CheckedOuterPlace[];
+  partyDates?: PartyDate[];
 }
 const prop = defineProps<Prop>();
 
@@ -66,6 +72,11 @@ function getSpecialHolidayName(idx: number, isWindowSize_gt_sm: boolean) {
           :ans-dates="summary.ansDates"
           :free-txts="summary.freeTxts"
           :places="places"
+        />
+        <FinishedDayBox
+          v-else-if="partyDates"
+          :date="mainStore.ansModel[n - 1]?.date"
+          :party-dates="partyDates"
         />
         <DayBox
           v-else
