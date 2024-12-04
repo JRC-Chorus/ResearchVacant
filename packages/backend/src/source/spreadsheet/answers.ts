@@ -109,7 +109,7 @@ export function getAnsweredMemberIDs(sessionId: SessionID) {
  */
 export function getAnswerSummary(
   session: Session,
-  accessedMemberId: MemberID
+  accessedMemberId?: MemberID
 ): AnswerSummary {
   const answers = values(getAnswers(session.id));
 

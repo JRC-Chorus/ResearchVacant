@@ -5,6 +5,7 @@ import {
   AnswerSummary,
   CheckedOuterPlace,
   RvDate,
+  SHOWING_DATE_FORMAT,
 } from '@research-vacant/common';
 import dayjs from 'dayjs';
 import { useMainStore } from 'src/stores/main';
@@ -58,7 +59,7 @@ const cardItems = [
         class="text-primary text-bold q-mt-sm q-mb-md"
         style="font-size: 1.2rem; text-decoration: underline"
       >
-        {{ dayjs(targetDate).format(mainStore.showingDateFormat) }}
+        {{ dayjs(targetDate).format(SHOWING_DATE_FORMAT) }}
       </div>
 
       <q-list>
