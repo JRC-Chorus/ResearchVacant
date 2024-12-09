@@ -190,12 +190,13 @@ if (import.meta.vitest) {
   const { describe, test, expect } = import.meta.vitest;
   describe('accessManager', async () => {
     // mocks
-    const { SpreadsheetApp, Utilities, LockService } = await import(
+    const { SpreadsheetApp, Utilities, LockService, Logger } = await import(
       '@research-vacant/mock'
     );
     global.SpreadsheetApp = new SpreadsheetApp();
     global.Utilities = new Utilities();
     global.LockService = new LockService();
+    global.Logger = new Logger();
 
     // initialize
     const { migrateEnv } = await import('./migrate');
