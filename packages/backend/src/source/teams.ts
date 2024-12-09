@@ -1,6 +1,6 @@
 import { PartyInfo, SHOWING_DATE_FORMAT } from '@research-vacant/common';
 import dayjs from 'dayjs';
-import https from 'https';
+import { expect } from 'vitest';
 import { loadPlaceProps } from './places/base';
 
 /**
@@ -82,53 +82,31 @@ function buildMessage(title: string, infos: PartyInfo[], desc: string) {
 
 /**
  * 構成したAPI要求をHTTPSで通信する
+ *
+ * cf) テスト用にAwaitを付けているが，実際には同期的に処理されるため，本番実装においてはAwaitは効果を発揮しない
  */
-function sendRequest(url: string, data: any, resolve: () => void) {
-  const parsedUrl = new URL(url);
-  const options = {
-    hostname: parsedUrl.hostname,
-    path: parsedUrl.pathname + parsedUrl.search, // パスとクエリパラメータを結合
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Content-Length': Buffer.byteLength(data),
-    },
-  };
-
-  const req = https.request(options, (res) => {
-    let responseBody = '';
-
-    res.on('data', (chunk) => {
-      responseBody += chunk;
-    });
-
-    res.on('end', () => {
-      if (res.statusCode === 200 || res.statusCode === 202) {
-        console.log('メッセージが送信されました');
-      } else {
-        throw new Error(
-          `Teams Webhookの送信でエラーが発生しました: ${res.statusCode}, ${responseBody}`
-        );
-      }
-
-      resolve();
-    });
+async function sendRequest(url: string, data: any) {
+  const res = await UrlFetchApp.fetch(url, {
+    method: 'post',
+    muteHttpExceptions: true,
+    contentType: 'application/json',
+    payload: data,
   });
 
-  req.on('error', (e) => {
+  // 送信ステータスの確認
+  if (res.getResponseCode() === 200 || res.getResponseCode() === 202) {
+    return;
+  } else {
     throw new Error(
-      `Teams Webhookの送信でリクエストエラーが発生しました: ${e.message}`
+      `Teams Webhookの送信でエラーが発生しました: ${res.getResponseCode()}, ${res.getContentText()}`
     );
-  });
-
-  req.write(data);
-  req.end();
+  }
 }
 
 /**
  * Teamsで決定した開催日の情報を送信する
  */
-export function sendNotifyPartyDate4Teams(
+export async function sendNotifyPartyDate4Teams(
   webhookUrl: string,
   title: string,
   desc: string,
@@ -153,9 +131,7 @@ export function sendNotifyPartyDate4Teams(
   });
 
   // API通信
-  return new Promise<void>((resolve) =>
-    sendRequest(webhookUrl, jsonData, resolve)
-  );
+  await sendRequest(webhookUrl, jsonData);
 }
 
 /** In Source Testing */
@@ -164,14 +140,16 @@ if (import.meta.vitest) {
 
   describe.skip('teams test', async () => {
     // mocks
-    const { Utilities } = await import('@research-vacant/mock');
+    const { Utilities, UrlFetchApp } = await import('@research-vacant/mock');
     global.Utilities = new Utilities();
+    global.UrlFetchApp = new UrlFetchApp();
 
     test('test sending', async () => {
       const { RvDate } = await import('@research-vacant/common');
 
       // 環境変数にURLを指定しておく
       const webhookURL = process.env.TEAMS_WEBHOOK_URL ?? '';
+      expect(webhookURL !== '').toBe(true); // ここでエラーの時には，環境変数にテスト用WebhookのURLを登録する
 
       // ダミーデータを作成
       const title = '日程調整結果（テストから送信）';
@@ -184,7 +162,7 @@ if (import.meta.vitest) {
         },
       ];
 
-      // メッセージを送信
+      // メッセージを送信（Mockは非同期で処理するためAwait必須 / 本番実装は同期処理のためAwait不要）
       await sendNotifyPartyDate4Teams(webhookURL, title, desc, info);
     });
   });
