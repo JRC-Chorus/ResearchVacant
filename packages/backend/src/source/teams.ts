@@ -1,6 +1,5 @@
 import { PartyInfo, SHOWING_DATE_FORMAT } from '@research-vacant/common';
 import dayjs from 'dayjs';
-import { expect } from 'vitest';
 import { loadPlaceProps } from './places/base';
 
 /**
@@ -136,7 +135,7 @@ export async function sendNotifyPartyDate4Teams(
 
 /** In Source Testing */
 if (import.meta.vitest) {
-  const { test, describe } = import.meta.vitest;
+  const { test, expect, describe } = import.meta.vitest;
 
   describe.skip('teams test', async () => {
     // mocks
