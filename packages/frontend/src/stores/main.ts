@@ -120,7 +120,8 @@ export const useMainStore = defineStore('mainStore', {
               ) {
                 return holidayCheck
                   ? 'NG'
-                  : summary.selfAns?.ansDates.at(idx)?.ans ?? 'OK';
+                  : summary.selfAns?.ansDates.at(idx - startDateIdx)?.ans ??
+                      'OK';
               } else {
                 // 期間外の日付はすべてNG扱い
                 return 'NG';
@@ -147,12 +148,94 @@ export const useMainStore = defineStore('mainStore', {
 
 /** In Source Testing */
 if (import.meta.vitest) {
-  const { test, expect } = import.meta.vitest;
+  const { test, expect, describe, beforeEach } = import.meta.vitest;
   test('holiday checker', () => {
     const naturalDay = new Date('2024-10-8');
     const holiday = new Date('2024-10-14');
 
     expect(!!isHoliday(naturalDay)).toBe(false);
     expect(!!isHoliday(holiday)).toBe(true);
+  });
+
+  describe('main Pinia test', async () => {
+    const { createPinia, setActivePinia } = await import('pinia');
+
+    beforeEach(() => {
+      // creates a fresh pinia and makes it active
+      // so it's automatically picked up by any useStore() call
+      // without having to pass it to it: `useStore(pinia)`
+      setActivePinia(createPinia());
+    });
+
+    test('initModel', async () => {
+      const { MemberID } = await import('@research-vacant/common');
+      const sampleSummary: AnswerSummary = {
+        freeTxts: [],
+        ansDates: [
+          {
+            ans: [
+              { ansPersonNames: [], status: 'OK' },
+              { status: 'Pending', ansPersonNames: [] },
+              { status: 'NG', ansPersonNames: ['サンプル メンバー'] },
+            ],
+            date: RvDate.parse('2025-02-01'),
+          },
+          {
+            ans: [
+              { ansPersonNames: ['サンプル メンバー'], status: 'OK' },
+              { status: 'Pending', ansPersonNames: [] },
+              { status: 'NG', ansPersonNames: [] },
+            ],
+            date: RvDate.parse('2025-02-28'),
+          },
+        ],
+        selfAns: {
+          userId: MemberID.parse('521d229a-091a-4893-a74f-82efc4fd577b'),
+          ansDates: [
+            { date: RvDate.parse('2025-02-01'), ans: 'NG' },
+            { date: RvDate.parse('2025-02-02'), ans: 'NG' },
+            { date: RvDate.parse('2025-02-03'), ans: 'OK' },
+            { date: RvDate.parse('2025-02-04'), ans: 'OK' },
+            { date: RvDate.parse('2025-02-05'), ans: 'OK' },
+            { date: RvDate.parse('2025-02-06'), ans: 'OK' },
+            { date: RvDate.parse('2025-02-07'), ans: 'OK' },
+            { date: RvDate.parse('2025-02-08'), ans: 'NG' },
+            { date: RvDate.parse('2025-02-09'), ans: 'NG' },
+            { date: RvDate.parse('2025-02-10'), ans: 'OK' },
+            { date: RvDate.parse('2025-02-11'), ans: 'NG' },
+            { date: RvDate.parse('2025-02-12'), ans: 'OK' },
+            { date: RvDate.parse('2025-02-13'), ans: 'OK' },
+            { date: RvDate.parse('2025-02-14'), ans: 'NG' },
+            { date: RvDate.parse('2025-02-15'), ans: 'NG' },
+            { date: RvDate.parse('2025-02-16'), ans: 'NG' },
+            { date: RvDate.parse('2025-02-17'), ans: 'OK' },
+            { date: RvDate.parse('2025-02-18'), ans: 'OK' },
+            { date: RvDate.parse('2025-02-19'), ans: 'OK' },
+            { date: RvDate.parse('2025-02-20'), ans: 'OK' },
+            { date: RvDate.parse('2025-02-21'), ans: 'OK' },
+            { date: RvDate.parse('2025-02-22'), ans: 'NG' },
+            { date: RvDate.parse('2025-02-23'), ans: 'NG' },
+            { date: RvDate.parse('2025-02-24'), ans: 'NG' },
+            { date: RvDate.parse('2025-02-25'), ans: 'OK' },
+            { date: RvDate.parse('2025-02-26'), ans: 'OK' },
+            { date: RvDate.parse('2025-02-27'), ans: 'OK' },
+            { date: RvDate.parse('2025-02-28'), ans: 'OK' },
+          ],
+          userName: 'サンプル メンバー',
+          freeText: '',
+        },
+      };
+
+      // initialize
+      const mainStore = useMainStore();
+      mainStore.initAnsModel(sampleSummary);
+
+      // test
+      expect(mainStore.ansModel[0]).toBe(undefined); // 範囲外はundefined
+      expect(mainStore.ansModel[6]?.ans).toBe('NG'); // 2025-02-01は土曜日のためNG扱い
+      expect(mainStore.ansModel[8]?.ans).toBe('OK'); // 2025-02-03は月曜日で回答もOK
+      expect(mainStore.ansModel[19]?.ans).toBe('NG'); // 2025-02-14は金曜日で回答はNG
+      expect(mainStore.ansModel[29]?.ans).toBe('NG'); // 2025-02-14は月曜日で天皇誕生日の振替休日のためNG扱い
+    });
   });
 }

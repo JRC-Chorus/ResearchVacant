@@ -1,13 +1,13 @@
 import CacheServiceClass from './CacheService';
-import HttpResponseClass from './HttpResponse';
+import { HttpResponseClass } from './HttpResponse';
 import { LockServiceClass } from './Lock';
-import LoggerClass from './Logger';
+import { LoggerClass } from './Logger';
 import PropertiesServiceClass from './PropertiesService';
 import ScriptAppClass from './ScriptApp';
 import SessionClass from './Session';
 import { SpreadsheetApp as SpreadsheetAppInstance } from './SpreadsheetApp';
 import type HttpRequestType from './types/HttpRequest';
-import UrlFetchAppClass from './UrlFetchApp';
+import { UrlFetchAppClass } from './UrlFetchApp';
 import { UserClass } from './User';
 import { UtilitiesClass } from './Utilities';
 
