@@ -42,3 +42,23 @@ export function frontApiFuncs(apis: FrontAPI, e: Record<string, string>) {
 
   return '400 BAD REQUEST (Invalid funcName or params)';
 }
+
+/** In Source Testing */
+if (import.meta.vitest) {
+  const { describe, test, expect } = import.meta.vitest;
+  describe('frontAPI', async () => {
+    const { accessManager, decideDates, submitAnswers } = await import(
+      './access'
+    );
+    const apis: FrontAPI = {
+      accessManager: accessManager,
+      submitAnswers: submitAnswers,
+      decideDates: decideDates,
+    };
+
+    test('accessManager_API', () => {
+      const res = frontApiFuncs(apis, { aId: 'SAMPLE ACCESS ID' });
+      expect(res).toMatchObject({ status: 'invalidUser' })
+    });
+  });
+}
