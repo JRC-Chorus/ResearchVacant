@@ -9,15 +9,6 @@ import { useMainStore } from 'src/stores/main';
 import { loadAccessMock } from './accessCases';
 
 const mockFuncs: IRun = {
-  // doGet: function (e: any): Promise<GoogleAppsScript.HTML.HtmlOutput> {
-  //   throw new Error('Function not implemented.');
-  // },
-  migrateEnv: function (): Promise<void> {
-    throw new Error('Function not implemented.');
-  },
-  researchManager: function (): Promise<void> {
-    throw new Error('Function not implemented.');
-  },
   accessManager: function (
     params: Record<string, string>
   ): Promise<Promise<MemberStatus>> {

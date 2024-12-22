@@ -9,6 +9,8 @@ import { CheckedOuterPlace, PartyDate } from './db/records';
 export const AccessID = z.string();
 export type AccessID = z.infer<typeof AccessID>;
 export const UrlParams = z.object({
+  /** 呼び出し関数名 */
+  funcName: z.string(),
   /** アクセスID */
   aId: AccessID,
 });

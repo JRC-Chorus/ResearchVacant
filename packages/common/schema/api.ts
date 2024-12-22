@@ -2,14 +2,18 @@ import { MemberStatus } from './app';
 import { AnsDate } from './db/answer';
 import { PartyInfo } from './db/records';
 
-export interface FrontAPI {
+export interface GlobalAPI {
   /** フロントエンドを描画 */
   // doGet: (e: any) => GoogleAppsScript.HTML.HtmlOutput;
+  /** フロントエンドからのAPI通信を捌く */
+  doGet: (e: Record<string, string>) => any;
   /** データベース等の初期化（導入直後に１度だけ実行することを想定） */
   migrateEnv: () => void;
   /** 常時実行で調査を定期的に発火する */
   researchManager: () => void;
+}
 
+export interface FrontAPI {
   /** フロントエンドからのアクセスに対するレスポンスを定義 */
   accessManager: (params: Record<string, string>) => Promise<MemberStatus>;
   /** フロントエンドから回答を登録する */
