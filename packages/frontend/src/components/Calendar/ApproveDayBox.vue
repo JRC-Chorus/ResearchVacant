@@ -77,9 +77,6 @@ const btnStyle = (ratio: number): btnStyleType => {
   }
 };
 
-// TODO: クリック時に回答の詳細を表示するダイアログに遷移する
-// ダイアログ内で開催日の決定ボタンを設ける
-// ダイアログ内に「次の日付に遷移する」ボタンを設ける
 function onClicked() {
   $q.dialog({
     component: AnswerListDialog,
