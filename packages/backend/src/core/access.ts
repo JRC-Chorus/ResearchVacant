@@ -30,7 +30,14 @@ export async function accessManager(
 ): Promise<MemberStatus> {
   const ids = parseRecievedIds(params);
   if (ids === void 0 || !isMember(ids.memberId)) {
+    Logger.log(
+      `WARN) Accessed by Invalid User (AccessID: ${params}, MemberID: ${ids?.memberId})`
+    );
     return { status: 'invalidUser' };
+  } else {
+    Logger.log(
+      `Accessed by member (MemberID: ${ids.memberId}, SessionID: ${ids.sessionId})`
+    );
   }
 
   const answerIds = getAnsweredMemberIDs(ids.sessionId);
@@ -45,6 +52,7 @@ export async function accessManager(
   };
 
   if (session.status === 'ready') {
+    Logger.log('Accessed Status is BeforeOpening');
     return {
       status: 'beforeOpening',
     };
@@ -52,31 +60,44 @@ export async function accessManager(
     !answerIds.some((id) => id === ids.memberId) &&
     session.status === 'opening'
   ) {
-    return {
+    Logger.log('Accessed Status is noAns');
+    const response = {
       status: 'noAns',
       summary: summary,
       isManager: isManager,
       details: details,
-    };
+    } as const;
+    Logger.log('Response Data');
+    Logger.log(response);
+    return response;
   } else if (session.status === 'opening') {
-    return {
+    Logger.log('Accessed Status is alreadyAns');
+    const response = {
       status: 'alreadyAns',
       summary: summary,
       isManager: isManager,
       details: details,
-    };
+    } as const;
+    Logger.log('Response Data');
+    Logger.log(response);
+    return response;
   } else if (session.status === 'judge') {
+    Logger.log('Accessed Status is judging');
     const targetPlaces = await loadPlaces(ids.sessionId);
-    return {
+    const response = {
       status: 'judging',
       isManager: isManager,
       summary: summary,
       places: targetPlaces,
       details: details,
-    };
+    } as const;
+    Logger.log('Response Data');
+    Logger.log(response);
+    return response;
   } else if (session.status === 'closed') {
+    Logger.log('Accessed Status is finished');
     const targetRecord = getPartys()[ids.sessionId];
-    return {
+    const response = {
       status: 'finished',
       isManager: isManager,
       summary: summary,
@@ -88,7 +109,9 @@ export async function accessManager(
         };
       }),
       details: details,
-    };
+    } as const;
+    Logger.log('Response Data');
+    Logger.log(response);
   }
 
   // 上記以外の状態のアクセスは存在しないが，エラーハンドリングとして無効なユーザーを返す
@@ -167,12 +190,13 @@ if (import.meta.vitest) {
   const { describe, test, expect } = import.meta.vitest;
   describe('accessManager', async () => {
     // mocks
-    const { SpreadsheetApp, Utilities, LockService } = await import(
+    const { SpreadsheetApp, Utilities, LockService, Logger } = await import(
       '@research-vacant/mock'
     );
     global.SpreadsheetApp = new SpreadsheetApp();
     global.Utilities = new Utilities();
     global.LockService = new LockService();
+    global.Logger = new Logger();
 
     // initialize
     const { migrateEnv } = await import('./migrate');
