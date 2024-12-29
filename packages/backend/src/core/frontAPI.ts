@@ -4,7 +4,7 @@ import { getUrlParams } from 'backend/source/urlParam';
 const includeAll = <T>(targetArray: T[], searchElements: T[]) =>
   targetArray.every((target) => searchElements.includes(target));
 
-export function frontApiFuncs(apis: FrontAPI, e: Record<string, string>) {
+export async function frontApiFuncs(apis: FrontAPI, e: Record<string, string>) {
   const tmpFuncName = getUrlParams(e)?.funcName;
   const funcName = keys(apis).find((fName) => fName === tmpFuncName);
 
@@ -47,6 +47,15 @@ export function frontApiFuncs(apis: FrontAPI, e: Record<string, string>) {
 if (import.meta.vitest) {
   const { describe, test, expect } = import.meta.vitest;
   describe('frontAPI', async () => {
+    // mocks
+    const { SpreadsheetApp, Utilities, LockService } = await import(
+      '@research-vacant/mock'
+    );
+    global.SpreadsheetApp = new SpreadsheetApp();
+    global.Utilities = new Utilities();
+    global.LockService = new LockService();
+
+    // apis
     const { accessManager, decideDates, submitAnswers } = await import(
       './access'
     );
@@ -56,8 +65,12 @@ if (import.meta.vitest) {
       decideDates: decideDates,
     };
 
-    test('accessManager_API', () => {
-      const res = frontApiFuncs(apis, { aId: 'SAMPLE ACCESS ID' });
+    // initialize
+    const { migrateEnv } = await import('./migrate');
+    migrateEnv();
+
+    test('accessManager_API', async () => {
+      const res = await frontApiFuncs(apis, { aId: 'SAMPLE ACCESS ID', funcName: 'accessManager' });
       expect(res).toMatchObject({ status: 'invalidUser' })
     });
   });
