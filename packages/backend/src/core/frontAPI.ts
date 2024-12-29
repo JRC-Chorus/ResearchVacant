@@ -1,11 +1,10 @@
 import { AnsDate, FrontAPI, keys, PartyInfo } from '@research-vacant/common';
-import { getUrlParams } from 'backend/source/urlParam';
 
 const includeAll = <T>(targetArray: T[], searchElements: T[]) =>
   targetArray.every((target) => searchElements.includes(target));
 
 export async function frontApiFuncs(apis: FrontAPI, e: Record<string, string>) {
-  const tmpFuncName = getUrlParams(e)?.funcName;
+  const tmpFuncName = e['func'] ?? '';
   const funcName = keys(apis).find((fName) => fName === tmpFuncName);
 
   if (funcName) {
