@@ -3,7 +3,10 @@ import { AnsDate, FrontAPI, keys, PartyInfo } from '@research-vacant/common';
 const includeAll = <T>(targetArray: T[], searchElements: T[]) =>
   targetArray.every((target) => searchElements.includes(target));
 
-export async function frontApiFuncs(apis: FrontAPI, e: Record<string, string>) {
+export function frontApiFuncs(
+  apis: FrontAPI,
+  e: Record<string, string>
+): string {
   const tmpFuncName = e['func'] ?? '';
   const funcName = keys(apis).find((fName) => fName === tmpFuncName);
 
@@ -13,22 +16,25 @@ export async function frontApiFuncs(apis: FrontAPI, e: Record<string, string>) {
       // TODO: '@typescript-eslint/switch-exhaustiveness-check'を入れてSwitchの条件漏れを確認させる
       switch (funcName) {
         case 'accessManager':
-          return apis.accessManager(e);
+          const memberStatus = apis.accessManager(e);
+          return JSON.stringify(memberStatus);
         case 'submitAnswers':
           if (includeAll(params, ['ans', 'freeTxt', 'partyCount', 'bikou'])) {
             const ans = AnsDate.array().parse(e['ans']);
-            return apis.submitAnswers(
+            apis.submitAnswers(
               e,
               ans,
               e['freeTxt'],
               e['partyCount'],
               e['bikou']
             );
+            return 'Success';
           }
         case 'decideDates':
           if (includeAll(params, ['infos'])) {
             const infos = PartyInfo.array().parse(e['infos']);
-            return apis.decideDates(e, infos);
+            apis.decideDates(e, infos);
+            return 'Success';
           }
       }
     } catch (err) {
@@ -47,12 +53,13 @@ if (import.meta.vitest) {
   const { describe, test, expect } = import.meta.vitest;
   describe('frontAPI', async () => {
     // mocks
-    const { SpreadsheetApp, Utilities, LockService } = await import(
+    const { SpreadsheetApp, Utilities, LockService, Logger } = await import(
       '@research-vacant/mock'
     );
     global.SpreadsheetApp = new SpreadsheetApp();
     global.Utilities = new Utilities();
     global.LockService = new LockService();
+    global.Logger = new Logger();
 
     // apis
     const { accessManager, decideDates, submitAnswers } = await import(
@@ -68,9 +75,12 @@ if (import.meta.vitest) {
     const { migrateEnv } = await import('./migrate');
     migrateEnv();
 
-    test('accessManager_API', async () => {
-      const res = await frontApiFuncs(apis, { aId: 'SAMPLE ACCESS ID', funcName: 'accessManager' });
-      expect(res).toMatchObject({ status: 'invalidUser' })
+    test('accessManager_API', () => {
+      const res = frontApiFuncs(apis, {
+        aId: 'SAMPLE ACCESS ID',
+        func: 'accessManager',
+      });
+      expect(res).toBe(JSON.stringify({ status: 'invalidUser' }));
     });
   });
 }

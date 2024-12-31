@@ -18,7 +18,7 @@ type PlaceGetter = {
   withVacant: (
     genId: (p: OuterPlace) => PlaceID,
     targetDates: Dayjs[]
-  ) => Promise<CheckedOuterPlace>;
+  ) => CheckedOuterPlace;
 };
 
 /**
@@ -57,18 +57,16 @@ function getTargetDateRangeList(targetDateRange: DateRange) {
  *
  * 読込予定の施設がない際には「サンプル施設」を返す
  */
-export function loadPlaces(sessionId: SessionID): Promise<CheckedOuterPlace[]> {
+export function loadPlaces(sessionId: SessionID): CheckedOuterPlace[] {
   const targetSessoin = getSessions()[sessionId];
   const targetDateRange: DateRange = [
     targetSessoin.researchRangeStart,
     targetSessoin.researchRangeEnd,
   ];
 
-  return Promise.all(
-    ALL_PLACE_GETTERS.map((getter) =>
-      getter.withVacant(placeIdGen, getTargetDateRangeList(targetDateRange))
-    )
-  );
+  return ALL_PLACE_GETTERS.map((getter) =>
+    getter.withVacant(placeIdGen, getTargetDateRangeList(targetDateRange))
+  )
 }
 
 /**

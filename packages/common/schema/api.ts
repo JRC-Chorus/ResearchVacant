@@ -15,7 +15,7 @@ export interface GlobalAPI {
 
 export interface FrontAPI {
   /** フロントエンドからのアクセスに対するレスポンスを定義 */
-  accessManager: (params: Record<string, string>) => Promise<MemberStatus>;
+  accessManager: (params: Record<string, string>) => MemberStatus;
   /** フロントエンドから回答を登録する */
   submitAnswers: (
     params: Record<string, string>,

@@ -20,7 +20,8 @@ declare const global: GlobalAPI;
 //////////////////////////////////////////////////////
 
 /** システムが動作するために実行不可欠な関数 */
-global.doGet = (e: Record<string, string>) => frontApiFuncs(apis, e);
+global.doGet = (e: Record<string, string>) =>
+  ContentService.createTextOutput(frontApiFuncs(apis, e));
 // global.doGet = constructHomePage;
 global.migrateEnv = migrateEnv;
 global.researchManager = researchManager;
