@@ -43,7 +43,7 @@ export function getSamplePlace(genId: (p: OuterPlace) => PlaceID) {
  */
 function getVacantInfo(targetDates: Dayjs[]): AnsDate[] {
   // 外部API等から空き日程を取得する
-  const isVacants = targetDates.map((d) => getIsVacant(d))
+  const isVacants = targetDates.map((d) => getIsVacant(d));
 
   // 体裁を整えて返す
   return targetDates.map((d, idx) => {

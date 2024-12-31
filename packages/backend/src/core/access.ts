@@ -25,9 +25,7 @@ import { isMember, parseRecievedIds } from './access/checker';
 /**
  * フロントエンドからのアクセスがあったときに，当該アクセスに対するレスポンスを定義
  */
-export function accessManager(
-  params: Record<string, string>
-): MemberStatus {
+export function accessManager(params: Record<string, string>): MemberStatus {
   const ids = parseRecievedIds(params);
   if (ids === void 0 || !isMember(ids.memberId)) {
     Logger.log(
