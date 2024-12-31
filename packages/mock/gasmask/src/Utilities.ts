@@ -62,7 +62,7 @@ export class UtilitiesClass implements GoogleAppsScript.Utilities.Utilities {
 
     const bytes = new Array(returnTxt.length / 2);
     for (let i = 0; i < returnTxt.length; i += 2) {
-      bytes[i / 2] = parseInt(returnTxt.substr(i, 2), 16);
+      bytes[i / 2] = parseInt(returnTxt.substring(i, i + 2), 16);
     }
 
     return bytes;
@@ -140,7 +140,12 @@ export class UtilitiesClass implements GoogleAppsScript.Utilities.Utilities {
     throw new Error('Method not implemented.');
   }
   sleep(milliseconds: GoogleAppsScript.Integer): void {
-    throw new Error('Method not implemented.');
+    // sleep process without async/await
+    const start = new Date().getTime();
+    while (new Date().getTime() - start < milliseconds) {
+      // do nothing
+    }
+    return;
   }
   ungzip(blob: GoogleAppsScript.Base.BlobSource): GoogleAppsScript.Base.Blob {
     throw new Error('Method not implemented.');
