@@ -1,11 +1,11 @@
 import {
   AccessID,
   fromEntries,
+  FrontUrlParams,
   keys,
   MemberID,
   SessionID,
   toEntries,
-  UrlParams,
 } from '@research-vacant/common';
 import { getConfig } from 'backend/source/spreadsheet/config';
 import { getMembers } from 'backend/source/spreadsheet/members';
@@ -69,12 +69,15 @@ export function decodeAccessID(accessId: AccessID): DecodeResult | undefined {
  * 回答集約用URLを発行する
  */
 export function getAnswerURL(sessionId: SessionID, memberId: MemberID) {
+  const BASE_URL = 'https://jrc-chorus.github.io/ResearchVacant/'
+
   const config = getConfig();
-  const tmpParams: Record<keyof UrlParams, string> = {
+  const tmpParams: Record<keyof FrontUrlParams, string> = {
+    deployId: config.deployId,
     aId: encodeAccessID(sessionId, memberId),
   };
 
-  return `${config.webappUrl}?${toEntries(tmpParams)
+  return `${BASE_URL}?${toEntries(tmpParams)
     .map(([k, v]) => `${k}=${v}`)
     .join('&')}`;
 }

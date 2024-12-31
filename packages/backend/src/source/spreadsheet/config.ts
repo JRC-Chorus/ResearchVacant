@@ -10,7 +10,7 @@ import { getSheet, warpLock } from './common';
 const CONFIG_SHEET_NAME = '設定';
 
 const configShowingKey: { [key in keyof Config]: string } = {
-  webappUrl: '公開中のアプリのリンク（必須）',
+  deployId: '公開したWebAppのデプロイID（必須）',
   teamsLink: '通知したいチャンネルの Teams Webhook リンク',
   researchFrequency: `調査の頻度（${researchFrequencyEnum.join(' / ')}）`,
   answerRange: '調査に対する回答が可能な日数',
