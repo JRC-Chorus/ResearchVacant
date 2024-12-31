@@ -22,7 +22,7 @@ declare const global: GlobalAPI;
 /** システムが動作するために実行不可欠な関数 */
 global.doGet = (e) => {
   Logger.log(`Parameter: ${JSON.stringify(e.parameter)}`);
-  const res = frontApiFuncs(apis, e.parameter);
+  const res = JSON.stringify(frontApiFuncs(apis, e.parameter));
   Logger.log(`Response: ${res}`);
   return ContentService.createTextOutput(res);
 };

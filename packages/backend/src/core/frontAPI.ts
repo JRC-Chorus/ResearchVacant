@@ -1,4 +1,10 @@
-import { AnsDate, FrontAPI, keys, PartyInfo } from '@research-vacant/common';
+import {
+  AnsDate,
+  ApiResponse,
+  FrontAPI,
+  keys,
+  PartyInfo,
+} from '@research-vacant/common';
 
 const includeAll = <T>(targetArray: T[], searchElements: T[]) =>
   targetArray.every((target) => searchElements.includes(target));
@@ -6,7 +12,7 @@ const includeAll = <T>(targetArray: T[], searchElements: T[]) =>
 export function frontApiFuncs(
   apis: FrontAPI,
   e: Record<string, string>
-): string {
+): ApiResponse {
   const tmpFuncName = e['func'] ?? '';
   const funcName = keys(apis).find((fName) => fName === tmpFuncName);
 
@@ -17,7 +23,10 @@ export function frontApiFuncs(
       switch (funcName) {
         case 'accessManager':
           const memberStatus = apis.accessManager(e);
-          return JSON.stringify(memberStatus);
+          return {
+            status: 'success',
+            val: memberStatus,
+          };
         case 'submitAnswers':
           if (includeAll(params, ['ans', 'freeTxt', 'partyCount', 'bikou'])) {
             const ans = AnsDate.array().parse(e['ans']);
@@ -28,24 +37,34 @@ export function frontApiFuncs(
               e['partyCount'],
               e['bikou']
             );
-            return 'Success';
+            return { status: 'success' };
           }
         case 'decideDates':
           if (includeAll(params, ['infos'])) {
             const infos = PartyInfo.array().parse(e['infos']);
             apis.decideDates(e, infos);
-            return 'Success';
+            return { status: 'success' };
           }
       }
     } catch (err) {
       if (err instanceof Error) {
-        return `${err.name}: ${err.message}\n${err.stack}`;
+        return {
+          status: 'fail',
+          errTitle: err.name,
+          errDescription: `${err.message}\n\n${err.stack}`,
+        };
       }
-      return String(err);
+      return {
+        status: 'fail',
+        errTitle: String(err),
+      };
     }
   }
 
-  return '400 BAD REQUEST (Invalid funcName or params)';
+  return {
+    status: 'fail',
+    errTitle: '400 BAD REQUEST (Invalid funcName or params)',
+  };
 }
 
 /** In Source Testing */
@@ -80,7 +99,10 @@ if (import.meta.vitest) {
         aId: 'SAMPLE ACCESS ID',
         func: 'accessManager',
       });
-      expect(res).toBe(JSON.stringify({ status: 'invalidUser' }));
+      expect(res).toMatchObject({
+        status: 'success',
+        val: { status: 'invalidUser' },
+      });
     });
   });
 }

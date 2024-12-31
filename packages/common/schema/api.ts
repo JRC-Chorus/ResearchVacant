@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import { MemberStatus } from './app';
 import { AnsDate } from './db/answer';
 import { PartyInfo } from './db/records';
@@ -27,3 +28,18 @@ export interface FrontAPI {
   /** フロントエンドで決定した開催日を登録する */
   decideDates: (params: Record<string, string>, infos: PartyInfo[]) => void;
 }
+
+// フロントエンドとバックエンドの通信結果の型定義
+const ApiResponseSuccess = z.object({
+  status: z.literal('success'),
+  val: z.any(),
+});
+type ApiResponseSuccess = z.infer<typeof ApiResponseSuccess>;
+const ApiResponseFail = z.object({
+  status: z.literal('fail'),
+  errTitle: z.string(),
+  errDescription: z.string().optional(),
+});
+type ApiResponseFail = z.infer<typeof ApiResponseFail>;
+export const ApiResponse = z.union([ApiResponseSuccess, ApiResponseFail]);
+export type ApiResponse = z.infer<typeof ApiResponse>;
