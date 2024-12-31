@@ -6,7 +6,7 @@ export interface GlobalAPI {
   /** フロントエンドを描画 */
   // doGet: (e: any) => GoogleAppsScript.HTML.HtmlOutput;
   /** フロントエンドからのAPI通信を捌く */
-  doGet: (e: Record<string, string>) => any;
+  doGet: (e: { parameter: Record<string, string> }) => any;
   /** データベース等の初期化（導入直後に１度だけ実行することを想定） */
   migrateEnv: () => void;
   /** 常時実行で調査を定期的に発火する */
