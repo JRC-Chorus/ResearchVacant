@@ -1,4 +1,5 @@
 import {
+  ApiRequest,
   ApiResponse,
   FrontUrlParams,
   MemberStatus,
@@ -7,7 +8,7 @@ import {
 } from '@research-vacant/common';
 import { IRun } from 'src/schema/global';
 import { useMainStore } from 'src/stores/main';
-import { loadAccessMock, urlParamsMock } from './accessCases';
+import { loadAccessMock } from './accessCases';
 
 const mockFuncs: IRun = {
   accessManager: function (
@@ -51,22 +52,20 @@ export const googleScriptRun = new Proxy(mockFuncs, {
       const params = getURLLocation(window.location.href);
       if (!params) return;
 
-      const apiUrl = `https://script.google.com/macros/s/${
-        params.deployId
-      }/exec?func=${method}&${toEntries(params).join('&')}`;
+      const apiParams = ApiRequest.parse({
+        func: method,
+        aId: params.aId,
+        args: args,
+      });
 
-      const requestArgs =
-        args.length > 0
-          ? {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(args),
-            }
-          : {};
+      const apiUrl = new URL(
+        `https://script.google.com/macros/s/${params.deployId}/exec`
+      );
+      toEntries(apiParams).forEach(([k, v]) => {
+        apiUrl.searchParams.append(k, typeof v === 'object' ? JSON.stringify(v) : v);
+      });
 
-      const res = await fetch(apiUrl, requestArgs);
+      const res = await fetch(apiUrl);
       const parsedRes = ApiResponse.parse(await res.json());
 
       if (parsedRes.status === 'success') {
@@ -102,10 +101,6 @@ export const googleScriptRun = new Proxy(mockFuncs, {
 
 // アクセス時のURL情報を返す
 export const getURLLocation = (url: string) => {
-  if (import.meta.env.DEV) {
-    return urlParamsMock;
-  }
-
   const urlObj = new URL(url);
   const returnObj: Record<string, string> = {};
   urlObj.searchParams.forEach((v, k) => {
@@ -113,13 +108,6 @@ export const getURLLocation = (url: string) => {
   });
 
   const parsedParams = FrontUrlParams.safeParse(returnObj);
-  if (!parsedParams.success) {
-    console.log(parsedParams.error);
-    const mainStore = useMainStore();
-    mainStore.error = parsedParams.error;
-    return undefined;
-  }
-
   return parsedParams.data;
 };
 

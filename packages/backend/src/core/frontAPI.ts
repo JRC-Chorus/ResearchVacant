@@ -1,23 +1,22 @@
 import {
   AnsDate,
+  ApiRequest,
   ApiResponse,
   FrontAPI,
   keys,
   PartyInfo,
 } from '@research-vacant/common';
 
-const includeAll = <T>(targetArray: T[], searchElements: T[]) =>
-  targetArray.every((target) => searchElements.includes(target));
-
 export function frontApiFuncs(
   apis: FrontAPI,
   e: Record<string, string>
 ): ApiResponse {
-  const tmpFuncName = e['func'] ?? '';
-  const funcName = keys(apis).find((fName) => fName === tmpFuncName);
+  const parsedParams = ApiRequest.safeParse(e);
+  const funcName = keys(apis).find(
+    (fName) => fName === parsedParams.data?.func
+  );
 
-  if (funcName) {
-    const params = keys(e);
+  if (parsedParams.success && funcName) {
     try {
       // TODO: '@typescript-eslint/switch-exhaustiveness-check'を入れてSwitchの条件漏れを確認させる
       switch (funcName) {
@@ -28,21 +27,22 @@ export function frontApiFuncs(
             val: memberStatus,
           };
         case 'submitAnswers':
-          if (includeAll(params, ['ans', 'freeTxt', 'partyCount', 'bikou'])) {
-            const ans = AnsDate.array().parse(e['ans']);
+          if (parsedParams.data.args.length === 5) {
             apis.submitAnswers(
-              e,
-              ans,
-              e['freeTxt'],
-              e['partyCount'],
-              e['bikou']
+              parsedParams.data.args[0],
+              AnsDate.array().parse(parsedParams.data.args[1]),
+              parsedParams.data.args[2],
+              parsedParams.data.args[3],
+              parsedParams.data.args[4]
             );
             return { status: 'success' };
           }
         case 'decideDates':
-          if (includeAll(params, ['infos'])) {
-            const infos = PartyInfo.array().parse(e['infos']);
-            apis.decideDates(e, infos);
+          if (parsedParams.data.args.length === 2) {
+            apis.decideDates(
+              parsedParams.data.args[0],
+              PartyInfo.array().parse(parsedParams.data.args[1])
+            );
             return { status: 'success' };
           }
       }
@@ -71,37 +71,37 @@ export function frontApiFuncs(
 if (import.meta.vitest) {
   const { describe, test, expect } = import.meta.vitest;
   describe('frontAPI', async () => {
-    // mocks
-    const { SpreadsheetApp, Utilities, LockService, Logger } = await import(
-      '@research-vacant/mock'
-    );
-    global.SpreadsheetApp = new SpreadsheetApp();
-    global.Utilities = new Utilities();
-    global.LockService = new LockService();
-    global.Logger = new Logger();
-
     // apis
-    const { accessManager, decideDates, submitAnswers } = await import(
-      './access'
-    );
     const apis: FrontAPI = {
-      accessManager: accessManager,
-      submitAnswers: submitAnswers,
-      decideDates: decideDates,
+      accessManager: (params) => {
+        return { status: 'invalidUser' };
+      },
+      submitAnswers: (params, ans, freeTxt, partyCount, biko) => {},
+      decideDates: (params, infos) => {},
     };
 
-    // initialize
-    const { migrateEnv } = await import('./migrate');
-    migrateEnv();
-
-    test('accessManager_API', () => {
+    test('accessManager_API_noArgs', () => {
       const res = frontApiFuncs(apis, {
         aId: 'SAMPLE ACCESS ID',
         func: 'accessManager',
+        args: '',
       });
       expect(res).toMatchObject({
         status: 'success',
         val: { status: 'invalidUser' },
+      });
+    });
+
+    test('accessManager_API_hasArgs', () => {
+      const res = frontApiFuncs(apis, {
+        aId: '65e6bd0b6954191c71d350c9de249387',
+        func: 'submitAnswers',
+        args: decodeURIComponent(
+          '%5B%7B%22aId%22%3A%2265e6bd0b6954191c71d350c9de249387%22%2C%22deployId%22%3A%22AKfycbz3sPuwSQkW9nyaLXpTfZ9GzMZGaE_9CHUTEo_rjpbkz11WyTtFbMN7k-j8s_q1NpI4Eg%22%7D%2C%5B%7B%22date%22%3A%222025-03-01%22%2C%22ans%22%3A%22NG%22%7D%2C%7B%22date%22%3A%222025-03-02%22%2C%22ans%22%3A%22NG%22%7D%2C%7B%22date%22%3A%222025-03-03%22%2C%22ans%22%3A%22OK%22%7D%2C%7B%22date%22%3A%222025-03-25%22%2C%22ans%22%3A%22OK%22%7D%2C%7B%22date%22%3A%222025-03-26%22%2C%22ans%22%3A%22OK%22%7D%2C%7B%22date%22%3A%222025-03-27%22%2C%22ans%22%3A%22OK%22%7D%2C%7B%22date%22%3A%222025-03-28%22%2C%22ans%22%3A%22OK%22%7D%2C%7B%22date%22%3A%222025-03-29%22%2C%22ans%22%3A%22NG%22%7D%5D%2C%22%22%2C%22%EF%BC%91%E5%9B%9E%EF%BC%88%EF%BC%92%E5%9B%9E%E3%81%AB%E5%A4%89%E6%9B%B4%E3%81%AE%E5%8F%AF%E8%83%BD%E6%80%A7%E3%81%82%E3%82%8A%EF%BC%89%22%2C%22%3C+%E7%89%B9%E3%81%AB%E3%81%AA%E3%81%97+%3E%22%5D'
+        ),
+      });
+      expect(res).toMatchObject({
+        status: 'success',
       });
     });
   });

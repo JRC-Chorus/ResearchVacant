@@ -43,3 +43,17 @@ const ApiResponseFail = z.object({
 type ApiResponseFail = z.infer<typeof ApiResponseFail>;
 export const ApiResponse = z.union([ApiResponseSuccess, ApiResponseFail]);
 export type ApiResponse = z.infer<typeof ApiResponse>;
+
+// フロントエンドとバックエンドの通信要求の型定義
+export const ApiRequest = z.object({
+  /** 実行する関数名 */
+  func: z.string(),
+  /** アクセスID */
+  aId: z.string(),
+  /** 実行する関数の引数（GAS側で文字列で受信したものをJSONに戻す） */
+  args: z.preprocess(
+    (a) => (typeof a === 'string' ? a !== '' ? JSON.parse(a) : [] : a),
+    z.any().array()
+  ),
+});
+export type ApiRequest = z.infer<typeof ApiRequest>;
