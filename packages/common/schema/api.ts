@@ -52,7 +52,7 @@ export const ApiRequest = z.object({
   aId: z.string(),
   /** 実行する関数の引数（GAS側で文字列で受信したものをJSONに戻す） */
   args: z.preprocess(
-    (a) => (typeof a === 'string' ? a !== '' ? JSON.parse(a) : [] : a),
+    (a) => (typeof a === 'string' ? (a !== '' ? JSON.parse(a) : []) : a),
     z.any().array()
   ),
 });
