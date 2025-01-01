@@ -8,13 +8,16 @@
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",
     "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
+    "configure:aws": "yarn workspace @research-vacant/proxy configure",
+    "configure:clasp": "yarn workspace @research-vacant/backend configure",
     "build": "rmdir dist /s /q & yarn build:frontend & yarn build:backend",
     "build:frontend": "yarn workspace @research-vacant/frontend build",
     "build:backend": "yarn workspace @research-vacant/backend build",
     "push": "yarn build:backend & yarn push:clasp",
     "push:clasp": "clasp push -f",
-    "deploy": "yarn build & yarn push:clasp & yarn deploy:clasp",
-    "deploy:clasp": "clasp deploy -i AKfycbz3sPuwSQkW9nyaLXpTfZ9GzMZGaE_9CHUTEo_rjpbkz11WyTtFbMN7k-j8s_q1NpI4Eg",
+    "deploy": "yarn push & yarn deploy:clasp & yarn deploy:aws",
+    "deploy:clasp": "yarn workspace @research-vacant/backend deploy",
+    "deploy:aws": "yarn workspace @research-vacant/proxy deploy",
     "dev": "yarn workspace @research-vacant/frontend dev",
     "open": "clasp open --webapp",
     "test": "vitest"
