@@ -66,7 +66,7 @@ export function loadPlaces(sessionId: SessionID): CheckedOuterPlace[] {
 
   return ALL_PLACE_GETTERS.map((getter) =>
     getter.withVacant(placeIdGen, getTargetDateRangeList(targetDateRange))
-  )
+  );
 }
 
 /**
