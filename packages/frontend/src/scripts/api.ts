@@ -80,25 +80,6 @@ export const googleScriptRun = new Proxy(mockFuncs, {
   },
 });
 
-// export const googleScriptRun =
-//   import.meta.env.PROD && google
-//     ? new Proxy(google.script.run, {
-//         get(target, method: keyof typeof google.script.run) {
-//           const mainStore = useMainStore();
-//           return (...args: any[]) => {
-//             return new Promise((resolve) => {
-//               const callMethod = target
-//                 .withSuccessHandler(resolve)
-//                 .withFailureHandler((err) => (mainStore.error = err))[
-//                 method
-//               ] as any;
-//               callMethod(...args);
-//             });
-//           };
-//         },
-//       })
-//     : mockFuncs;
-
 // アクセス時のURL情報を返す
 export const getURLLocation = (url: string) => {
   const urlObj = new URL(url);
