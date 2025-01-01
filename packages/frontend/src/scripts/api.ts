@@ -2,6 +2,7 @@ import {
   ApiRequest,
   ApiResponse,
   FrontUrlParams,
+  keys,
   MemberStatus,
   PartyInfo,
   toEntries,
@@ -15,7 +16,21 @@ const mockFuncs: IRun = {
     params: Record<string, string>
   ): Promise<MemberStatus> {
     return new Promise((resolve) => {
-      resolve(loadAccessMock('noAns', false));
+      if (keys(params).length === 0) {
+        console.error(
+          '【開発版】URLパラメータが取得できませんでした．以下のパラメータつきURLから再度アクセスしてください'
+        );
+        console.log(
+          `${window.location.origin}${
+            import.meta.env.BASE_URL
+          }?aId=SAMPLE_ACCESS_ID&deployId=SAMPLE_DEPLOY_ID`
+        );
+        resolve({ status: 'invalidUser' });
+      } else {
+        setTimeout(() => {
+          resolve(loadAccessMock('noAns', false));
+        }, 5000);
+      }
     });
   },
   submitAnswers(params, ans, freeTxt) {
