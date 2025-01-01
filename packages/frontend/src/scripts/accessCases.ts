@@ -3,7 +3,6 @@ import {
   AnswerSummary,
   CheckedOuterPlace,
   deepcopy,
-  FrontUrlParams,
   Member,
   MemberID,
   MemberStatus,
@@ -14,11 +13,6 @@ import {
   SummaryAnswers,
   toEntries,
 } from '@research-vacant/common';
-
-export const urlParamsMock = FrontUrlParams.parse({
-  aId: 'SAMPLE ACCESS CODE',
-  deployId: 'SAMPLE DEPLOY ID',
-});
 
 /**
  * 回答対象日
