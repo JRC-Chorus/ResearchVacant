@@ -69,7 +69,7 @@ export function decodeAccessID(accessId: AccessID): DecodeResult | undefined {
  * 回答集約用URLを発行する
  */
 export function getAnswerURL(sessionId: SessionID, memberId: MemberID) {
-  const BASE_URL = 'https://jrc-chorus.github.io/ResearchVacant/'
+  const BASE_URL = 'https://jrc-chorus.github.io/ResearchVacant/';
 
   const config = getConfig();
   const tmpParams: Record<keyof FrontUrlParams, string> = {

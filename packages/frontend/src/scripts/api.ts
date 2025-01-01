@@ -62,7 +62,10 @@ export const googleScriptRun = new Proxy(mockFuncs, {
         `https://script.google.com/macros/s/${params.deployId}/exec`
       );
       toEntries(apiParams).forEach(([k, v]) => {
-        apiUrl.searchParams.append(k, typeof v === 'object' ? JSON.stringify(v) : v);
+        apiUrl.searchParams.append(
+          k,
+          typeof v === 'object' ? JSON.stringify(v) : v
+        );
       });
 
       const res = await fetch(apiUrl);
