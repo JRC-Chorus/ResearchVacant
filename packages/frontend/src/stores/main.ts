@@ -42,10 +42,8 @@ export const useMainStore = defineStore('mainStore', {
     async getAccessStatus() {
       // load session
       if (this.__memberStatus === null) {
-        const loc = await getURLLocation();
-        this.__memberStatus = await googleScriptRun.accessManager(
-          loc.parameter
-        );
+        const loc = getURLLocation(window.location.href);
+        this.__memberStatus = await googleScriptRun.accessManager(loc ?? {});
 
         if (!this.__memberStatus) {
           this.__memberStatus = {

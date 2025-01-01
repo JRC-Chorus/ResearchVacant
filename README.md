@@ -28,8 +28,11 @@
           "rootDir": "./dist"
         }
         ```
-5. `clasp login`で JRC-Chorus のアカウント（一般ユーザーは SpreadSheet を作成したアカウント）にログインする
+5. `yarn clasp login`で JRC-Chorus のアカウント（一般ユーザーは SpreadSheet を作成したアカウント）にログインする
    - この時，一般ユーザーは GAS を外部から操作できるように，[Google App Script API](https://script.google.com/home/usersettings)を有効にしておく必要がある
+   - ログイン時には以下のGoogle App Script関連の権限を許可する
+     - Google Apps Script のデプロイの作成と更新 です。
+     - Google Apps Script のプロジェクトの作成と更新 です。
 6. （一般ユーザーの場合：`yarn push`によってプログラムコードを SpreadSheet 付属の GAS にアップロード）
 7. （一般ユーザーの場合：Apps Script の画面にある「デプロイ」からコードをデプロイする）
 8. （一般ユーザーの場合：`./package.json`の中の`clasp:deploy`のデプロイ ID を上記デプロイ時の ID に更新する）

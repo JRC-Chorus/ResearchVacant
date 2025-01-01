@@ -10,8 +10,8 @@ export const researchFrequencyEnum = ['week', 'month'] as const;
  * 2. backend\src\source\spreadsheet\config.ts の「configShowingKey」でエラーが発生するため，スプレッドシートに表示する説明用の文章を追加する
  */
 export const Config = z.object({
-  /** 公開したWebappのURL */
-  webappUrl: z.string().optional().default(''),
+  /** 公開したWebappのデプロイID */
+  deployId: z.string().optional().default(''),
 
   /** 通知したいチャンネルの Teams Webhook リンク */
   teamsLink: z.string().optional().default(''),

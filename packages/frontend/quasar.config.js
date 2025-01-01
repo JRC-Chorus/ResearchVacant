@@ -9,7 +9,7 @@
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
 
 const { configure } = require('quasar/wrappers');
-const { viteSingleFile } = require('vite-plugin-singlefile');
+// const { viteSingleFile } = require('vite-plugin-singlefile');
 
 module.exports = configure(function (/* ctx */) {
   return {
@@ -51,7 +51,7 @@ module.exports = configure(function (/* ctx */) {
 
       // rebuildCache: true, // rebuilds Vite/linter/etc cache on startup
 
-      // publicPath: '/',
+      publicPath: '/ResearchVacant',
       // analyze: true,
       // env: {},
       // rawDefine: {}
@@ -76,7 +76,7 @@ module.exports = configure(function (/* ctx */) {
           },
           { server: false },
         ],
-        [viteSingleFile, {}],
+        // [viteSingleFile, {}],
       ],
     },
 

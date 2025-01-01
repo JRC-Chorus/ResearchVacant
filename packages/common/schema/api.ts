@@ -1,17 +1,22 @@
+import { z } from 'zod';
 import { MemberStatus } from './app';
 import { AnsDate } from './db/answer';
 import { PartyInfo } from './db/records';
 
-export interface FrontAPI {
+export interface GlobalAPI {
   /** フロントエンドを描画 */
-  doGet: (e: any) => GoogleAppsScript.HTML.HtmlOutput;
+  // doGet: (e: any) => GoogleAppsScript.HTML.HtmlOutput;
+  /** フロントエンドからのAPI通信を捌く */
+  doGet: (e: { parameter: Record<string, string> }) => any;
   /** データベース等の初期化（導入直後に１度だけ実行することを想定） */
   migrateEnv: () => void;
   /** 常時実行で調査を定期的に発火する */
   researchManager: () => void;
+}
 
+export interface FrontAPI {
   /** フロントエンドからのアクセスに対するレスポンスを定義 */
-  accessManager: (params: Record<string, string>) => Promise<MemberStatus>;
+  accessManager: (params: Record<string, string>) => MemberStatus;
   /** フロントエンドから回答を登録する */
   submitAnswers: (
     params: Record<string, string>,
@@ -23,3 +28,32 @@ export interface FrontAPI {
   /** フロントエンドで決定した開催日を登録する */
   decideDates: (params: Record<string, string>, infos: PartyInfo[]) => void;
 }
+
+// フロントエンドとバックエンドの通信結果の型定義
+const ApiResponseSuccess = z.object({
+  status: z.literal('success'),
+  val: z.any(),
+});
+type ApiResponseSuccess = z.infer<typeof ApiResponseSuccess>;
+const ApiResponseFail = z.object({
+  status: z.literal('fail'),
+  errTitle: z.string(),
+  errDescription: z.string().optional(),
+});
+type ApiResponseFail = z.infer<typeof ApiResponseFail>;
+export const ApiResponse = z.union([ApiResponseSuccess, ApiResponseFail]);
+export type ApiResponse = z.infer<typeof ApiResponse>;
+
+// フロントエンドとバックエンドの通信要求の型定義
+export const ApiRequest = z.object({
+  /** 実行する関数名 */
+  func: z.string(),
+  /** アクセスID */
+  aId: z.string(),
+  /** 実行する関数の引数（GAS側で文字列で受信したものをJSONに戻す） */
+  args: z.preprocess(
+    (a) => (typeof a === 'string' ? (a !== '' ? JSON.parse(a) : []) : a),
+    z.any().array()
+  ),
+});
+export type ApiRequest = z.infer<typeof ApiRequest>;

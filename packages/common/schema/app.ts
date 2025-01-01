@@ -14,6 +14,14 @@ export const UrlParams = z.object({
 });
 export type UrlParams = z.infer<typeof UrlParams>;
 
+export const FrontUrlParams = z.object({
+  /** アクセスID */
+  aId: AccessID,
+  /** デプロイID */
+  deployId: z.string(),
+});
+export type FrontUrlParams = z.infer<typeof FrontUrlParams>;
+
 export const ResearchDetails = z.object({
   researchStartDate: RvDate,
   researchEndDate: RvDate,

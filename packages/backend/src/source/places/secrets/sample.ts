@@ -17,11 +17,11 @@ let samplePlace: OuterPlace & { placeId: PlaceID };
 /**
  * 開催場所の定義サンプル（施設の空き状況情報なし）
  */
-export async function getSamplePlaceWithVacants(
+export function getSamplePlaceWithVacants(
   genId: (p: OuterPlace) => PlaceID,
   targetDates: Dayjs[]
-): Promise<CheckedOuterPlace> {
-  const isVacants = await getVacantInfo(targetDates);
+): CheckedOuterPlace {
+  const isVacants = getVacantInfo(targetDates);
   return Object.assign(BASE_INFO, {
     placeId: genId(BASE_INFO),
     vacantInfo: isVacants,
@@ -41,9 +41,9 @@ export function getSamplePlace(genId: (p: OuterPlace) => PlaceID) {
 /**
  * 施設の空き状況取得
  */
-async function getVacantInfo(targetDates: Dayjs[]): Promise<AnsDate[]> {
+function getVacantInfo(targetDates: Dayjs[]): AnsDate[] {
   // 外部API等から空き日程を取得する
-  const isVacants = await Promise.all(targetDates.map((d) => getIsVacant(d)));
+  const isVacants = targetDates.map((d) => getIsVacant(d));
 
   // 体裁を整えて返す
   return targetDates.map((d, idx) => {
@@ -58,7 +58,6 @@ async function getVacantInfo(targetDates: Dayjs[]): Promise<AnsDate[]> {
  * 特定の日付の空き状況を取得する（API取得に100msかかる想定）
  */
 function getIsVacant(date: Dayjs) {
-  return new Promise<boolean>((resolve) => {
-    setTimeout(() => resolve(true), 100);
-  });
+  Utilities.sleep(100);
+  return true;
 }

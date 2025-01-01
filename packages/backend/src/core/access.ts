@@ -25,9 +25,7 @@ import { isMember, parseRecievedIds } from './access/checker';
 /**
  * フロントエンドからのアクセスがあったときに，当該アクセスに対するレスポンスを定義
  */
-export async function accessManager(
-  params: Record<string, string>
-): Promise<MemberStatus> {
+export function accessManager(params: Record<string, string>): MemberStatus {
   const ids = parseRecievedIds(params);
   if (ids === void 0 || !isMember(ids.memberId)) {
     Logger.log(
@@ -83,7 +81,7 @@ export async function accessManager(
     return response;
   } else if (session.status === 'judge') {
     Logger.log('Accessed Status is judging');
-    const targetPlaces = await loadPlaces(ids.sessionId);
+    const targetPlaces = loadPlaces(ids.sessionId);
     const response = {
       status: 'judging',
       isManager: isManager,
