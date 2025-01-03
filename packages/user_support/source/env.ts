@@ -1,5 +1,5 @@
-import fs from 'fs';
 import { toEntries } from '@research-vacant/common/scripts/obj/obj';
+import fs from 'fs';
 
 export class EnvHandler {
   static loadEnv(path: string) {
