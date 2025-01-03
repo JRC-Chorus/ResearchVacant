@@ -2,6 +2,7 @@
   "name": "@research-vacant/backend",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "configure": "###TODO: .clasp.jsonの作成コマンド＆デプロイIDの指定###",
     "build": "node .\\src\\bin\\deploy.js & copy .\\appsscript.json ..\\..\\dist\\appsscript.json",
