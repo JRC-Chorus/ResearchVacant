@@ -24,7 +24,6 @@ global.doGet = (e) => {
   Logger.log(`Parameter: ${JSON.stringify(e.parameter)}`);
   const res = JSON.stringify(frontApiFuncs(apis, e.parameter));
   Logger.log(`Response: ${res}`);
-  Logger.log(import.meta.AWS_URL);
   return ContentService.createTextOutput(res).setMimeType(
     ContentService.MimeType.JSON
   );

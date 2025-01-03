@@ -114,6 +114,6 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
-  "include": ["**/*.ts", "../types/**/*.ts", "../user_support/src/setClaspIds.ts", "../user_support/src/setUrlFunc.ts"],
+  "include": ["**/*.ts", "../types/**/*.ts"],
   "exclude": ["node_modules"]
 }
