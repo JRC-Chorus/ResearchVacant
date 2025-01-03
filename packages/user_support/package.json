@@ -1,0 +1,21 @@
+{
+  "name": "@research-vacant/user_support",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "ResearchVacant's User Support Funcs",
+  "productName": "ResearchVacant",
+  "author": "JRC-Chorus <jrc.chorus@gmail.com>",
+  "scripts": {
+    "configure:claspID": "tsx src/setClaspIds.ts",
+    "configure:awsUrl": "tsx src/setUrlFunc.ts"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@inquirer/prompts": "^7.2.1",
+    "@types/node": "^22.10.2",
+    "execa": "^9.5.2",
+    "loading-cli": "^1.1.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.2"
+  }
+}

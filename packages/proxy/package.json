@@ -1,0 +1,25 @@
+{
+  "name": "@research-vacant/proxy",
+  "version": "0.0.1",
+  "description": "ResearchVacant's Proxy (Backend <---> Frontend)",
+  "productName": "ResearchVacant",
+  "author": "JRC-Chorus <jrc.chorus@gmail.com>",
+  "scripts": {
+    "configure": "aws configure",
+    "deploy": "cdk deploy --outputs-file stackResult.json"
+  },
+  "dependencies": {
+    "@hono/zod-validator": "^0.4.2",
+    "aws-cdk-lib": "2.173.4",
+    "constructs": "^10.0.0",
+    "hono": "^4.6.14",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "aws-cdk": "^2.173.4",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.2",
+    "vitest": "^2.1.2"
+  }
+}

@@ -3,17 +3,19 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "node .\\src\\bin\\deploy.js & copy .\\appsscript.json ..\\..\\dist\\appsscript.json"
+    "build": "node .\\src\\bin\\deploy.js & copy .\\appsscript.json ..\\..\\dist\\appsscript.json",
+    "deploy": "source .env.local && clasp deploy -i $deployID"
   },
   "dependencies": {
-    "dayjs": "^1.11.13",
-    "@research-vacant/common": "^0.0.1"
+    "@research-vacant/common": "^0.0.1",
+    "dayjs": "^1.11.13"
   },
   "devDependencies": {
     "@google/clasp": "^2.4.2",
     "@research-vacant/mock": "^0.0.1",
     "@types/google-apps-script": "^1.0.83",
     "@vitest/coverage-v8": "^2.0.5",
+    "dotenv": "^16.4.7",
     "esbuild-gas-plugin": "^0.8.0",
     "typescript": "^5.6.2",
     "vitest": "^2.1.2",
