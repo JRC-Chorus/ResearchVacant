@@ -99,13 +99,13 @@ async function loadDeploymentIds(forceDeployWithNoDeployments: boolean = true) {
 function writeDeploymentId(deployID: string) {
   // proxy/.envに書き込む
   const proxyEnv = {
-    deployID: deployID,
+    VITE_DEPLOY_ID: deployID,
   };
   EnvHandler.writeEnv(PROXY_ENV_PATH, proxyEnv);
 
   // backend/.envに書き込む
   const backendEnv = {
-    deployID: deployID,
+    VITE_DEPLOY_ID: deployID,
   };
   EnvHandler.writeEnv(BACKEND_ENV_PATH, backendEnv);
 }
