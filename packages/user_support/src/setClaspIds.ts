@@ -1,5 +1,5 @@
 import { input, select } from '@inquirer/prompts';
-import { EnvHandler } from '@research-vacant/common';
+import { EnvHandler } from 'app/source/env';
 import { execa } from 'execa';
 import fs from 'fs';
 import loading from 'loading-cli';
@@ -7,7 +7,7 @@ import loading from 'loading-cli';
 // カレントディレクトリはtsxの実行場所である`packages\backend`になる
 const CLASP_JSON_PATH = '../../.clasp.json';
 const PROXY_ENV_PATH = '../proxy/.env.local';
-const BACKEND_ENV_PATH = './.env.local';
+const BACKEND_ENV_PATH = '../backend/.env.local';
 
 /**
  * 既存の.clasp.jsonを読み込む

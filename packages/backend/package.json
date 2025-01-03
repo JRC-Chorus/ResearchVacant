@@ -4,8 +4,6 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "configure:claspID": "tsx tools/setClaspIds.ts",
-    "configure:awsUrl": "tsx tools/setUrlFunc.ts",
     "build": "node .\\src\\bin\\deploy.js & copy .\\appsscript.json ..\\..\\dist\\appsscript.json",
     "deploy": "source .env.local && clasp deploy -i $deployID"
   },
@@ -15,13 +13,10 @@
   },
   "devDependencies": {
     "@google/clasp": "^2.4.2",
-    "@inquirer/prompts": "^7.2.1",
     "@research-vacant/mock": "^0.0.1",
     "@types/google-apps-script": "^1.0.83",
     "@vitest/coverage-v8": "^2.0.5",
     "esbuild-gas-plugin": "^0.8.0",
-    "execa": "^9.5.2",
-    "loading-cli": "^1.1.2",
     "typescript": "^5.6.2",
     "vitest": "^2.1.2",
     "zod": "^3.23.8"
