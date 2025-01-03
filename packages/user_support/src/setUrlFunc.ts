@@ -17,7 +17,7 @@ function main() {
   const url = loadUrlFuncResult();
 
   const target = {
-    VITE_AWS_URL: url,
+    AWS_URL: url,
   };
   EnvHandler.updateEnv(BACKEND_ENV_PATH, target);
 }
