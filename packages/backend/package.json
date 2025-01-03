@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "configure": "###TODO: .clasp.jsonの作成コマンド＆デプロイIDの指定###",
+    "configure": "tsx tools/setClaspIds.ts",
     "build": "node .\\src\\bin\\deploy.js & copy .\\appsscript.json ..\\..\\dist\\appsscript.json",
-    "deploy": "clasp deploy -i AKfycbz3sPuwSQkW9nyaLXpTfZ9GzMZGaE_9CHUTEo_rjpbkz11WyTtFbMN7k-j8s_q1NpI4Eg"
+    "deploy": "source .env.local && clasp deploy -i $deployID"
   },
   "dependencies": {
     "@research-vacant/common": "^0.0.1",

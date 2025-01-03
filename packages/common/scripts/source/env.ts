@@ -13,7 +13,7 @@ export class EnvHandler {
     return env;
   }
 
-  static updateEnv(path: string, env: Record<string, string>) {
+  static writeEnv(path: string, env: Record<string, string>) {
     fs.writeFileSync(
       path,
       Object.entries(env)
