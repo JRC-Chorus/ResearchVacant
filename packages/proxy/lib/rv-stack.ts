@@ -3,6 +3,15 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as lambda_node from 'aws-cdk-lib/aws-lambda-nodejs';
 import type { Construct } from 'constructs';
 
+const envs = require('dotenv').config({ path: './.env.local' });
+
+// process.envの値を定義
+// 型定義は`proxy/src/global.d.ts`に記述
+const define: Record<string, string> = {};
+Object.entries(envs.parsed).map(([k, v]) => {
+  define[k] = String(v);
+});
+
 export class ResearchVacantStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -14,6 +23,7 @@ export class ResearchVacantStack extends cdk.Stack {
         format: lambda_node.OutputFormat.ESM,
         sourceMap: true,
       },
+      environment: define,
     });
 
     const urlfunc = apiLambda.addFunctionUrl({

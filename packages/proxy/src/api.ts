@@ -22,6 +22,12 @@ app.get(
   }
 );
 
+app.get('/envs', (c) => {
+  return c.json({
+    value: process.env,
+  });
+})
+
 // app.get('/message', (c) => {
 //   const msg = c.req.query('msg');
 //   return c.text(`Success: ${msg || 'No message provided'}`);
