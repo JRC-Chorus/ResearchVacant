@@ -3,14 +3,17 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "node .\\src\\bin\\deploy.js & copy .\\appsscript.json ..\\..\\dist\\appsscript.json"
+    "configure": "###TODO: .clasp.jsonの作成コマンド＆デプロイIDの指定###",
+    "build": "node .\\src\\bin\\deploy.js & copy .\\appsscript.json ..\\..\\dist\\appsscript.json",
+    "deploy": "clasp deploy -i AKfycbz3sPuwSQkW9nyaLXpTfZ9GzMZGaE_9CHUTEo_rjpbkz11WyTtFbMN7k-j8s_q1NpI4Eg"
   },
   "dependencies": {
-    "dayjs": "^1.11.13",
-    "@research-vacant/common": "^0.0.1"
+    "@research-vacant/common": "^0.0.1",
+    "dayjs": "^1.11.13"
   },
   "devDependencies": {
     "@google/clasp": "^2.4.2",
+    "@inquirer/prompts": "^7.2.1",
     "@research-vacant/mock": "^0.0.1",
     "@types/google-apps-script": "^1.0.83",
     "@vitest/coverage-v8": "^2.0.5",
