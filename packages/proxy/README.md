@@ -38,4 +38,5 @@
 > - この場合は，バージョンを`2.173.2`以上に上げることを求められているため，以下の編集を行う．
 >   1. `packages\proxy\package.json`の`aws-cdk-lib`と`aws-cdk`のバージョンを上げる．
 >   1. `yarn install`で依存関係を更新する．
+>   1. 再度`yarn deploy`を実行する．
 
