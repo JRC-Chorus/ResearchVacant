@@ -1,0 +1,8 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="20" y="20" width="80" height="80" rx="12" fill="#2d6a4f"/>
+  <rect x="30" y="40" width="60" height="50" rx="8" fill="white"/>
+  <!-- チェックマーク -->
+  <path d="M45 65 L55 75 L75 55" stroke="#40916c" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- トップバー -->
+  <rect x="30" y="25" width="60" height="8" rx="4" fill="white" opacity="0.9"/>
+</svg>
