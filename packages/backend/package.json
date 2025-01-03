@@ -2,7 +2,6 @@
   "name": "@research-vacant/backend",
   "version": "1.0.0",
   "private": true,
-  "type": "module",
   "scripts": {
     "build": "node .\\src\\bin\\deploy.js & copy .\\appsscript.json ..\\..\\dist\\appsscript.json",
     "deploy": "source .env.local && clasp deploy -i $deployID"

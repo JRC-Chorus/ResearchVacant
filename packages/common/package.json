@@ -1,7 +1,6 @@
 {
   "name": "@research-vacant/common",
   "version": "0.0.1",
-  "type": "module",
   "description": "ResearchVacant's common data and scripts",
   "productName": "ResearchVacant",
   "author": "JRC-Chorus <jrc.chorus@gmail.com>",
