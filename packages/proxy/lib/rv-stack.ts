@@ -7,33 +7,25 @@ export class ResearchVacantStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // const table = new dynamodb.Table(this, 'table', {
-    //   billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-    //   partitionKey: {
-    //     name: 'id',
-    //     type: dynamodb.AttributeType.STRING,
-    //   },
-    // });
-
     const apiLambda = new lambda_node.NodejsFunction(this, 'ApiLambda', {
       entry: 'src/api.ts',
       runtime: lambda.Runtime.NODEJS_20_X,
-      // environment: {
-      //   TABLE_NAME: table.tableName,
-      // },
       bundling: {
         format: lambda_node.OutputFormat.ESM,
         sourceMap: true,
       },
     });
 
-    // table.grantFullAccess(apiLambda);
+    const urlfunc = apiLambda.addFunctionUrl({
+      authType: lambda.FunctionUrlAuthType.NONE,
+      cors: {
+        allowedMethods: [lambda.HttpMethod.ALL],
+        allowedOrigins: ['*'],
+      },
+    });
 
-    // const apigw = new apigatewayv2.HttpApi(this, 'Apigw', {
-    //   // xxx/hogehoge のように，後ろに'hogehoge'のようなフォールバックを付けられるようにするのがIntegration
-    //   defaultIntegration: new integrations.HttpLambdaIntegration('default', apiLambda, {}),
-    // });
-
-    // new cdk.CfnOutput(this, 'ApiUrl', { value: apigw.url ?? '' });
+    new cdk.CfnOutput(this, 'urlFuncResult', {
+      value: urlfunc.url,
+    });
   }
 }
