@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "configure": "tsx tools/setClaspIds.ts",
+    "configure:claspID": "tsx tools/setClaspIds.ts",
+    "configure:awsUrl": "tsx tools/setUrlFunc.ts",
     "build": "node .\\src\\bin\\deploy.js & copy .\\appsscript.json ..\\..\\dist\\appsscript.json",
     "deploy": "source .env.local && clasp deploy -i $deployID"
   },

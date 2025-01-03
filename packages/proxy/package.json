@@ -6,7 +6,7 @@
   "author": "JRC-Chorus <jrc.chorus@gmail.com>",
   "scripts": {
     "configure": "aws configure",
-    "deploy": "cdk deploy"
+    "deploy": "cdk deploy --outputs-file stackResult.json"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.4.2",

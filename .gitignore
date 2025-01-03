@@ -45,3 +45,4 @@ yarn-error.log*
 packages/backend/src/source/places/secrets/*.ts
 !packages/backend/src/source/places/secrets/sample.ts
 packages/backend/src/source/places/secrets/*.js
+packages/proxy/stackResult.json

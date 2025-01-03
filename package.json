@@ -8,9 +8,10 @@
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",
     "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
-    "configure": "yarn configure:clasp & yarn configure:aws",
+    "configure": "yarn configure:clasp & yarn configure:aws & yarn configure:awsUrl",
     "configure:aws": "yarn workspace @research-vacant/proxy configure",
-    "configure:clasp": "yarn workspace @research-vacant/backend configure",
+    "configure:awsUrl": "yarn deploy:aws & yarn workspace @research-vacant/backend configure:awsUrl",
+    "configure:clasp": "yarn workspace @research-vacant/backend configure:claspID",
     "build": "rmdir dist /s /q & yarn build:frontend & yarn build:backend",
     "build:frontend": "yarn workspace @research-vacant/frontend build",
     "build:backend": "yarn workspace @research-vacant/backend build",
