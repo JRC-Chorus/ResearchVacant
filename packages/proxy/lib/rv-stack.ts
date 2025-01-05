@@ -19,6 +19,7 @@ export class ResearchVacantStack extends cdk.Stack {
     const apiLambda = new lambda_node.NodejsFunction(this, 'ApiLambda', {
       entry: 'src/api.ts',
       runtime: lambda.Runtime.NODEJS_20_X,
+      timeout: cdk.Duration.seconds(20),
       bundling: {
         format: lambda_node.OutputFormat.ESM,
         sourceMap: true,
