@@ -75,10 +75,12 @@ const MSBeforeOpening = z.object({
   status: z.enum(['beforeOpening']),
 });
 type MSBeforeOpening = z.infer<typeof MSBeforeOpening>;
-export type MemberStatus =
-  | MSNoAns
-  | MSAlreadyAns
-  | MSFinished
-  | MSJudging
-  | MSInvalidUser
-  | MSBeforeOpening;
+export const MemberStatus = z.union([
+  MSFinished,
+  MSAlreadyAns,
+  MSNoAns,
+  MSJudging,
+  MSInvalidUser,
+  MSBeforeOpening,
+]);
+export type MemberStatus = z.infer<typeof MemberStatus>;

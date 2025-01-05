@@ -14,20 +14,33 @@ export interface GlobalAPI {
   researchManager: () => void;
 }
 
-export interface FrontAPI {
+export const FrontAPI = z.object({
   /** フロントエンドからのアクセスに対するレスポンスを定義 */
-  accessManager: (params: Record<string, string>) => MemberStatus;
+  accessManager: z
+    .function()
+    .args(z.record(z.string(), z.string()))
+    .returns(MemberStatus),
   /** フロントエンドから回答を登録する */
-  submitAnswers: (
-    params: Record<string, string>,
-    ans: AnsDate[],
-    freeTxt: string,
-    partyCount: string,
-    bikou: string
-  ) => void;
-  /** フロントエンドで決定した開催日を登録する */
-  decideDates: (params: Record<string, string>, infos: PartyInfo[]) => void;
-}
+  submitAnswers: z
+    .function()
+    .args(
+      z.record(z.string(), z.string()),
+      AnsDate.array(),
+      z.string(),
+      z.string(),
+      z.string()
+    )
+    .returns(z.void()),
+  /** フロントエンドから回答を登録する */
+  decideDates: z
+    .function()
+    .args(z.record(z.string(), z.string()), z.array(PartyInfo))
+    .returns(z.void()),
+});
+export type FrontAPI = z.infer<typeof FrontAPI>;
+
+export const FrontAPIkeys = FrontAPI.keyof();
+export type FrontAPIkeys = z.infer<typeof FrontAPIkeys>;
 
 // フロントエンドとバックエンドの通信結果の型定義
 const ApiResponseSuccess = z.object({
