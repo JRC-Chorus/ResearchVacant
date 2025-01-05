@@ -102,12 +102,6 @@ function writeDeploymentId(deployID: string) {
     DEPLOY_ID: deployID,
   };
   EnvHandler.writeEnv(PROXY_ENV_PATH, proxyEnv);
-
-  // backend/.envに書き込む
-  const backendEnv = {
-    DEPLOY_ID: deployID,
-  };
-  EnvHandler.writeEnv(BACKEND_ENV_PATH, backendEnv);
 }
 
 async function main() {
