@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@hono/zod-validator": "^0.4.2",
+    "@research-vacant/common": "^0.0.1",
     "aws-cdk-lib": "2.173.4",
     "constructs": "^10.0.0",
     "hono": "^4.6.14",
