@@ -1,8 +1,6 @@
 import { EnvHandler } from 'app/source/env';
 import fs from 'fs';
-
-const AWS_STACK_RESULT_PATH = '../proxy/stackResult.json';
-const BACKEND_ENV_PATH = '../backend/.env.local';
+import { AWS_STACK_RESULT_PATH, BACKEND_ENV_PATH } from './core/constVals';
 
 function loadUrlFuncResult() {
   if (fs.existsSync(AWS_STACK_RESULT_PATH)) {

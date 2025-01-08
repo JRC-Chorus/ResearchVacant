@@ -1,13 +1,12 @@
 import { input, select } from '@inquirer/prompts';
 import { EnvHandler } from 'app/source/env';
-import { execa } from 'execa';
 import fs from 'fs';
-import loading from 'loading-cli';
-
-// カレントディレクトリはtsxの実行場所である`packages\backend`になる
-const CLASP_JSON_PATH = '../../.clasp.json';
-const PROXY_ENV_PATH = '../proxy/.env.local';
-const BACKEND_ENV_PATH = '../backend/.env.local';
+import {
+  BACKEND_ENV_PATH,
+  CLASP_JSON_PATH,
+  PROXY_ENV_PATH,
+} from './core/constVals';
+import { exeCommandWithloading } from './core/cuiSupport';
 
 /**
  * 既存の.clasp.jsonを読み込む
@@ -33,23 +32,6 @@ function writeScriptID(scriptID: string) {
     rootDir: './dist',
   };
   fs.writeFileSync(CLASP_JSON_PATH, JSON.stringify(claspJson, null, 2));
-}
-
-/**
- * ローディング中の表示を出しながらコマンドを実行する
- */
-async function exeCommandWithloading(title: string, command: string) {
-  const load = loading({
-    text: title,
-    color: 'red',
-    frames: ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'],
-  }).start();
-
-  const output = await execa(command);
-
-  load.stop();
-
-  return output;
 }
 
 /**
@@ -102,6 +84,11 @@ function writeDeploymentId(deployID: string) {
     DEPLOY_ID: deployID,
   };
   EnvHandler.writeEnv(PROXY_ENV_PATH, proxyEnv);
+  // backend/.envに書き込む
+  const backendEnv = {
+    DEPLOY_ID: deployID,
+  };
+  EnvHandler.writeEnv(BACKEND_ENV_PATH, backendEnv);
 }
 
 async function main() {

@@ -7,7 +7,8 @@
   "author": "JRC-Chorus <jrc.chorus@gmail.com>",
   "scripts": {
     "configure:claspID": "tsx src/setClaspIds.ts",
-    "configure:awsUrl": "tsx src/setUrlFunc.ts"
+    "configure:awsUrl": "tsx src/setUrlFunc.ts",
+    "deploy:clasp": "tsx src/deployClasp.ts"
   },
   "dependencies": {},
   "devDependencies": {

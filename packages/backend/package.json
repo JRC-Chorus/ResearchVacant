@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "node .\\src\\bin\\deploy.js & copy .\\appsscript.json ..\\..\\dist\\appsscript.json",
-    "deploy": "source .env.local && clasp deploy -i $deployID"
+    "build": "node .\\src\\bin\\deploy.js & copy .\\appsscript.json ..\\..\\dist\\appsscript.json"
   },
   "dependencies": {
     "@research-vacant/common": "^0.0.1",

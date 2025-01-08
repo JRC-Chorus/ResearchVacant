@@ -18,7 +18,7 @@
     "push": "yarn build:backend & yarn push:clasp",
     "push:clasp": "clasp push -f",
     "deploy": "yarn push & yarn deploy:clasp & yarn deploy:aws",
-    "deploy:clasp": "yarn workspace @research-vacant/backend deploy",
+    "deploy:clasp": "yarn workspace @research-vacant/user_support deploy:clasp",
     "deploy:aws": "yarn workspace @research-vacant/proxy deploy",
     "dev": "yarn workspace @research-vacant/frontend dev",
     "open": "clasp open --webapp",
