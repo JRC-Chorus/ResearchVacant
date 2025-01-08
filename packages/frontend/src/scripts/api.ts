@@ -56,6 +56,7 @@ const mockFuncs: IRun = {
 
 /**
  * 汎用的にGASのAPIを呼び出す
+ * TODO: Proxy通信に切り替える際に`direct=true`のような引数が入るときにはProxyを経由しないモードで通信する（GAS応答速度検証時に利用するため）
  */
 export const googleScriptRun = new Proxy(mockFuncs, {
   get(target, method: keyof IRun) {
