@@ -73,7 +73,7 @@ export const googleScriptRun = new Proxy(mockFuncs, {
         args: args,
       });
 
-      const apiUrl = new URL(params.proxyUrl);
+      const apiUrl = new URL(`${params.proxyUrl}${method}`);
       toEntries(apiParams).forEach(([k, v]) => {
         apiUrl.searchParams.append(
           k,
