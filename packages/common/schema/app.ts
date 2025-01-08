@@ -17,8 +17,8 @@ export type UrlParams = z.infer<typeof UrlParams>;
 export const FrontUrlParams = z.object({
   /** アクセスID */
   aId: AccessID,
-  /** デプロイID */
-  deployId: z.string(),
+  /** Proxy(AWS)のURL */
+  proxyUrl: z.string().url(),
 });
 export type FrontUrlParams = z.infer<typeof FrontUrlParams>;
 
