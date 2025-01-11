@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { keys } from '../scripts';
 import { MemberStatus } from './app';
 import { AnsDate } from './db/answer';
 import { PartyInfo } from './db/records';
@@ -14,20 +15,51 @@ export interface GlobalAPI {
   researchManager: () => void;
 }
 
-export interface FrontAPI {
-  /** フロントエンドからのアクセスに対するレスポンスを定義 */
-  accessManager: (params: Record<string, string>) => MemberStatus;
-  /** フロントエンドから回答を登録する */
+// TODO: ZodのエラーによりBRAND型を引数に含む関数が定義できないため，暫定的に下記の実装を用いる
+// @ref: https://github.com/colinhacks/zod/issues/3935
+const FrontAPI = {
+  accessManager: (args: Record<string, string>): MemberStatus => {
+    return { status: 'invalidUser' };
+  },
   submitAnswers: (
-    params: Record<string, string>,
-    ans: AnsDate[],
-    freeTxt: string,
-    partyCount: string,
-    bikou: string
-  ) => void;
-  /** フロントエンドで決定した開催日を登録する */
-  decideDates: (params: Record<string, string>, infos: PartyInfo[]) => void;
-}
+    answers: Record<string, string>,
+    ansDate: AnsDate[],
+    partyId: string,
+    userId: string,
+    userName: string
+  ) => {},
+  decideDates: (answers: Record<string, string>, parties: PartyInfo[]) => {},
+};
+export type FrontAPI = typeof FrontAPI;
+// export const FrontAPI = z.object({
+//   /** フロントエンドからのアクセスに対するレスポンスを定義 */
+//   accessManager: z
+//     .function()
+//     .args(z.record(z.string(), z.string()))
+//     .returns(MemberStatus),
+//   /** フロントエンドから回答を登録する */
+//   submitAnswers: z
+//     .function()
+//     .args(
+//       z.record(z.string(), z.string()),
+//       AnsDate.array(),
+//       z.string(),
+//       z.string(),
+//       z.string()
+//     )
+//     .returns(z.void()),
+//   /** フロントエンドから回答を登録する */
+//   decideDates: z
+//     .function()
+//     .args(z.record(z.string(), z.string()), z.array(PartyInfo))
+//     .returns(z.void()),
+// });
+// export type FrontAPI = z.infer<typeof FrontAPI>;
+
+export const FrontAPIkeys = keys(FrontAPI);
+export type FrontAPIkeys = typeof FrontAPIkeys;
+// export const FrontAPIkeys = FrontAPI.keyof();
+// export type FrontAPIkeys = z.infer<typeof FrontAPIkeys>;
 
 // フロントエンドとバックエンドの通信結果の型定義
 const ApiResponseSuccess = z.object({

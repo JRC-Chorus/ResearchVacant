@@ -7,7 +7,6 @@ import {
   SessionID,
   toEntries,
 } from '@research-vacant/common';
-import { getConfig } from 'backend/source/spreadsheet/config';
 import { getMembers } from 'backend/source/spreadsheet/members';
 import { getSessions } from 'backend/source/spreadsheet/session';
 
@@ -71,9 +70,8 @@ export function decodeAccessID(accessId: AccessID): DecodeResult | undefined {
 export function getAnswerURL(sessionId: SessionID, memberId: MemberID) {
   const BASE_URL = 'https://jrc-chorus.github.io/ResearchVacant/';
 
-  const config = getConfig();
   const tmpParams: Record<keyof FrontUrlParams, string> = {
-    deployId: config.deployId,
+    proxyUrl: import.meta.AWS_URL,
     aId: encodeAccessID(sessionId, memberId),
   };
 

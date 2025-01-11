@@ -17,8 +17,8 @@ export type UrlParams = z.infer<typeof UrlParams>;
 export const FrontUrlParams = z.object({
   /** アクセスID */
   aId: AccessID,
-  /** デプロイID */
-  deployId: z.string(),
+  /** Proxy(AWS)のURL */
+  proxyUrl: z.string().url(),
 });
 export type FrontUrlParams = z.infer<typeof FrontUrlParams>;
 
@@ -75,10 +75,12 @@ const MSBeforeOpening = z.object({
   status: z.enum(['beforeOpening']),
 });
 type MSBeforeOpening = z.infer<typeof MSBeforeOpening>;
-export type MemberStatus =
-  | MSNoAns
-  | MSAlreadyAns
-  | MSFinished
-  | MSJudging
-  | MSInvalidUser
-  | MSBeforeOpening;
+export const MemberStatus = z.union([
+  MSFinished,
+  MSAlreadyAns,
+  MSNoAns,
+  MSJudging,
+  MSInvalidUser,
+  MSBeforeOpening,
+]);
+export type MemberStatus = z.infer<typeof MemberStatus>;

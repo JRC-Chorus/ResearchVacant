@@ -23,7 +23,7 @@ const mockFuncs: IRun = {
         console.log(
           `${window.location.origin}${
             import.meta.env.BASE_URL
-          }?aId=SAMPLE_ACCESS_ID&deployId=SAMPLE_DEPLOY_ID`
+          }?aId=SAMPLE_ACCESS_ID&proxyUrl=https://sample-url.com/`
         );
         resolve({ status: 'invalidUser' });
       } else {
@@ -73,9 +73,7 @@ export const googleScriptRun = new Proxy(mockFuncs, {
         args: args,
       });
 
-      const apiUrl = new URL(
-        `https://script.google.com/macros/s/${params.deployId}/exec`
-      );
+      const apiUrl = new URL(`${params.proxyUrl}${method}`);
       toEntries(apiParams).forEach(([k, v]) => {
         apiUrl.searchParams.append(
           k,
@@ -151,12 +149,12 @@ if (import.meta.vitest) {
   const { test, expect } = import.meta.vitest;
   test('urlParams', () => {
     const dummyUrl =
-      'https://expamle.com/index.html?aId=gc39195&deployId=1234567890';
+      'https://expamle.com/index.html?aId=gc39195&proxyUrl=https://sample-aws.lambda-url.xxx-place.on.aws/';
     const urlParams = getURLLocation(dummyUrl);
 
     expect(urlParams).toEqual({
       aId: 'gc39195',
-      deployId: '1234567890',
+      proxyUrl: 'https://sample-aws.lambda-url.xxx-place.on.aws/',
     });
   });
 }
