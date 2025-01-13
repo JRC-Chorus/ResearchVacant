@@ -1,11 +1,17 @@
-import { Config, Member, RvDate, Session, values } from '@research-vacant/common';
+import {
+  Config,
+  Member,
+  RvDate,
+  Session,
+  values,
+} from '@research-vacant/common';
 import dayjs from 'dayjs';
 import { getConfig } from 'backend/source/spreadsheet/config';
+import { getMembers } from 'backend/source/spreadsheet/members';
 import {
   getSessions,
   publishSession,
 } from 'backend/source/spreadsheet/session';
-import { getMembers } from 'backend/source/spreadsheet/members';
 
 /**
  * セッションの一覧を取得し，本日の日付に対して必要なセッションの発行を行う
