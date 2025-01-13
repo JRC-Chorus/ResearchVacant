@@ -7,7 +7,7 @@ const userName = 'ユーザー名'; // props または store から取得
     <nav class="nav-container">
       <div class="logo-section">
         <h1>日程調整BOT</h1>
-        <span class="subtitle">Schedule Management System</span>
+        <span class="subtitle">Research Vacant</span>
       </div>
       <!-- <div class="user-section">
         <span class="user-name">{{ userName }}</span>
@@ -38,6 +38,7 @@ const userName = 'ユーザー名'; // props または store から取得
 
 .logo-section h1 {
   margin: 0;
+  padding-bottom: 3px;
   font-size: 1.5rem;
   font-weight: 500;
   font-family: 'M PLUS 1p', sans-serif;
