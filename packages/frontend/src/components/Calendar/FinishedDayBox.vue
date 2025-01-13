@@ -38,7 +38,7 @@ const classNames = () => {
       <q-icon
         v-else
         name="check"
-        color="primary"
+        color="positive"
         :size="$q.screen.gt.xs ? '3rem' : '1.5rem'"
         class="absolute-center"
       />
@@ -51,7 +51,7 @@ const classNames = () => {
 
 <style scoped lang="scss">
 .active-OK {
-  border: 3px solid $primary;
+  border: 3px solid $positive;
 }
 .active-Pending {
   border: 3px solid $warning;
@@ -75,7 +75,7 @@ const classNames = () => {
 
 .selected {
   margin: -3px;
-  border: 3px solid $primary;
-  background-color: rgba($color: $primary, $alpha: 0.1);
+  border: 3px solid $positive;
+  background-color: rgba($color: $positive, $alpha: 0.1);
 }
 </style>

@@ -9,6 +9,24 @@ interface Prop {
 const prop = defineProps<Prop>();
 
 const selecter = defineModel<AnsDate>();
+const tapOrder: AnsStatus[] = ['OK', 'NG', 'Pending'];
+
+const tooltipMsg: { [status in AnsStatus]: string } = {
+  OK: '参加ＯＫ',
+  Pending: '回答保留（可否未定）',
+  NG: '参加ＮＧ',
+};
+const iconName: { [status in AnsStatus]: string } = {
+  OK: 'check',
+  Pending: 'hourglass_empty',
+  NG: 'close',
+};
+const iconColor: { [status in AnsStatus]: string } = {
+  OK: 'positive',
+  Pending: 'warning',
+  NG: 'negative',
+};
+
 const classNames = () => {
   const returnClass = [];
   returnClass.push(prop.disable ? 'disable' : `active-${selecter.value?.ans}`);
@@ -19,9 +37,9 @@ const classNames = () => {
 function onClicked() {
   if (selecter.value) {
     selecter.value.ans =
-      AnsStatus[
-        (AnsStatus.findIndex((v) => v === selecter.value?.ans) + 1) %
-          AnsStatus.length
+      tapOrder[
+        (tapOrder.findIndex((v) => v === selecter.value?.ans) + 1) %
+          tapOrder.length
       ];
   }
 }
@@ -37,12 +55,10 @@ function onClicked() {
     @click="onClicked()"
     :class="classNames()"
   >
-    <q-tooltip v-if="selecter?.ans === 'OK'"> 参加ＯＫ </q-tooltip>
-    <q-tooltip v-if="selecter?.ans === 'Pending'">
-      回答保留（可否未定）
+    <q-tooltip v-if="selecter && !disable && !disappear" :delay="1000">
+      {{ tooltipMsg[selecter.ans] }}
     </q-tooltip>
-    <q-tooltip v-if="selecter?.ans === 'NG' && !disable"> 参加ＮＧ </q-tooltip>
-    <div>
+    <div v-if="selecter">
       <q-icon
         v-if="disable"
         name="pause"
@@ -51,24 +67,9 @@ function onClicked() {
         class="absolute-center disable"
       />
       <q-icon
-        v-else-if="selecter?.ans === 'OK'"
-        name="check"
-        color="primary"
-        :size="$q.screen.gt.xs ? '3rem' : '1.5rem'"
-        class="absolute-center"
-      >
-      </q-icon>
-      <q-icon
-        v-else-if="selecter?.ans === 'Pending'"
-        name="hourglass_empty"
-        color="warning"
-        :size="$q.screen.gt.xs ? '3rem' : '1.5rem'"
-        class="absolute-center"
-      />
-      <q-icon
-        v-else-if="selecter?.ans === 'NG'"
-        name="close"
-        color="negative"
+        v-else
+        :name="iconName[selecter.ans]"
+        :color="iconColor[selecter.ans]"
         :size="$q.screen.gt.xs ? '3rem' : '1.5rem'"
         class="absolute-center"
       />
@@ -84,7 +85,7 @@ function onClicked() {
 
 <style scoped lang="scss">
 .active-OK {
-  border: 3px solid $primary;
+  border: 3px solid $positive;
 }
 .active-Pending {
   border: 3px solid $warning;

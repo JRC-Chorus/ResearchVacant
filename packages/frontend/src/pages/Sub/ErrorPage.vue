@@ -13,11 +13,12 @@ const mainStore = useMainStore();
 <template>
   <div class="col row items-center justify-center">
     <q-card flat>
-      <q-card-section horizontal>
-        <q-card-section class="flex flex-center">
+      <q-card-section class="q-pa-none">
+        <q-card-section class="row items-center">
           <q-icon name="cancel" color="negative" size="3rem" />
+          <div class="error-logo-txt">Error</div>
         </q-card-section>
-        <q-card-section>
+        <q-card-section class="q-pa-none">
           <q-card-section>
             <div class="error-title">{{ mainStore.error?.name ?? title }}</div>
           </q-card-section>
@@ -32,6 +33,13 @@ const mainStore = useMainStore();
 </template>
 
 <style scoped lang="scss">
+.error-logo-txt {
+  color: $negative;
+  font-weight: 500;
+  font-size: 2rem;
+  margin-left: 1rem;
+}
+
 .error-title {
   font-size: 2rem;
   font-weight: bold;
