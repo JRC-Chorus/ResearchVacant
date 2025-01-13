@@ -66,9 +66,9 @@ function getSpecialHolidayName(idx: number, isWindowSize_gt_sm: boolean) {
         </div>
         <ApproveDayBox
           v-if="places"
-          :date="mainStore.ansModel[n - 1]?.date"
+          :date="mainStore.ansModel[n - 1].date"
           :disappear="!mainStore.ansModel[n - 1]"
-          :disable="!isEnableDate(summary, mainStore.ansModel[n - 1]?.date)"
+          :disable="!isEnableDate(summary, mainStore.ansModel[n - 1].date)"
           :ans-dates="summary.ansDates"
           :free-txts="summary.freeTxts"
           :places="places"
@@ -82,7 +82,7 @@ function getSpecialHolidayName(idx: number, isWindowSize_gt_sm: boolean) {
           v-else
           v-model="mainStore.ansModel[n - 1]"
           :disappear="!mainStore.ansModel[n - 1]"
-          :disable="!isEnableDate(summary, mainStore.ansModel[n - 1]?.date)"
+          :disable="!isEnableDate(summary, mainStore.ansModel[n - 1].date)"
         />
       </div>
     </div>
