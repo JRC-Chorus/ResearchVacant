@@ -20,11 +20,13 @@ const mainStore = useMainStore();
         </q-card-section>
         <q-card-section class="q-pa-none">
           <q-card-section>
-            <div class="error-title">{{ mainStore.error?.name ?? title }}</div>
+            <div class="error-title">
+              {{ mainStore.error?.message ?? title }}
+            </div>
           </q-card-section>
           <q-separator inset class="q-my-md" />
           <q-card-section style="white-space: pre-line">
-            {{ mainStore.error?.message ?? message?.join('\n') }}
+            {{ mainStore.error?.cause ?? message?.join('\n') }}
           </q-card-section>
         </q-card-section>
       </q-card-section>
