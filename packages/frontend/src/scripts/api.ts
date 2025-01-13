@@ -81,8 +81,15 @@ export const googleScriptRun = new Proxy(mockFuncs, {
         );
       });
 
-      const res = await fetch(apiUrl);
-      const parsedRes = ApiResponse.parse(await res.json());
+      const parsedRes: ApiResponse = await fetch(apiUrl)
+        .then(async (res) => ApiResponse.parse(await res.json()))
+        .catch((e: Error) => {
+          return {
+            status: 'fail',
+            errTitle: e.name,
+            errDescription: e.message,
+          };
+        });
 
       if (parsedRes.status === 'success') {
         return parsedRes.val;
