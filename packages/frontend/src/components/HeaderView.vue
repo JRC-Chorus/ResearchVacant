@@ -9,23 +9,23 @@ const userName = 'ユーザー名'; // props または store から取得
         <h1>日程調整BOT</h1>
         <span class="subtitle">Schedule Management System</span>
       </div>
-      <div class="user-section">
+      <!-- <div class="user-section">
         <span class="user-name">{{ userName }}</span>
-      </div>
+      </div> -->
     </nav>
   </q-header>
 </template>
 
 <style scoped>
 .header {
-  background: linear-gradient(135deg, #1b4332, #2d6a4f);
+  background: #2d6a4f;
   color: white;
   padding: 1rem 1rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .nav-container {
-  max-width: 1200px;
+  max-width: 1500px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -39,10 +39,10 @@ const userName = 'ユーザー名'; // props または store から取得
 
 .logo-section h1 {
   margin: 0;
-  font-size: 2rem;
-  font-weight: 700;
-  font-family: 'M PLUS Rounded 1c', sans-serif;
-  letter-spacing: 1px;
+  font-size: 1.5rem;
+  font-weight: 500;
+  font-family: 'M PLUS 1p', sans-serif;
+  letter-spacing: 2px;
 }
 
 .subtitle {
@@ -51,7 +51,7 @@ const userName = 'ユーザー名'; // props または store から取得
   font-family: 'Roboto', sans-serif;
 }
 
-.user-section {
+/* .user-section {
   padding: 0.5rem 1rem;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 6px;
@@ -60,5 +60,5 @@ const userName = 'ユーザー名'; // props または store から取得
 .user-name {
   font-size: 1rem;
   font-weight: 500;
-}
+} */
 </style>
