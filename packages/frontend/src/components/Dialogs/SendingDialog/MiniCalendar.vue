@@ -10,7 +10,7 @@ const prop = defineProps<Prop>();
 const mainStore = useMainStore();
 
 const isTargetDate = (n: number) =>
-  mainStore.ansModel[n - 1]?.date === prop.targetDate;
+  mainStore.ansModel[n - 1].date === prop.targetDate;
 </script>
 
 <template>
@@ -21,7 +21,6 @@ const isTargetDate = (n: number) =>
         :size="isTargetDate(n) ? '1.5rem' : '.7rem'"
         :color="isTargetDate(n) ? 'red' : 'grey-5'"
         class="fit"
-        :class="!mainStore.ansModel[n - 1] ? 'hide' : ''"
       />
     </template>
   </div>
@@ -32,10 +31,6 @@ const isTargetDate = (n: number) =>
   display: grid;
   grid-template-columns: repeat(7, 14.28%);
   grid-auto-rows: 20px;
-}
-
-.hide {
-  visibility: hidden;
 }
 
 .day {

@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { AnsDate, AnsStatus } from '@research-vacant/common';
+import dayjs from 'dayjs';
+import { useMainStore } from 'src/stores/main';
 
 interface Prop {
-  day: number;
   disable?: boolean;
   disappear?: boolean;
 }
 const prop = defineProps<Prop>();
+const mainStore = useMainStore();
 
-const selecter = defineModel<AnsDate>();
+const selecter = defineModel<AnsDate>({ required: true });
+const dateObj = dayjs(selecter.value.date);
 const tapOrder: AnsStatus[] = ['OK', 'NG', 'Pending'];
 
 const tooltipMsg: { [status in AnsStatus]: string } = {
@@ -77,7 +80,15 @@ function onClicked() {
         class="absolute-center text-bold day-text"
         :class="prop.disable ? 'disable' : ''"
       >
-        {{ day }}
+        <div style="width: max-content">
+          <span
+            v-if="mainStore.targetMonth !== dateObj.month() + 1"
+            class="month"
+          >
+            {{ dateObj.month() + 1 }}/
+          </span>
+          <span> {{ dateObj.date() }}</span>
+        </div>
       </div>
     </div>
   </q-btn>
@@ -95,6 +106,12 @@ function onClicked() {
 }
 .disable {
   opacity: 0.5;
+}
+
+.month {
+  font-size: 1rem;
+  display: inline-block;
+  vertical-align: top;
 }
 
 .day-text {

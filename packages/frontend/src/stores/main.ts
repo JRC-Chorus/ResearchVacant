@@ -15,10 +15,12 @@ export const useMainStore = defineStore('mainStore', {
   state: () => ({
     /** 今回の通信の状況と必要なデータのセット */
     __memberStatus: null as MemberStatus | null,
-    /** 描画する週（１か月は必ず５週間以内に収まる） */
+    /** 描画する週（１か月は原則５週間以内に収まるが，`getWeeksInMonth()`で確認する） */
     showingWeekCount: 5,
+    /** 描画するメイン月 */
+    targetMonth: 0,
     /** フロントエンド用の回答一覧 */
-    ansModel: [] as (AnsDate | undefined)[],
+    ansModel: [] as AnsDate[],
     /** 開催日決定時にマークされた日付 */
     markedDates: {} as Record<RvDate, PlaceID>,
     /** 祝日記録用 */
@@ -72,13 +74,16 @@ export const useMainStore = defineStore('mainStore', {
     },
     /**
      * フロントエンド用の回答一覧を初期化する
-     *
-     * TODO: 週次アンケートの場合，週の中で月をまたいでしまうと跨いだ先の日付が表示されないバグあり
      */
     initAnsModel(summary: AnswerSummary) {
       // calc start and end research date
       const startDate = dayjs(summary.ansDates[0].date);
       const endDate = dayjs(summary.ansDates[summary.ansDates.length - 1].date);
+      this.showingWeekCount = getWeeksInMonth(
+        startDate.year(),
+        startDate.month() + 1
+      );
+      this.targetMonth = startDate.month() + 1;
 
       // where is the start date in calendar's meta data
       const monthStartIdx = Number.parseInt(
@@ -95,41 +100,35 @@ export const useMainStore = defineStore('mainStore', {
       // generate the init calendar data
       this.ansModel = [...new Array(7 * this.showingWeekCount)].map(
         (_, idx) => {
-          if (idx < monthStartIdx || idx > monthStartIdx + monthDateCount) {
-            // そもそも月始めよりも前，月終わりより後，の日付は非表示にする
-            return undefined;
-          } else {
-            const thisDay = RvDate.parse(
-              startDate.add(idx - startDateIdx, 'day').format()
-            );
+          const thisDay = RvDate.parse(
+            startDate.add(idx - startDateIdx, 'day').format()
+          );
 
-            // 休日チェック
-            const holidayCheck = isHoliday(new Date(thisDay));
-            if (holidayCheck) {
-              this.specialHoliday[thisDay] = holidayCheck;
-            }
-
-            // 期間内の場合は休日を除き回答対象とする
-            const initAns = () => {
-              if (
-                startDateIdx <= idx &&
-                idx <= endDateIdx &&
-                ![1, 0].includes((idx + 1) % 7)
-              ) {
-                return holidayCheck
-                  ? 'NG'
-                  : summary.selfAns?.ansDates.at(idx - startDateIdx)?.ans ??
-                      'OK';
-              } else {
-                // 期間外の日付はすべてNG扱い
-                return 'NG';
-              }
-            };
-            return {
-              date: thisDay,
-              ans: initAns(),
-            };
+          // 休日チェック
+          const holidayCheck = isHoliday(new Date(thisDay));
+          if (holidayCheck) {
+            this.specialHoliday[thisDay] = holidayCheck;
           }
+
+          // 期間内の場合は休日を除き回答対象とする
+          const initAns = () => {
+            if (
+              startDateIdx <= idx &&
+              idx <= endDateIdx &&
+              ![1, 0].includes((idx + 1) % 7)
+            ) {
+              return holidayCheck
+                ? 'NG'
+                : summary.selfAns?.ansDates.at(idx - startDateIdx)?.ans ?? 'OK';
+            } else {
+              // 期間外の日付はすべてNG扱い
+              return 'NG';
+            }
+          };
+          return {
+            date: thisDay,
+            ans: initAns(),
+          };
         }
       );
 
@@ -143,6 +142,21 @@ export const useMainStore = defineStore('mainStore', {
     },
   },
 });
+
+/**
+ * 指定した月が何週間あるかを返す
+ */
+function getWeeksInMonth(year: number, month: number): number {
+  const startOfMonth = dayjs(new Date(year, month - 1, 1));
+  const endOfMonth = startOfMonth.endOf('month');
+  let currentWeek = startOfMonth.startOf('week');
+  let weekCount = 0;
+  while (currentWeek.isBefore(endOfMonth)) {
+    weekCount++;
+    currentWeek = currentWeek.add(1, 'week');
+  }
+  return weekCount;
+}
 
 /** In Source Testing */
 if (import.meta.vitest) {
@@ -229,7 +243,7 @@ if (import.meta.vitest) {
       mainStore.initAnsModel(sampleSummary);
 
       // test
-      expect(mainStore.ansModel[0]).toBe(undefined); // 範囲外はundefined
+      expect(mainStore.ansModel[0]?.ans).toBe('NG'); // 範囲外はNG
       expect(mainStore.ansModel[6]?.ans).toBe('NG'); // 2025-02-01は土曜日のためNG扱い
       expect(mainStore.ansModel[8]?.ans).toBe('OK'); // 2025-02-03は月曜日で回答もOK
       expect(mainStore.ansModel[19]?.ans).toBe('NG'); // 2025-02-14は金曜日で回答はNG

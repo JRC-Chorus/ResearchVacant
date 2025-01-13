@@ -13,7 +13,7 @@ import AnswerListDialog from '../Dialogs/AnswerListDialog.vue';
 import { AnswerListDialogProp } from '../Dialogs/iDialogProp';
 
 interface Prop {
-  date?: RvDate;
+  date: RvDate;
   disable?: boolean;
   disappear?: boolean;
   ansDates: AnsSummaryDate[];
@@ -98,8 +98,16 @@ function onClicked() {
     :class="classNames()"
     @click="onClicked()"
   >
-    <div class="text-bold absolute-center-left" style="font-size: 1rem">
-      {{ dateObj.date() }}
+    <div class="text-bold absolute-center-left">
+      <div style="width: max-content">
+        <span
+          v-if="mainStore.targetMonth !== dateObj.month() + 1"
+          class="month"
+        >
+          {{ dateObj.month() + 1 }}/
+        </span>
+        <span style="font-size: 1rem"> {{ dateObj.date() }}</span>
+      </div>
     </div>
     <q-circular-progress
       show-value
@@ -145,6 +153,12 @@ function onClicked() {
   margin: -3px;
   border: 3px solid $positive;
   background-color: rgba($color: $positive, $alpha: 0.1);
+}
+
+.month {
+  font-size: 0.7rem;
+  display: inline-block;
+  vertical-align: top;
 }
 
 .day-text {

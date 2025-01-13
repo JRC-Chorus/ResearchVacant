@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { PartyDate, RvDate } from '@research-vacant/common';
 import dayjs from 'dayjs';
+import { useMainStore } from 'src/stores/main';
 
 interface Prop {
-  date?: RvDate;
+  date: RvDate;
   partyDates: PartyDate[];
 }
 const prop = defineProps<Prop>();
+const mainStore = useMainStore();
 
 const isPartyDate = prop.partyDates.some((d) => d.date === prop.date);
+const dateObj = dayjs(prop.date);
 
 const classNames = () => {
   const returnClass = [];
@@ -43,7 +46,15 @@ const classNames = () => {
         class="absolute-center"
       />
       <div class="absolute-center text-bold day-text">
-        {{ dayjs(date).date() }}
+        <div style="width: max-content">
+          <span
+            v-if="mainStore.targetMonth !== dateObj.month() + 1"
+            class="month"
+          >
+            {{ dateObj.month() + 1 }}/
+          </span>
+          <span> {{ dateObj.date() }}</span>
+        </div>
       </div>
     </div>
   </q-btn>
@@ -61,6 +72,12 @@ const classNames = () => {
 }
 .disable {
   opacity: 0.5;
+}
+
+.month {
+  font-size: 1rem;
+  display: inline-block;
+  vertical-align: top;
 }
 
 .day-text {

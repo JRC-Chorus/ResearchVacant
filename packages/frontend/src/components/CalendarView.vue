@@ -25,7 +25,7 @@ mainStore.initAnsModel(prop.summary);
  * 祝日名を取得する
  */
 function getSpecialHolidayName(idx: number, isWindowSize_gt_sm: boolean) {
-  const thisDay = mainStore.ansModel[idx - 1]?.date;
+  const thisDay = mainStore.ansModel[idx - 1].date;
 
   if (thisDay) {
     return mainStore.specialHoliday[thisDay]
@@ -66,24 +66,23 @@ function getSpecialHolidayName(idx: number, isWindowSize_gt_sm: boolean) {
         </div>
         <ApproveDayBox
           v-if="places"
-          :date="mainStore.ansModel[n - 1]?.date"
+          :date="mainStore.ansModel[n - 1].date"
           :disappear="!mainStore.ansModel[n - 1]"
-          :disable="!isEnableDate(summary, mainStore.ansModel[n - 1]?.date)"
+          :disable="!isEnableDate(summary, mainStore.ansModel[n - 1].date)"
           :ans-dates="summary.ansDates"
           :free-txts="summary.freeTxts"
           :places="places"
         />
         <FinishedDayBox
           v-else-if="partyDates"
-          :date="mainStore.ansModel[n - 1]?.date"
+          :date="mainStore.ansModel[n - 1].date"
           :party-dates="partyDates"
         />
         <DayBox
           v-else
           v-model="mainStore.ansModel[n - 1]"
-          :day="n - mainStore.ansModel.findIndex((a) => !!a)"
           :disappear="!mainStore.ansModel[n - 1]"
-          :disable="!isEnableDate(summary, mainStore.ansModel[n - 1]?.date)"
+          :disable="!isEnableDate(summary, mainStore.ansModel[n - 1].date)"
         />
       </div>
     </div>
