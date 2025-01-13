@@ -21,7 +21,7 @@ export function getSheet(sheetName: string, createNewSheet: boolean = false) {
 /**
  * シートの更新処理に対してロック管理を付与する
  */
-export function warpLock<T>(func: () => T, timeout: number = 10 * 1000) {
+export function wrapLock<T>(func: () => T, timeout: number = 10 * 1000) {
   const lock = LockService.getScriptLock();
   if (lock.tryLock(timeout)) {
     // execute update process

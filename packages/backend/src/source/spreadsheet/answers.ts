@@ -13,7 +13,7 @@ import {
   values,
 } from '@research-vacant/common';
 import dayjs from 'dayjs';
-import { getSheet, warpLock } from './common';
+import { getSheet, wrapLock } from './common';
 
 const ansHeader: Record<keyof Answer, string> = {
   userId: 'メンバーID',
@@ -30,7 +30,7 @@ export function initAnsRecordSheet(
   sessionId: SessionID,
   clearAllData: boolean = false
 ) {
-  warpLock(() => __initAnsRecordSheet(sessionId, clearAllData));
+  wrapLock(() => __initAnsRecordSheet(sessionId, clearAllData));
 }
 
 function __initAnsRecordSheet(
@@ -221,7 +221,7 @@ export function registAnswer(sessionId: SessionID, record: Answer) {
   answers[record.userId] = record;
 
   // write for db
-  warpLock(() => writeAnswers(sessionId, answers));
+  wrapLock(() => writeAnswers(sessionId, answers));
 }
 
 /** In Source Testing */

@@ -7,7 +7,7 @@ import {
   toEntries,
   values,
 } from '@research-vacant/common';
-import { getSheet, warpLock } from './common';
+import { getSheet, wrapLock } from './common';
 import { getConfig } from './config';
 
 const MEMBERS_SHEET_NAME = 'メンバー一覧';
@@ -33,7 +33,7 @@ function genMemberID() {
  * メンバー一覧シートの初期化に用いる
  */
 export function initMemberSheet(clearAllData: boolean = false) {
-  warpLock(() => __initMemberSheet(clearAllData));
+  wrapLock(() => __initMemberSheet(clearAllData));
 }
 
 function __initMemberSheet(clearAllData: boolean = false) {
@@ -78,7 +78,7 @@ export function getMembers(
   loadForce: boolean = false,
   onlyNewMember: boolean = false
 ) {
-  return warpLock(() => __getMembers(loadForce, onlyNewMember));
+  return wrapLock(() => __getMembers(loadForce, onlyNewMember));
 }
 
 export function __getMembers(loadForce: boolean, onlyNewMember: boolean) {
