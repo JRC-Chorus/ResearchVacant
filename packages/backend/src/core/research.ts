@@ -3,10 +3,10 @@
  */
 import dayjs from 'dayjs';
 import { updateSession } from 'backend/source/spreadsheet/session';
-import { sessionChecker } from './research/checker';
+import { newMemberChecker, sessionChecker } from './research/checker';
 import { sendJudgeCandidate } from './research/decideHoldingDate';
 import { sendRemind } from './research/remindResearch';
-import { startSession } from './research/startResearch';
+import { sendAnnounce, startSession } from './research/startResearch';
 
 /**
  * この関数を毎日実行し，ステータスに応じた処理を実行する
@@ -14,6 +14,7 @@ import { startSession } from './research/startResearch';
 export function researchManager() {
   // セッション一覧・設定シートを確認し，開催中の調査（リマインドの送付，終了案内の送付等）や開始すべき調査について確認する
   const sessions = sessionChecker();
+  const newMembers = newMemberChecker();
 
   sessions.forEach((session) => {
     // 新規でセッションを開始（'ready' -> 'opening'）
@@ -48,12 +49,17 @@ export function researchManager() {
       // 現状ではすべてのセッションはバックログとして残しておくことにしているため，コメントアウト
       // cleanUpBackData(session.id)
     }
+
+    // 新規メンバーに案内を送付
+    if (newMembers.length > 0 && session.status === 'opening') {
+      sendAnnounce(session.id, newMembers);
+    }
   });
 }
 
 /** In Source Testing */
 if (import.meta.vitest) {
-  const { test, expect } = import.meta.vitest;
+  const { describe, test, expect } = import.meta.vitest;
   test('dayjs', () => {
     const today = dayjs('2024-01-03');
     expect(today.diff('2024-01-05', 'day')).toBe(-2);
@@ -61,5 +67,43 @@ if (import.meta.vitest) {
     expect(today.isAfter('2024-01-01', 'day')).toBe(true);
   });
 
-  // TODO: テストを作成
+  describe('researchManager', async () => {
+    // mocks
+    const { SpreadsheetApp, Utilities, LockService, Logger } = await import(
+      '@research-vacant/mock'
+    );
+    global.SpreadsheetApp = new SpreadsheetApp();
+    global.Utilities = new Utilities();
+    global.LockService = new LockService();
+    global.Logger = new Logger();
+
+    // initialize
+    const { migrateEnv } = await import('./migrate');
+    migrateEnv();
+
+    // sample member
+    const { imitateRegistMember } = await import(
+      'backend/source/spreadsheet/members'
+    );
+    imitateRegistMember({
+      id: '',
+      firstName: 'サンプル',
+      lastName: '太郎',
+      mailAddress: 'sample@email.com',
+      roles: '',
+    });
+    imitateRegistMember({
+      id: '00000000-0000-0000-0000-000000000000',
+      firstName: 'サンプル',
+      lastName: '登録済み',
+      mailAddress: 'sample@email.com',
+      roles: '',
+    });
+
+    test('newMemberChecker', () => {
+      // get members
+      const members = newMemberChecker();
+      expect(members.length).toBe(1);
+    });
+  });
 }

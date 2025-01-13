@@ -1,4 +1,4 @@
-import { SessionID, values } from '@research-vacant/common';
+import { Member, SessionID, values } from '@research-vacant/common';
 import { sendAnnounceMail } from 'backend/source/mail';
 import { initAnsRecordSheet } from 'backend/source/spreadsheet/answers';
 import { getMembers } from 'backend/source/spreadsheet/members';
@@ -11,13 +11,20 @@ export function startSession(sessionId: SessionID) {
   initAnsRecordSheet(sessionId);
 
   // 案内メールの送付
-  sendAnnounce(sessionId);
+  sendAnnounce4AllMembers(sessionId);
 }
 
 /**
  * 部員全員に案内メールを送信する
  */
-function sendAnnounce(sessionId: SessionID) {
+function sendAnnounce4AllMembers(sessionId: SessionID) {
   const members = values(getMembers());
+  sendAnnounce(sessionId, members);
+}
+
+/**
+ * 指定したメンバーにのみ案内メールを送信する
+ */
+export function sendAnnounce(sessionId: SessionID, members: Member[]) {
   members.forEach((m) => sendAnnounceMail(sessionId, m));
 }

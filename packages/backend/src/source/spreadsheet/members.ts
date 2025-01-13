@@ -81,7 +81,12 @@ export function getMembers(
   return wrapLock(() => __getMembers(loadForce, onlyNewMember));
 }
 
-export function __getMembers(loadForce: boolean, onlyNewMember: boolean) {
+export function __getMembers(
+  loadForce: boolean,
+  onlyNewMember: boolean
+): Record<MemberID, Member> {
+  const newMemberIds: MemberID[] = [];
+
   if (!cachedMembers || loadForce) {
     const sheet = getSheet(MEMBERS_SHEET_NAME);
 
@@ -105,6 +110,7 @@ export function __getMembers(loadForce: boolean, onlyNewMember: boolean) {
                 const memberId = line[idx] === '' ? genMemberID() : line[idx];
                 // MemberIDがないときはDBに書き込む
                 if (line[idx] === '') {
+                  newMemberIds.push(memberId);
                   sheet
                     .getRange(rowIdx + 2, memberidIdx + 1)
                     .setValue(memberId);
@@ -136,6 +142,12 @@ export function __getMembers(loadForce: boolean, onlyNewMember: boolean) {
         mustAttend: !!cachedMembers[keys(cachedMembers)[0]].roles?.mustAttend,
       };
     }
+  }
+
+  if (onlyNewMember) {
+    return fromEntries(
+      toEntries(cachedMembers).filter(([id, m]) => newMemberIds.includes(id))
+    );
   }
 
   return cachedMembers;
