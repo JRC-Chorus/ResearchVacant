@@ -25,7 +25,7 @@ mainStore.initAnsModel(prop.summary);
  * 祝日名を取得する
  */
 function getSpecialHolidayName(idx: number, isWindowSize_gt_sm: boolean) {
-  const thisDay = mainStore.ansModel[idx - 1]?.date;
+  const thisDay = mainStore.ansModel[idx - 1].date;
 
   if (thisDay) {
     return mainStore.specialHoliday[thisDay]
