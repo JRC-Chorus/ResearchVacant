@@ -156,7 +156,7 @@ function onClicked() {
 }
 
 .month {
-  font-size: .7rem;
+  font-size: 0.7rem;
   display: inline-block;
   vertical-align: top;
 }
