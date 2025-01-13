@@ -65,10 +65,7 @@ function resetAllAns() {
       <div class="col"></div>
       <!-- main display -->
       <div class="col row">
-        <LeftSideView
-          status="approve"
-          :is-manager="isManager"
-        />
+        <LeftSideView status="approve" :is-manager="isManager" />
         <div style="max-width: min(90vw, 50rem); margin: 0 auto">
           <CalendarView :summary="summary" :places="places" />
         </div>
