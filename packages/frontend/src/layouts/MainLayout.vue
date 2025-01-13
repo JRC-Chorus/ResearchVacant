@@ -1,14 +1,10 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import HeaderView from 'src/components/HeaderView.vue';
+</script>
 
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header>
-      <q-toolbar class="q-py-lg">
-        <q-toolbar-title> 開催日調整BOT </q-toolbar-title>
-
-        <!-- <div>Quasar v{{ $q.version }}</div> -->
-      </q-toolbar>
-    </q-header>
+    <HeaderView />
 
     <q-page-container>
       <router-view />

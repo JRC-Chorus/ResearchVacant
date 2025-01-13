@@ -54,13 +54,13 @@ const classNames = () => {
       : ''
   );
   returnClass.push(
-    btnStyle(acceptRatio()).color === 'primary' ? 'checked' : ''
+    btnStyle(acceptRatio()).color === 'positive' ? 'checked' : ''
   );
   return returnClass.join(' ');
 };
 
 type btnStyleType = {
-  color: 'primary' | 'warning' | 'negative';
+  color: 'positive' | 'warning' | 'negative';
   icon: string;
 };
 const btnStyle = (ratio: number): btnStyleType => {
@@ -71,7 +71,7 @@ const btnStyle = (ratio: number): btnStyleType => {
     };
   } else {
     return {
-      color: 'primary',
+      color: 'positive',
       icon: 'check',
     };
   }
@@ -106,7 +106,7 @@ function onClicked() {
       :value="acceptRatio()"
       :size="$q.screen.gt.xs ? '2.6rem' : '2rem'"
       :thickness="1"
-      :color="disable ? 'transparent' : 'primary'"
+      :color="disable ? 'transparent' : 'positive'"
       :track-color="disable ? 'transparent' : 'red-1'"
       :disable="disable"
       class="q-ma-xs"
@@ -138,13 +138,13 @@ function onClicked() {
 
 .checked {
   margin: -3px;
-  border: 3px dotted $primary;
+  border: 3px dotted $positive;
 }
 
 .selected {
   margin: -3px;
-  border: 3px solid $primary;
-  background-color: rgba($color: $primary, $alpha: 0.1);
+  border: 3px solid $positive;
+  background-color: rgba($color: $positive, $alpha: 0.1);
 }
 
 .day-text {

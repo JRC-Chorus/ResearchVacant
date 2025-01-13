@@ -1,21 +1,25 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { PartyDate, SHOWING_DATE_FORMAT } from '@research-vacant/common';
-import dayjs from 'dayjs';
 import { useMainStore } from 'src/stores/main';
 import { InfoDialogProp } from './Dialogs/iDialogProp';
 import InfoDialog from './Dialogs/InfoDialog.vue';
 import IndentLine from './utils/IndentLine.vue';
 
 interface Prop {
+  status: 'approve' | 'answer' | 'finished';
   isManager?: boolean;
   month: number;
-  partyDates?: PartyDate[];
 }
 const prop = defineProps<Prop>();
 
 const $q = useQuasar();
 const mainStore = useMainStore();
+
+const message = {
+  approve: '回答結果をもとに開催日を決定してください．',
+  answer: '表示された日程の空き状況をご回答ください．',
+  finished: '日程調整の結果をご確認ください．',
+};
 
 /**
  * 調査情報の詳細を表示（スマホ版）
@@ -47,29 +51,8 @@ function showInfoDialog() {
         @click="showInfoDialog()"
       />
     </div>
-    <p v-if="!partyDates">回答結果をもとに開催日を決定してください．</p>
-    <div
-      v-else
-      style="border: 4px solid green"
-      class="column q-pa-md q-my-md text-bold text-h6 text-center"
-    >
-      <div class="col">決定した開催日</div>
-      <q-separator inset class="q-my-sm" />
-      <div
-        v-for="pDate in partyDates"
-        :key="pDate.date"
-        class="col justify-center row"
-      >
-        <span>{{ dayjs(pDate.date).format(SHOWING_DATE_FORMAT) }}</span>
-        <span class="q-mx-xs">＠</span>
-        <a v-if="pDate.pos.placeURL" :href="pDate.pos.placeURL">
-          {{ pDate.pos.placeName }}
-        </a>
-        <span v-else>
-          {{ pDate.pos.placeName }}
-        </span>
-      </div>
-    </div>
+    <p>{{ message[status] }}</p>
+    <slot />
 
     <div class="gt-md">
       <h2><u>開催日の詳細情報</u></h2>
