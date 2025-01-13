@@ -17,8 +17,10 @@ export const useMainStore = defineStore('mainStore', {
     __memberStatus: null as MemberStatus | null,
     /** 描画する週（１か月は原則５週間以内に収まるが，`getWeeksInMonth()`で確認する） */
     showingWeekCount: 5,
+    /** 描画するメイン月 */
+    targetMonth: 0,
     /** フロントエンド用の回答一覧 */
-    ansModel: [] as (AnsDate | undefined)[],
+    ansModel: [] as AnsDate[],
     /** 開催日決定時にマークされた日付 */
     markedDates: {} as Record<RvDate, PlaceID>,
     /** 祝日記録用 */
@@ -72,8 +74,6 @@ export const useMainStore = defineStore('mainStore', {
     },
     /**
      * フロントエンド用の回答一覧を初期化する
-     *
-     * TODO: 週次アンケートの場合，週の中で月をまたいでしまうと跨いだ先の日付が表示されないバグあり
      */
     initAnsModel(summary: AnswerSummary) {
       // calc start and end research date
@@ -83,6 +83,7 @@ export const useMainStore = defineStore('mainStore', {
         startDate.year(),
         startDate.month() + 1
       );
+      this.targetMonth = startDate.month() + 1;
 
       // where is the start date in calendar's meta data
       const monthStartIdx = Number.parseInt(
@@ -99,41 +100,35 @@ export const useMainStore = defineStore('mainStore', {
       // generate the init calendar data
       this.ansModel = [...new Array(7 * this.showingWeekCount)].map(
         (_, idx) => {
-          if (idx < monthStartIdx || idx > monthStartIdx + monthDateCount) {
-            // そもそも月始めよりも前，月終わりより後，の日付は非表示にする
-            return undefined;
-          } else {
-            const thisDay = RvDate.parse(
-              startDate.add(idx - startDateIdx, 'day').format()
-            );
+          const thisDay = RvDate.parse(
+            startDate.add(idx - startDateIdx, 'day').format()
+          );
 
-            // 休日チェック
-            const holidayCheck = isHoliday(new Date(thisDay));
-            if (holidayCheck) {
-              this.specialHoliday[thisDay] = holidayCheck;
-            }
-
-            // 期間内の場合は休日を除き回答対象とする
-            const initAns = () => {
-              if (
-                startDateIdx <= idx &&
-                idx <= endDateIdx &&
-                ![1, 0].includes((idx + 1) % 7)
-              ) {
-                return holidayCheck
-                  ? 'NG'
-                  : summary.selfAns?.ansDates.at(idx - startDateIdx)?.ans ??
-                      'OK';
-              } else {
-                // 期間外の日付はすべてNG扱い
-                return 'NG';
-              }
-            };
-            return {
-              date: thisDay,
-              ans: initAns(),
-            };
+          // 休日チェック
+          const holidayCheck = isHoliday(new Date(thisDay));
+          if (holidayCheck) {
+            this.specialHoliday[thisDay] = holidayCheck;
           }
+
+          // 期間内の場合は休日を除き回答対象とする
+          const initAns = () => {
+            if (
+              startDateIdx <= idx &&
+              idx <= endDateIdx &&
+              ![1, 0].includes((idx + 1) % 7)
+            ) {
+              return holidayCheck
+                ? 'NG'
+                : summary.selfAns?.ansDates.at(idx - startDateIdx)?.ans ?? 'OK';
+            } else {
+              // 期間外の日付はすべてNG扱い
+              return 'NG';
+            }
+          };
+          return {
+            date: thisDay,
+            ans: initAns(),
+          };
         }
       );
 
