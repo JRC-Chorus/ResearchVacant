@@ -67,6 +67,7 @@ function resetAllAns() {
       <!-- main display -->
       <div class="col row">
         <LeftSideView
+          status="approve"
           :is-manager="isManager"
           :month="dayjs(summary.ansDates[0].date).month() + 1"
         />
