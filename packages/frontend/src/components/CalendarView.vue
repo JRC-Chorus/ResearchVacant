@@ -81,7 +81,6 @@ function getSpecialHolidayName(idx: number, isWindowSize_gt_sm: boolean) {
         <DayBox
           v-else
           v-model="mainStore.ansModel[n - 1]"
-          :day="n - mainStore.ansModel.findIndex((a) => !!a)"
           :disappear="!mainStore.ansModel[n - 1]"
           :disable="!isEnableDate(summary, mainStore.ansModel[n - 1]?.date)"
         />
