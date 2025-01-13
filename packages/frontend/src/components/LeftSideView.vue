@@ -8,7 +8,6 @@ import IndentLine from './utils/IndentLine.vue';
 interface Prop {
   status: 'approve' | 'answer' | 'finished';
   isManager?: boolean;
-  month: number;
 }
 const prop = defineProps<Prop>();
 
@@ -38,7 +37,7 @@ function showInfoDialog() {
   <div class="col" style="min-width: 15rem">
     <div class="row justify-between items-center">
       <h1 class="text-bold">
-        {{ `${month}月の日程調整` }}
+        {{ `${mainStore.targetMonth}月の日程調整` }}
       </h1>
       <q-btn
         flat

@@ -24,7 +24,6 @@ defineProps<Prop>();
       <div class="col row">
         <LeftSideView
           status="finished"
-          :month="dayjs(summary.ansDates[0].date).month() + 1"
           :party-dates="partyDates"
         >
           <div

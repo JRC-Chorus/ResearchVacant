@@ -5,7 +5,6 @@ import {
   CheckedOuterPlace,
   keys,
 } from '@research-vacant/common';
-import dayjs from 'dayjs';
 import CalendarView from 'src/components/CalendarView.vue';
 import ApproveSendingDialog from 'src/components/Dialogs/ApproveSendingDialog.vue';
 import CheckDialog from 'src/components/Dialogs/CheckDialog.vue';
@@ -69,7 +68,6 @@ function resetAllAns() {
         <LeftSideView
           status="approve"
           :is-manager="isManager"
-          :month="dayjs(summary.ansDates[0].date).month() + 1"
         />
         <div style="max-width: min(90vw, 50rem); margin: 0 auto">
           <CalendarView :summary="summary" :places="places" />

@@ -64,7 +64,6 @@ function resetAllAns() {
         <LeftSideView
           status="answer"
           :is-manager="isManager"
-          :month="dayjs(summary.ansDates[0].date).month() + 1"
         />
         <div style="max-width: min(90vw, 50rem); margin: 0 auto">
           <CalendarView :summary="summary" />
