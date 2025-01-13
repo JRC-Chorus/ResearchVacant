@@ -25,7 +25,6 @@ const userName = 'ユーザー名'; // props または store から取得
 }
 
 .nav-container {
-  max-width: 1500px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
