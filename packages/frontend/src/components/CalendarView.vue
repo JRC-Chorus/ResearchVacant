@@ -75,7 +75,7 @@ function getSpecialHolidayName(idx: number, isWindowSize_gt_sm: boolean) {
         />
         <FinishedDayBox
           v-else-if="partyDates"
-          :date="mainStore.ansModel[n - 1]?.date"
+          :date="mainStore.ansModel[n - 1].date"
           :party-dates="partyDates"
         />
         <DayBox
