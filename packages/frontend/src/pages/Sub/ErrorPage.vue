@@ -14,7 +14,7 @@ const mainStore = useMainStore();
   <div class="col row items-center justify-center">
     <q-card flat>
       <q-card-section class="q-pa-none">
-        <q-card-section class="row items-center ">
+        <q-card-section class="row items-center">
           <q-icon name="cancel" color="negative" size="3rem" />
           <div class="error-logo-txt">Error</div>
         </q-card-section>
@@ -33,7 +33,7 @@ const mainStore = useMainStore();
 </template>
 
 <style scoped lang="scss">
-.error-logo-txt { 
+.error-logo-txt {
   color: $negative;
   font-weight: 500;
   font-size: 2rem;
