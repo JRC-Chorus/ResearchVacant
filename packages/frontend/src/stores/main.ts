@@ -243,7 +243,7 @@ if (import.meta.vitest) {
       mainStore.initAnsModel(sampleSummary);
 
       // test
-      expect(mainStore.ansModel[0]).toBe(undefined); // 範囲外はundefined
+      expect(mainStore.ansModel[0]?.ans).toBe('NG'); // 範囲外はNG
       expect(mainStore.ansModel[6]?.ans).toBe('NG'); // 2025-02-01は土曜日のためNG扱い
       expect(mainStore.ansModel[8]?.ans).toBe('OK'); // 2025-02-03は月曜日で回答もOK
       expect(mainStore.ansModel[19]?.ans).toBe('NG'); // 2025-02-14は金曜日で回答はNG
