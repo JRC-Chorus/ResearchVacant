@@ -5,7 +5,7 @@ import {
   keys,
   researchFrequencyEnum,
 } from '@research-vacant/common';
-import { getSheet, warpLock } from './common';
+import { getSheet, wrapLock } from './common';
 
 const CONFIG_SHEET_NAME = '設定';
 
@@ -39,7 +39,7 @@ let configCache: Config | undefined;
  * 設定シートの初期化
  */
 export function initConfigSheet(clearAllData: boolean = false) {
-  warpLock(() => __initConfigSheet(clearAllData));
+  wrapLock(() => __initConfigSheet(clearAllData));
 }
 
 function __initConfigSheet(clearAllData: boolean = false) {

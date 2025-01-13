@@ -1,6 +1,13 @@
-import { Config, RvDate, Session, values } from '@research-vacant/common';
+import {
+  Config,
+  Member,
+  RvDate,
+  Session,
+  values,
+} from '@research-vacant/common';
 import dayjs from 'dayjs';
 import { getConfig } from 'backend/source/spreadsheet/config';
+import { getMembers } from 'backend/source/spreadsheet/members';
 import {
   getSessions,
   publishSession,
@@ -32,6 +39,13 @@ export function sessionChecker(): Session[] {
 
   // publishしたセッションを追加済みの最新のリストを返す
   return values(getSessions());
+}
+
+/**
+ * 新規追加されたメンバ―の一覧を取得する
+ */
+export function newMemberChecker(): Member[] {
+  return values(getMembers(false, true));
 }
 
 /**

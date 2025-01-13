@@ -21,14 +21,17 @@ export function getSheet(sheetName: string, createNewSheet: boolean = false) {
 /**
  * シートの更新処理に対してロック管理を付与する
  */
-export function warpLock(func: () => void, timeout: number = 10 * 1000) {
+export function wrapLock<T>(func: () => T, timeout: number = 10 * 1000) {
   const lock = LockService.getScriptLock();
   if (lock.tryLock(timeout)) {
     // execute update process
-    func();
+    const res = func();
 
     // release lock
     lock.releaseLock();
+
+    // return function result
+    return res;
   } else {
     throw new Error('CAN NOT UPDATE SHEET (Failed to get LOCK)');
   }

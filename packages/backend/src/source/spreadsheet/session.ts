@@ -8,7 +8,7 @@ import {
   toEntries,
   values,
 } from '@research-vacant/common';
-import { getSheet, warpLock } from './common';
+import { getSheet, wrapLock } from './common';
 import { getConfig } from './config';
 
 const SESSION_SHEET_NAME = 'セッション一覧';
@@ -68,7 +68,7 @@ function writeSessions(sessions?: Record<SessionID, Session>) {
  * セッションシートの初期化に用いる
  */
 export function initSessionSheet(clearAllData: boolean = false) {
-  warpLock(() => __initSessionSheet(clearAllData));
+  wrapLock(() => __initSessionSheet(clearAllData));
 }
 
 function __initSessionSheet(clearAllData: boolean = false) {
@@ -143,7 +143,7 @@ export function publishSession(
   // 書き込み
   const sessions = getSessions();
   sessions[writeSession.id] = writeSession;
-  warpLock(() => writeSessions(sessions));
+  wrapLock(() => writeSessions(sessions));
 
   return writeSession;
 }
@@ -174,7 +174,7 @@ export function updateSession(
   if (bikou) {
     sessions[sessionId].bikou = bikou;
   }
-  warpLock(() => writeSessions(sessions));
+  wrapLock(() => writeSessions(sessions));
 }
 
 /**
@@ -186,5 +186,5 @@ export function deleteSession(sessionId: SessionID) {
   delete sessions[sessionId];
 
   // delete Session
-  warpLock(() => writeSessions(sessions));
+  wrapLock(() => writeSessions(sessions));
 }
