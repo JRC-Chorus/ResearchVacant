@@ -74,7 +74,14 @@ function roleParser(roleName: string[]): Role {
 /**
  * メンバー一覧を取得
  */
-export function getMembers(loadForce: boolean = false) {
+export function getMembers(
+  loadForce: boolean = false,
+  onlyNewMember: boolean = false
+) {
+  return warpLock(() => __getMembers(loadForce, onlyNewMember));
+}
+
+export function __getMembers(loadForce: boolean, onlyNewMember: boolean) {
   if (!cachedMembers || loadForce) {
     const sheet = getSheet(MEMBERS_SHEET_NAME);
 
