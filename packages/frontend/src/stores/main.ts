@@ -15,7 +15,7 @@ export const useMainStore = defineStore('mainStore', {
   state: () => ({
     /** 今回の通信の状況と必要なデータのセット */
     __memberStatus: null as MemberStatus | null,
-    /** 描画する週（１か月は必ず５週間以内に収まる） */
+    /** 描画する週（１か月は原則５週間以内に収まるが，`getWeeksInMonth()`で確認する） */
     showingWeekCount: 5,
     /** フロントエンド用の回答一覧 */
     ansModel: [] as (AnsDate | undefined)[],
@@ -79,6 +79,10 @@ export const useMainStore = defineStore('mainStore', {
       // calc start and end research date
       const startDate = dayjs(summary.ansDates[0].date);
       const endDate = dayjs(summary.ansDates[summary.ansDates.length - 1].date);
+      this.showingWeekCount = getWeeksInMonth(
+        startDate.year(),
+        startDate.month() + 1
+      );
 
       // where is the start date in calendar's meta data
       const monthStartIdx = Number.parseInt(
@@ -143,6 +147,21 @@ export const useMainStore = defineStore('mainStore', {
     },
   },
 });
+
+/**
+ * 指定した月が何週間あるかを返す
+ */
+function getWeeksInMonth(year: number, month: number): number {
+  const startOfMonth = dayjs(new Date(year, month - 1, 1));
+  const endOfMonth = startOfMonth.endOf('month');
+  let currentWeek = startOfMonth.startOf('week');
+  let weekCount = 0;
+  while (currentWeek.isBefore(endOfMonth)) {
+    weekCount++;
+    currentWeek = currentWeek.add(1, 'week');
+  }
+  return weekCount;
+}
 
 /** In Source Testing */
 if (import.meta.vitest) {
