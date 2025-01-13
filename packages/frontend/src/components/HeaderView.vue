@@ -16,9 +16,9 @@ const userName = 'ユーザー名'; // props または store から取得
   </q-header>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .header {
-  background: #2d6a4f;
+  background: $primary;
   color: white;
   padding: 1rem 1rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);

@@ -53,7 +53,7 @@ function onClicked() {
       <q-icon
         v-else-if="selecter?.ans === 'OK'"
         name="check"
-        color="primary"
+        color="positive"
         :size="$q.screen.gt.xs ? '3rem' : '1.5rem'"
         class="absolute-center"
       >
@@ -84,7 +84,7 @@ function onClicked() {
 
 <style scoped lang="scss">
 .active-OK {
-  border: 3px solid $primary;
+  border: 3px solid $positive;
 }
 .active-Pending {
   border: 3px solid $warning;
